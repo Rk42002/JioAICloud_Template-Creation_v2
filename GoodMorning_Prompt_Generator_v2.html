@@ -1,0 +1,1517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JioAICloud · Good Morning Poster Generator v2</title>
+<style>
+:root {
+  --primary: #1E3A5F;
+  --primary-light: #2D5A8E;
+  --accent: #F59E0B;
+  --accent-light: #FEF3C7;
+  --success: #16A34A;
+  --success-light: #DCFCE7;
+  --danger: #DC2626;
+  --bg: #F1F5F9;
+  --card: #FFFFFF;
+  --border: #E2E8F0;
+  --text: #1E293B;
+  --muted: #64748B;
+  --radius: 12px;
+  --shadow: 0 2px 8px rgba(30,58,95,0.10);
+  --shadow-hover: 0 6px 20px rgba(30,58,95,0.18);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, 'Segoe UI', Arial, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+/* ── HEADER ── */
+.header { background: var(--primary); padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; }
+.header-brand { display: flex; align-items: center; gap: 12px; }
+.header-logo { background: var(--accent); color: var(--primary); font-weight: 800; font-size: 14px; padding: 6px 10px; border-radius: 8px; letter-spacing: 0.5px; }
+.header-title { color: #fff; font-size: 16px; font-weight: 600; }
+.header-sub { color: #94A3B8; font-size: 13px; margin-top: 2px; }
+.header-badge { background: rgba(245,158,11,0.2); color: var(--accent); font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(245,158,11,0.3); }
+
+/* ── PROGRESS ── */
+.progress-wrap { background: #fff; border-bottom: 1px solid var(--border); padding: 14px 32px; }
+.progress-steps { display: flex; align-items: center; gap: 0; max-width: 960px; }
+.prog-step { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); flex: 1; }
+.prog-step:last-child { flex: 0; }
+.prog-step .num { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; background: var(--border); color: var(--muted); transition: all 0.2s; flex-shrink: 0; }
+.prog-step.done .num { background: var(--success); color: #fff; }
+.prog-step.done .num::after { content: '✓'; }
+.prog-step.done .num span { display: none; }
+.prog-step.active .num { background: var(--primary); color: #fff; }
+.prog-step .label { font-weight: 500; white-space: nowrap; }
+.prog-step.active .label { color: var(--primary); font-weight: 700; }
+.prog-step.done .label { color: var(--success); }
+.prog-connector { height: 2px; flex: 1; background: var(--border); margin: 0 4px; border-radius: 1px; }
+.prog-connector.done { background: var(--success); }
+
+/* ── MAIN ── */
+.main { max-width: 960px; margin: 0 auto; padding: 32px 24px; }
+.step-header { margin-bottom: 24px; }
+.step-eyebrow { font-size: 12px; font-weight: 700; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+.step-title { font-size: 24px; font-weight: 800; color: var(--primary); margin-bottom: 8px; }
+.step-desc { font-size: 14px; color: var(--muted); line-height: 1.6; max-width: 640px; }
+.step-hint { display: inline-flex; align-items: center; gap: 6px; background: var(--accent-light); border: 1px solid #FCD34D; color: #92400E; font-size: 12px; padding: 6px 12px; border-radius: 20px; margin-top: 10px; }
+
+/* ── OPTION CARDS ── */
+.options-grid { display: grid; gap: 14px; }
+.options-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+.options-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.options-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+.options-grid.cols-5 { grid-template-columns: repeat(5, 1fr); }
+.options-grid.cols-6 { grid-template-columns: repeat(6, 1fr); }
+@media (max-width: 700px) {
+  .options-grid.cols-4, .options-grid.cols-5, .options-grid.cols-6 { grid-template-columns: repeat(2, 1fr); }
+  .options-grid.cols-3 { grid-template-columns: repeat(2, 1fr); }
+}
+.opt-card { background: var(--card); border: 2px solid var(--border); border-radius: var(--radius); padding: 16px; cursor: pointer; transition: all 0.18s; position: relative; }
+.opt-card:hover { border-color: var(--primary-light); box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+.opt-card.selected { border-color: var(--primary); background: #EFF6FF; box-shadow: 0 0 0 3px rgba(30,58,95,0.12); }
+.opt-card.recommended::before { content: '★ Best'; position: absolute; top: 8px; right: 8px; background: var(--accent); color: #7C2D12; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 10px; }
+.opt-card.compatible::before { content: '✓ Works'; position: absolute; top: 8px; right: 8px; background: var(--success-light); color: var(--success); font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 10px; }
+.opt-card.caution { opacity: 0.7; }
+.opt-card.caution::before { content: '~ With care'; position: absolute; top: 8px; right: 8px; background: #FEF9C3; color: #713F12; font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 10px; }
+.opt-card.selected::after { content: '✓'; position: absolute; top: 10px; left: 10px; width: 20px; height: 20px; border-radius: 50%; background: var(--primary); color: #fff; font-size: 11px; font-weight: 700; display: grid; place-items: center; }
+.opt-code { font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 4px; }
+.opt-name { font-size: 15px; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+.opt-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+.opt-icon { font-size: 28px; margin-bottom: 10px; }
+
+/* ── LAYOUT DIAGRAMS ── */
+.layout-diagram { width: 56px; height: 80px; border: 2px solid #CBD5E1; border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; margin-bottom: 10px; background: #F8FAFC; flex-shrink: 0; }
+.ld-text { background: #BFDBFE; display: flex; align-items: center; justify-content: center; }
+.ld-vis { background: #FED7AA; display: flex; align-items: center; justify-content: center; }
+.layout-card-inner { display: flex; align-items: flex-start; gap: 12px; }
+.layout-card-info { flex: 1; }
+.ld-row { display: flex; flex-direction: row; width: 56px; height: 80px; border: 2px solid #CBD5E1; border-radius: 6px; overflow: hidden; margin-bottom: 10px; background: #F8FAFC; flex-shrink: 0; }
+
+/* ── COLOUR SWATCHES ── */
+.palette-card { padding: 14px; }
+.palette-swatch-row { display: flex; gap: 6px; margin-bottom: 10px; }
+.swatch { width: 28px; height: 28px; border-radius: 6px; border: 1px solid rgba(0,0,0,0.1); }
+.palette-name { font-size: 14px; font-weight: 700; color: var(--primary); margin-bottom: 3px; }
+.palette-id { font-size: 10px; color: var(--muted); font-weight: 600; }
+.palette-vibe { font-size: 11px; color: var(--muted); margin-top: 4px; line-height: 1.4; }
+
+/* ── FONT CARDS ── */
+.font-sample { font-size: 18px; font-weight: 700; margin: 8px 0 4px; color: var(--primary); }
+
+/* ── ILLUSTRATION TWO-LEVEL ── */
+.illus-back { display: inline-flex; align-items: center; gap: 6px; color: var(--primary); font-size: 13px; font-weight: 600; cursor: pointer; margin-bottom: 16px; background: none; border: none; padding: 0; }
+.illus-back:hover { text-decoration: underline; }
+.cat-card { padding: 14px; display: flex; align-items: center; gap: 12px; }
+.cat-icon { font-size: 28px; }
+.cat-info .cat-name { font-size: 14px; font-weight: 700; color: var(--primary); }
+.cat-info .cat-count { font-size: 11px; color: var(--muted); }
+.item-card { padding: 12px 14px; }
+.item-id { font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: 0.8px; }
+.item-name { font-size: 14px; font-weight: 700; color: var(--primary); margin: 2px 0; }
+.item-desc { font-size: 11px; color: var(--muted); line-height: 1.4; }
+.item-archs { display: inline-block; background: #EFF6FF; color: #1E40AF; font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 10px; margin-top: 5px; }
+
+/* ── SUB-SECTION ── */
+.sub-section { margin-bottom: 28px; }
+.sub-section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 2px solid var(--border); }
+.sub-section-num { width: 26px; height: 26px; background: var(--primary); color: #fff; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 800; flex-shrink: 0; }
+.sub-section-title { font-size: 15px; font-weight: 800; color: var(--primary); }
+.sub-section-tag { font-size: 10px; font-weight: 700; background: #FEF3C7; color: #92400E; padding: 2px 8px; border-radius: 10px; }
+
+/* ── TERMINOLOGY NOTE ── */
+.terminology-box { background: #FFF5F5; border: 1px solid #FECDD3; border-left: 4px solid #DC2626; border-radius: var(--radius); padding: 16px 18px; margin-bottom: 24px; }
+.terminology-box h4 { font-size: 13px; font-weight: 800; color: #991B1B; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.terminology-row { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+.term-chip { background: #fff; border: 1px solid #FECDD3; border-radius: 8px; padding: 8px 12px; flex: 1; min-width: 160px; }
+.term-chip strong { display: block; font-size: 12px; color: #991B1B; font-weight: 800; margin-bottom: 3px; }
+.term-chip span { font-size: 11px; color: var(--muted); line-height: 1.4; }
+
+/* ── TEXT INPUT ── */
+.text-input-wrap { background: var(--card); border: 2px solid var(--border); border-radius: var(--radius); padding: 20px; max-width: 600px; }
+.text-input-wrap textarea { width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-size: 15px; font-family: inherit; resize: vertical; min-height: 80px; color: var(--text); outline: none; transition: border-color 0.2s; }
+.text-input-wrap textarea:focus { border-color: var(--primary); }
+.lang-row { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+.lang-btn { padding: 6px 14px; border-radius: 20px; border: 2px solid var(--border); background: #fff; font-size: 12px; font-weight: 600; color: var(--muted); cursor: pointer; transition: all 0.15s; }
+.lang-btn.active { border-color: var(--primary); background: #EFF6FF; color: var(--primary); }
+.text-hint { font-size: 12px; color: var(--muted); margin-top: 10px; line-height: 1.5; }
+
+/* ── NAVIGATION BUTTONS ── */
+.nav-row { display: flex; align-items: center; justify-content: space-between; margin-top: 28px; }
+.btn { padding: 12px 28px; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.18s; border: none; }
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: var(--primary-light); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(30,58,95,0.3); }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+.btn-secondary { background: transparent; color: var(--primary); border: 2px solid var(--border); }
+.btn-secondary:hover { border-color: var(--primary); }
+.btn-generate { background: var(--accent); color: #7C2D12; font-size: 16px; padding: 14px 36px; }
+.btn-generate:hover { background: #D97706; transform: translateY(-2px); box-shadow: 0 6px 16px rgba(245,158,11,0.4); }
+
+/* ── SUMMARY CHIPS ── */
+.summary-strip { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.chip { display: inline-flex; align-items: center; gap: 5px; background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 4px 10px; font-size: 12px; color: var(--muted); cursor: pointer; }
+.chip .chip-label { font-weight: 600; color: var(--primary); }
+.chip:hover { border-color: var(--primary); }
+
+/* ── OUTPUT SECTION ── */
+.output-wrap { display: none; }
+.output-wrap.visible { display: block; }
+.output-header { background: linear-gradient(135deg, var(--primary) 0%, #2D5A8E 100%); color: #fff; border-radius: var(--radius); padding: 28px; margin-bottom: 24px; }
+.output-header h2 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+.output-header p { font-size: 14px; color: #94A3B8; }
+.summary-table { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 20px; }
+.sum-cell { background: rgba(255,255,255,0.1); border-radius: 8px; padding: 10px; }
+.sum-label { font-size: 10px; color: #94A3B8; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
+.sum-value { font-size: 13px; font-weight: 700; color: #fff; margin-top: 3px; }
+
+.prompt-block { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 18px; overflow: hidden; box-shadow: var(--shadow); }
+.prompt-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(--border); }
+.prompt-platform { display: flex; align-items: center; gap: 8px; }
+.platform-dot { width: 10px; height: 10px; border-radius: 50%; }
+.platform-name { font-size: 14px; font-weight: 700; color: var(--primary); }
+.platform-sub { font-size: 12px; color: var(--muted); }
+.btn-copy { padding: 7px 16px; border-radius: 8px; border: 1px solid var(--border); background: #fff; color: var(--primary); font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+.btn-copy:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+.btn-copy.copied { background: var(--success); color: #fff; border-color: var(--success); }
+.prompt-body { padding: 18px 20px; }
+.prompt-text { font-family: 'SF Mono', 'Consolas', monospace; font-size: 13px; line-height: 1.7; color: var(--text); background: #F8FAFC; border-radius: 8px; padding: 14px; word-break: break-word; white-space: pre-wrap; border: 1px solid var(--border); }
+.prompt-note { font-size: 12px; color: var(--muted); margin-top: 10px; line-height: 1.5; }
+.prompt-note strong { color: var(--primary); }
+
+.text-overlay-box { background: #FFFBEB; border: 1px solid #FCD34D; border-radius: var(--radius); padding: 18px 20px; margin-bottom: 18px; }
+.text-overlay-box h4 { font-size: 14px; font-weight: 700; color: #92400E; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.text-overlay-content { font-size: 16px; font-weight: 600; color: var(--text); background: #fff; border-radius: 8px; padding: 12px 16px; border: 1px solid #FCD34D; }
+.text-overlay-meta { display: flex; gap: 12px; margin-top: 10px; flex-wrap: wrap; }
+.text-meta-chip { background: #FEF3C7; border: 1px solid #FCD34D; color: #92400E; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 10px; }
+
+.negative-box { background: #FFF1F2; border: 1px solid #FECDD3; border-radius: var(--radius); padding: 14px 18px; margin-bottom: 18px; }
+.negative-box h4 { font-size: 12px; font-weight: 700; color: #BE123C; margin-bottom: 6px; }
+.negative-text { font-family: monospace; font-size: 12px; color: #881337; }
+
+.reset-btn { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 13px; cursor: pointer; background: none; border: none; margin-top: 24px; }
+.reset-btn:hover { color: var(--primary); }
+
+.cat-locked { display: inline-flex; align-items: center; gap: 8px; background: var(--primary); color: #fff; border-radius: 10px; padding: 10px 18px; font-size: 14px; font-weight: 700; margin-bottom: 24px; }
+.cat-locked .lock-icon { font-size: 16px; }
+
+.coming-soon-badge { position: absolute; top: 8px; right: 8px; background: #7C3AED; color: #fff; font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 10px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-brand">
+    <div class="header-logo">Jio<span style="color:#1E3A5F;background:#FCD34D;padding:0 3px;border-radius:3px;">AI</span>Cloud</div>
+    <div>
+      <div class="header-title">Poster Prompt Generator</div>
+      <div class="header-sub">Greetings & Creation — Design Tool</div>
+    </div>
+  </div>
+  <div class="header-badge">Good Morning Pack · v2</div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-steps" id="progressSteps"></div>
+</div>
+
+<div class="main" id="app"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════════
+
+const STEPS = [
+  { id: 1, label: 'Template' },
+  { id: 2, label: 'Style' },
+  { id: 3, label: 'Layout' },
+  { id: 4, label: 'Colour' },
+  { id: 5, label: 'Font' },
+  { id: 6, label: 'Visual' },
+  { id: 7, label: 'Text' },
+];
+
+const ARCHETYPES = [
+  { id: 'A1', name: 'Frame Style', codeName: 'A1 — Text + Frame', icon: '🖼️',
+    desc: 'A decorative border/frame is the defining visual. Illustration and text sit inside the frame.',
+    step2Label: 'Choose Frame Type', step2Key: 'frames' },
+  { id: 'A2', name: 'Illustration Style', codeName: 'A2 — Text + Illustrations', icon: '🎨',
+    desc: 'Illustrations are the primary visual element. Free composition, no dominant frame.',
+    step2Label: 'Illustration Density', step2Key: 'illusWeights' },
+  { id: 'B1', name: 'Photo Background', codeName: 'B1 — Full Photo BG', icon: '📷',
+    desc: 'A photograph fills the entire canvas. Text and overlays sit on top.',
+    step2Label: 'Overlay Treatment', step2Key: 'overlays' },
+  { id: 'C1', name: 'Animated Elements', codeName: 'C1 — Animated Elements', icon: '✨',
+    desc: 'On-canvas elements animate (particles, loops, reveals). Generate static base here — animation layer added in production.',
+    step2Label: 'Animation Style', step2Key: 'animStyles' },
+  { id: 'C2', name: 'Animated Text', codeName: 'C2 — Animated Text', icon: '💫',
+    desc: 'The text itself animates on a minimal background. Generate the static background here — text animation added in production.',
+    step2Label: 'Text Animation Style', step2Key: 'textAnimStyles' },
+  { id: 'E1', name: 'AI Avatar', codeName: 'E1 — AI Avatar', icon: '👤',
+    desc: 'An AI-generated Indian person is the primary visual. Creates personal connection.',
+    step2Label: 'Rendering Style', step2Key: 'renders' },
+];
+
+const STEP2_OPTIONS = {
+  frames: [
+    { id: 'F1', name: 'Full Perimeter', desc: 'Frame runs along all 4 edges — complete border enclosing the canvas.', diagramType: 'frame-full' },
+    { id: 'F2', name: 'Dual Band', desc: 'Decorative bands at top and bottom edges only. Sides fully open.', diagramType: 'frame-dual' },
+    { id: 'F3', name: 'Single Band', desc: 'One decorative band at the bottom edge. Minimal, modern.', diagramType: 'frame-single' },
+    { id: 'F4', name: 'Corner Accents', desc: 'Decorative patches at all four corners. Most flexible — works with every layout.', diagramType: 'frame-corner' },
+    { id: 'F5', name: 'Arch / Canopy', desc: 'Curved arch overhead — header zone and upper side patches. Devotional feel.', diagramType: 'frame-arch' },
+  ],
+  illusWeights: [
+    { id: 'Light', name: 'Light', desc: '1–2 key illustration elements. Lots of breathing space. Clean, airy.', diagramType: 'weight-light' },
+    { id: 'Medium', name: 'Medium', desc: '3–4 illustration elements. Balanced and warm.', diagramType: 'weight-medium' },
+    { id: 'Dense', name: 'Dense', desc: '5–6 elements. Rich, festive, vibrant scene.', diagramType: 'weight-dense' },
+  ],
+  overlays: [
+    { id: 'O1', name: 'Full Dark', desc: 'Uniform dark overlay across entire image. Maximum text contrast.', diagramType: 'overlay-full' },
+    { id: 'O2', name: 'Gradient — Top Heavy', desc: 'Darker toward top, brighter at bottom. Best for text at top (L1).', diagramType: 'overlay-top' },
+    { id: 'O3', name: 'Gradient — Bottom Heavy', desc: 'Darker toward bottom, brighter at top. Best for text at bottom (L5).', diagramType: 'overlay-bottom' },
+    { id: 'O4', name: 'Vignette', desc: 'Centre bright and vivid, edges darkened. Best for centred text (L2).', diagramType: 'overlay-vignette' },
+    { id: 'O5', name: 'Caption Bar', desc: 'Lower strip naturally darker. Text sits in a defined bar at bottom.', diagramType: 'overlay-caption' },
+  ],
+  animStyles: [
+    { id: 'Particle', name: 'Particle Float', desc: 'Light particles / sparkles drift gently. Spiritual, divine, New Year vibes.', diagramType: 'anim-particle' },
+    { id: 'Bloom', name: 'Bloom & Burst', desc: 'Flowers or elements bloom outward from centre. Celebratory, energetic.', diagramType: 'anim-bloom' },
+    { id: 'Drift', name: 'Petal Drift', desc: 'Petals or leaves drift across canvas. Romantic, seasonal, festive.', diagramType: 'anim-drift' },
+  ],
+  textAnimStyles: [
+    { id: 'FadeIn', name: 'Fade In', desc: 'Text fades in gracefully from clean BG. Elegant, universal.', diagramType: 'anim-fade' },
+    { id: 'Typewriter', name: 'Typewriter', desc: 'Message types character by character. Engaging, modern.', diagramType: 'anim-typewriter' },
+    { id: 'Rise', name: 'Wave / Rise', desc: 'Text rises or floats upward into position. Aspirational, morning mood.', diagramType: 'anim-rise' },
+  ],
+  renders: [
+    { id: 'Realistic', name: 'Realistic', desc: 'Photorealistic, natural lighting, high-detail human figure.', diagramType: 'render-real' },
+    { id: 'Illustrated', name: 'Illustrated', desc: 'Stylised digital illustration, artistic rendering, soft lines.', diagramType: 'render-illus' },
+  ],
+};
+
+// ─── Layout compatibility matrix ───
+// L6 = Text Centre (A1 only, best with F1/F4)
+const LAYOUT_COMPAT = {
+  A1: {
+    F1: { L1: 'ok', L2: 'ok', L3: 'ok', L4: 'ok', L5: 'ok', L6: 'best' },
+    F2: { L1: 'ok', L2: 'best', L3: 'best', L4: 'best', L5: 'ok', L6: 'ok' },
+    F3: { L1: 'best', L2: 'ok', L3: 'ok', L4: 'ok', L5: 'best', L6: 'caution' },
+    F4: { L1: 'best', L2: 'best', L3: 'best', L4: 'best', L5: 'best', L6: 'best' },
+    F5: { L1: 'caution', L2: 'ok', L3: 'ok', L4: 'ok', L5: 'best', L6: 'caution' },
+  },
+  A2: {
+    Light:  { L1: 'best', L2: 'best', L3: 'best', L4: 'best', L5: 'best', L6: 'ok' },
+    Medium: { L1: 'best', L2: 'best', L3: 'best', L4: 'best', L5: 'best', L6: 'ok' },
+    Dense:  { L1: 'ok',   L2: 'best', L3: 'ok',   L4: 'ok',   L5: 'ok',   L6: 'caution' },
+  },
+  B1: {
+    O1: { L1: 'best', L2: 'best', L3: 'ok', L4: 'ok', L5: 'best', L6: 'ok' },
+    O2: { L1: 'best', L2: 'ok',   L3: 'ok', L4: 'ok', L5: 'caution', L6: 'ok' },
+    O3: { L1: 'caution', L2: 'ok', L3: 'ok', L4: 'ok', L5: 'best', L6: 'ok' },
+    O4: { L1: 'ok',  L2: 'best', L3: 'caution', L4: 'caution', L5: 'ok', L6: 'best' },
+    O5: { L1: 'ok',  L2: 'ok',   L3: 'ok', L4: 'ok', L5: 'best', L6: 'ok' },
+  },
+  C1: {
+    Particle: { L1: 'ok', L2: 'best', L3: 'ok', L4: 'ok', L5: 'ok', L6: 'best' },
+    Bloom:    { L1: 'ok', L2: 'best', L3: 'ok', L4: 'ok', L5: 'ok', L6: 'ok' },
+    Drift:    { L1: 'best', L2: 'ok', L3: 'ok', L4: 'ok', L5: 'best', L6: 'ok' },
+  },
+  C2: {
+    FadeIn:     { L1: 'ok', L2: 'best', L3: 'ok', L4: 'ok', L5: 'ok', L6: 'best' },
+    Typewriter: { L1: 'ok', L2: 'best', L3: 'ok', L4: 'ok', L5: 'ok', L6: 'best' },
+    Rise:       { L1: 'ok', L2: 'ok',   L3: 'ok', L4: 'ok', L5: 'best', L6: 'best' },
+  },
+  E1: {
+    Realistic:   { L1: 'ok', L2: 'ok', L3: 'best', L4: 'best', L5: 'ok', L6: 'ok' },
+    Illustrated: { L1: 'ok', L2: 'ok', L3: 'best', L4: 'best', L5: 'ok', L6: 'ok' },
+  },
+};
+
+const LAYOUTS = [
+  { id: 'L1', name: 'Text Top', desc: 'Text at top, visual fills lower portion.', textZone: 'upper-third', type: 'vertical', textFirst: true },
+  { id: 'L2', name: 'Text Overlay', desc: 'Visual fills entire canvas, text centred on top.', textZone: 'centre', type: 'overlay' },
+  { id: 'L3', name: 'Text Left', desc: 'Text on left half, visual anchored on right.', textZone: 'left-half', type: 'horizontal', textFirst: true },
+  { id: 'L4', name: 'Text Right', desc: 'Text on right half, visual anchored on left.', textZone: 'right-half', type: 'horizontal', textFirst: false },
+  { id: 'L5', name: 'Text Bottom', desc: 'Visual fills upper portion, text at bottom.', textZone: 'lower-strip', type: 'vertical', textFirst: false },
+  { id: 'L6', name: 'Text Centre', desc: 'Frame holds all 4 edges. Solid/gradient background fills canvas. Text occupies central 60% — fully clear. Single small illustration sits at bottom-right or bottom-left corner only.', textZone: 'centre-zone', type: 'centre-accent', textFirst: true },
+];
+
+const PALETTES = [
+  { id: 'GM-C1', name: 'Sunrise Gold', bg: '#F59E0B', text: '#7C2D12', accent: '#F97316',
+    natural: 'warm golden amber and deep burnt orange tones, rich sunrise warmth',
+    vibe: 'Warm, energetic, festive' },
+  { id: 'GM-C2', name: 'Soft Dawn', bg: '#FDE8D8', text: '#78350F', accent: '#FCA5A5',
+    natural: 'soft peachy cream and blush rose tones, gentle morning warmth',
+    vibe: 'Personal, gentle, family' },
+  { id: 'GM-C3', name: 'Morning Sky', bg: '#BFDBFE', text: '#1E3A5F', accent: '#FFFFFF',
+    natural: 'fresh sky blue and clean white, crisp morning atmosphere',
+    vibe: 'Fresh, uplifting, motivational' },
+  { id: 'GM-C4', name: 'Fresh Garden', bg: '#D1FAE5', text: '#064E3B', accent: '#FEF08A',
+    natural: 'mint green and sage with morning dew freshness, earthy natural tones',
+    vibe: 'Natural, peaceful, wellness' },
+  { id: 'GM-C5', name: 'Sacred Saffron', bg: '#FEF3C7', text: '#7F1D1D', accent: '#D97706',
+    natural: 'rich saffron yellow and deep maroon, traditional Indian festive palette with gold accents',
+    vibe: 'Devotional, traditional, spiritual' },
+  { id: 'GM-C6', name: 'Minimal White', bg: '#F9FAFB', text: '#1F2937', accent: '#F87171',
+    natural: 'clean white and light grey with soft coral accent, modern minimalist palette',
+    vibe: 'Clean, modern, versatile' },
+];
+
+const FONTS = [
+  { id: 'GM-F1', name: 'Warm Script', heading: 'Kalam / Dancing Script', body: 'Nunito', feel: 'Personal & warm', sample: 'Good Morning ☀️' },
+  { id: 'GM-F2', name: 'Bold Display', heading: 'Poppins 700', body: 'Poppins Regular', feel: 'Energetic & confident', sample: 'GOOD MORNING' },
+  { id: 'GM-F3', name: 'Clean Modern', heading: 'Poppins SemiBold', body: 'Poppins', feel: 'Contemporary & versatile', sample: 'Good Morning' },
+  { id: 'GM-F4', name: 'Elegant Serif', heading: 'Lora Bold', body: 'Lora', feel: 'Sophisticated & literary', sample: 'Good Morning' },
+];
+
+const ILLUS_CATS = [
+  { id: 'GM-I1', name: 'Beverages', icon: '☕', desc: 'Chai, coffee, juices — morning drinks', count: 8,
+    items: [
+      { id: 'GM-I1-01', name: 'Steaming Chai Cup', desc: 'Classic ceramic cup with rising steam. Most iconic GM visual.', archs: 'All' },
+      { id: 'GM-I1-02', name: 'Clay Kulhad with Chai', desc: 'Earthen kulhad — culturally resonant, Tier 2/3 Bharat.', archs: 'A1, A2, C1' },
+      { id: 'GM-I1-03', name: 'Filter Coffee (Davara Set)', desc: 'South Indian brass tumbler + davara. Strong regional affinity.', archs: 'A1, A2' },
+      { id: 'GM-I1-04', name: 'Masala Chai with Spices', desc: 'Cup surrounded by cinnamon, cardamom, ginger. Aromatic feel.', archs: 'A2, C1' },
+      { id: 'GM-I1-05', name: 'Fresh Orange Juice', desc: 'Bright citrus glass. Best for summer/uplifting variant.', archs: 'A2, B1' },
+      { id: 'GM-I1-06', name: 'Haldi Doodh', desc: 'Golden milk with turmeric. Wellness angle.', archs: 'A2, C1' },
+      { id: 'GM-I1-07', name: 'Floral Ceramic Teapot', desc: 'Decorated teapot with matching cup. Pairs well with F4, F5 frames.', archs: 'A1, A2' },
+      { id: 'GM-I1-08', name: 'Tender Coconut Water', desc: 'Fresh coconut with straw. Coastal/tropical vibe.', archs: 'A2, B1' },
+    ]
+  },
+  { id: 'GM-I2', name: 'Nature & Sky', icon: '🌅', desc: 'Sunrises, landscapes, sky moods', count: 9,
+    items: [
+      { id: 'GM-I2-01', name: 'Sunrise over Green Hills', desc: 'Golden horizon with soft valley mist. Timeless.', archs: 'All' },
+      { id: 'GM-I2-02', name: 'Sun Rays through Forest', desc: 'Morning light through tree canopy. Spiritual, peaceful.', archs: 'B1, D1, A2' },
+      { id: 'GM-I2-03', name: 'Dew Drops on Leaf', desc: 'Macro dew drops with sunrise bokeh behind.', archs: 'A2, B1' },
+      { id: 'GM-I2-04', name: 'Morning Mist over River', desc: 'Still water with golden mist rising.', archs: 'B1, D1' },
+      { id: 'GM-I2-05', name: 'Sunrise over Ocean', desc: 'Wide golden sea, sun on horizon, gentle waves.', archs: 'B1, D1' },
+      { id: 'GM-I2-06', name: 'Mountain Peak at Golden Hour', desc: 'Peak bathed in warm first light. Aspirational.', archs: 'B1, A2' },
+      { id: 'GM-I2-07', name: 'Foggy Valley with Light Shafts', desc: 'God rays through morning fog. Dramatic, ethereal.', archs: 'B1, D1, C1' },
+      { id: 'GM-I2-08', name: 'Rainbow after Morning Rain', desc: 'Rainbow over green landscape. Hope, new beginnings.', archs: 'B1, A2, C1' },
+      { id: 'GM-I2-09', name: 'Dawn Sky Gradient', desc: 'Navy to lavender to peach to gold. Ideal BG for C2.', archs: 'C2, B1' },
+    ]
+  },
+  { id: 'GM-I3', name: 'Flowers & Botanicals', icon: '🌸', desc: 'Marigolds, lotus, jasmine and more', count: 9,
+    items: [
+      { id: 'GM-I3-01', name: 'Marigold Garland (Genda)', desc: 'Classic Indian garland. Highest cultural resonance.', archs: 'A1, A2, C1' },
+      { id: 'GM-I3-02', name: 'Lotus in Full Bloom', desc: 'Open lotus on still water. Sacred, pure, new beginnings.', archs: 'A1, A2, C1, B1' },
+      { id: 'GM-I3-03', name: 'Jasmine Buds (Mogra)', desc: 'White jasmine vine. Fragrant, feminine, South India.', archs: 'A1, A2' },
+      { id: 'GM-I3-04', name: 'Hibiscus (Gudhal Phool)', desc: 'Red hibiscus. Morning puja flower. Strong colour.', archs: 'A1, A2' },
+      { id: 'GM-I3-05', name: 'Sunflower Facing Sun', desc: 'Instantly communicates morning energy.', archs: 'A2, B1, C1' },
+      { id: 'GM-I3-06', name: 'Champa / Frangipani', desc: 'Creamy tropical flower. Temples, calm mornings.', archs: 'A1, A2' },
+      { id: 'GM-I3-07', name: 'Rose Bud with Dew', desc: 'Fresh rose with morning dew. Universal appeal.', archs: 'A2, B1' },
+      { id: 'GM-I3-08', name: 'Petals Floating on Water', desc: 'Rose and marigold petals with golden reflection.', archs: 'B1, A2' },
+      { id: 'GM-I3-09', name: 'Cherry Blossom Branches', desc: 'Soft pink blossoms. Elegant, urban Good Morning.', archs: 'A1, A2, C1' },
+    ]
+  },
+  { id: 'GM-I4', name: 'Spiritual & Devotional', icon: '🪔', desc: 'Diya, OM, namaste, temple elements', count: 9,
+    items: [
+      { id: 'GM-I4-01', name: 'Lit Diya with Warm Glow', desc: 'Single diya with halo. Devotional, auspicious.', archs: 'All' },
+      { id: 'GM-I4-02', name: 'OM Symbol with Light Rays', desc: 'Gold OM with radiant glow. Universal Hindu symbol.', archs: 'A1, A2, C1, C2' },
+      { id: 'GM-I4-03', name: 'Hands in Namaste', desc: 'Joined palms. Universal Indian Good Morning symbol.', archs: 'A2, E1, C2' },
+      { id: 'GM-I4-04', name: 'Agarbatti Smoke', desc: 'Incense smoke curl. Evokes temple morning, purity.', archs: 'A1, A2, B1' },
+      { id: 'GM-I4-05', name: 'Tulsi in Brass Pot', desc: 'Sacred tulsi in traditional planter. Morning puja.', archs: 'A1, A2' },
+      { id: 'GM-I4-06', name: 'Temple Bell (Ghanti)', desc: 'Brass temple bell. Morning aarti. Bharat anchor.', archs: 'A1, A2' },
+      { id: 'GM-I4-07', name: 'Shankh (Conch Shell)', desc: 'Conch blown at dawn. Sacred, auspicious.', archs: 'A1, A2' },
+      { id: 'GM-I4-08', name: 'Rangoli at Dawn', desc: 'Colourful rangoli with morning light. Joyful.', archs: 'A1, A2, C1' },
+      { id: 'GM-I4-09', name: 'Peacock Feather', desc: 'Associated with Krishna. Decorative + spiritual.', archs: 'A1, A2' },
+    ]
+  },
+  { id: 'GM-I5', name: 'Lifestyle & People', icon: '🧘', desc: 'Morning activities, human moments', count: 8,
+    items: [
+      { id: 'GM-I5-01', name: 'Surya Namaskar Silhouette', desc: 'Sun salutation at sunrise. Aspirational, wellness.', archs: 'A2, B1, E1' },
+      { id: 'GM-I5-02', name: 'Meditating Figure at Sunrise', desc: 'Seated meditation silhouette. Calm, spiritual.', archs: 'A2, B1, E1' },
+      { id: 'GM-I5-03', name: 'Open Window with Sunrise', desc: 'Interior frame looking at golden morning sky.', archs: 'A1, A2, B1' },
+      { id: 'GM-I5-04', name: 'Book and Chai on Desk', desc: 'Morning reading setup. Intellectual, cosy.', archs: 'A2, B1' },
+      { id: 'GM-I5-05', name: 'Morning Walk in Park', desc: 'Figure on tree-lined path in early light.', archs: 'B1, A2, E1' },
+      { id: 'GM-I5-06', name: 'Watering Plants on Balcony', desc: 'Morning plant routine with soft sunlight.', archs: 'A2, B1, E1' },
+      { id: 'GM-I5-07', name: 'Family at Breakfast', desc: 'Warm group scene. High share-rate, relatable.', archs: 'B1, E1' },
+      { id: 'GM-I5-08', name: 'Farmer at Sunrise', desc: 'Silhouette in golden field. Bharat-rooted.', archs: 'B1, A2' },
+    ]
+  },
+  { id: 'GM-I6', name: 'Birds & Wildlife', icon: '🦚', desc: 'Birds, peacocks, butterflies', count: 6,
+    items: [
+      { id: 'GM-I6-01', name: 'Bird Flock at Sunrise', desc: 'V-formation in morning sky. Freedom, new day.', archs: 'B1, A2, C1' },
+      { id: 'GM-I6-02', name: 'Sparrow on Blossom Branch', desc: 'Small sparrow in morning light. Delicate, intimate.', archs: 'A2, A1' },
+      { id: 'GM-I6-03', name: 'Peacock with Fanned Tail', desc: 'Majestic peacock in golden light. Indian identity.', archs: 'A2, B1, C1' },
+      { id: 'GM-I6-04', name: 'Parrot on Mango Branch', desc: 'Green parrot on leafy branch. Cheerful, tropical.', archs: 'A2, A1' },
+      { id: 'GM-I6-05', name: 'Sarus Crane in Mist', desc: 'Elegant crane in foggy morning field. Poetic.', archs: 'B1, A2' },
+      { id: 'GM-I6-06', name: 'Butterflies on Morning Flowers', desc: 'Butterflies on dewy flowers. Light, hopeful.', archs: 'A2, C1, B1' },
+    ]
+  },
+  { id: 'GM-I7', name: 'Food & Morning Ritual', icon: '🍽️', desc: 'Breakfast, morning food moments', count: 6,
+    items: [
+      { id: 'GM-I7-01', name: 'Idli-Sambar Plate', desc: 'South Indian breakfast. Regional identity, warmth.', archs: 'A2, B1' },
+      { id: 'GM-I7-02', name: 'Poha Bowl with Garnish', desc: 'Poha with coriander, lemon. Everyday Bharat.', archs: 'A2, B1' },
+      { id: 'GM-I7-03', name: 'Butter Paratha', desc: 'Hot paratha with melting butter. Comfort, home.', archs: 'A2, B1' },
+      { id: 'GM-I7-04', name: 'Seasonal Fruit Bowl', desc: 'Mixed fruits — mango, banana, pomegranate. Fresh.', archs: 'A2, B1, C1' },
+      { id: 'GM-I7-05', name: 'Newspaper and Chai', desc: 'Classic Indian morning routine. Nostalgic.', archs: 'A2, B1' },
+      { id: 'GM-I7-06', name: 'Morning Puja Thali', desc: 'Flowers, tilak, fruits for morning puja. Devotional.', archs: 'A1, A2' },
+    ]
+  },
+];
+
+// Frame decoration level options (A1 only)
+const FRAME_DECO_OPTS = [
+  { id: 'Plain',    icon: '▭', name: 'Plain',    desc: 'Clean border lines only. No motifs, no ornamentation. Modern, minimal. Recommended for most themes.', promptPhrase: 'simple clean line border frame, no motifs, no ornamentation whatsoever, minimal geometric border only' },
+  { id: 'Simple',   icon: '❧', name: 'Simple',   desc: 'Minimal motifs at corners or midpoints only (1–2 motif types). Subtle traditional touch without being loud.', promptPhrase: 'delicate minimal corner motifs only on the frame border, restrained decoration, 1 to 2 motif types at corners only, clean lines everywhere else' },
+  { id: 'Detailed', icon: '❋', name: 'Detailed', desc: 'Full ornate frame — florals, paisleys, mandalas throughout the border. Use for devotional or festive themes only.', promptPhrase: 'ornate decorative border frame with detailed florals paisleys and traditional Indian motifs throughout, traditional folk art style' },
+];
+
+// Illustration size options (A1, A2)
+const ILLUS_SIZE_OPTS = [
+  { id: 'Small',  name: 'Small Accent', desc: 'Under 15% of canvas. Decorative accent only — text is the star.', promptPhrase: 'very small accent illustration in the designated zone, occupying less than 15 percent of the canvas, thumbnail scale, not dominant' },
+  { id: 'Medium', name: 'Medium',       desc: '30–40% of canvas. Balanced — illustration and text share visual weight.', promptPhrase: 'medium-scale illustration in the designated zone, occupying roughly 30 to 40 percent of the canvas, balanced composition' },
+  { id: 'Large',  name: 'Large / Hero', desc: '50%+ of canvas. Illustration is the visual anchor. Best with L1, L5, L3/L4.', promptPhrase: 'large hero illustration in the designated zone, occupying 50 percent or more of the canvas, dominant visual element' },
+];
+
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+
+const STATE = {
+  step: 1,
+  archetype: null,
+  step2: null,
+  layout: null,
+  palette: null,
+  font: null,
+  illusCategory: null,
+  illusItem: null,      // 'NONE' = no illustration chosen
+  frameDecoration: null, // A1 only: 'Plain' | 'Simple' | 'Detailed'
+  illusSize: null,       // A1/A2: 'Small' | 'Medium' | 'Large'
+  textInput: '',
+  textLang: 'Hindi',
+};
+
+// ═══════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════
+
+function getArchetype() { return ARCHETYPES.find(a => a.id === STATE.archetype); }
+function getPalette()   { return PALETTES.find(p => p.id === STATE.palette); }
+function getFont()      { return FONTS.find(f => f.id === STATE.font); }
+function getLayout()    { return LAYOUTS.find(l => l.id === STATE.layout); }
+function getFrameDeco() { return FRAME_DECO_OPTS.find(f => f.id === STATE.frameDecoration); }
+function getIllusSize() { return ILLUS_SIZE_OPTS.find(s => s.id === STATE.illusSize); }
+function getIllusItem() {
+  if (!STATE.illusItem || STATE.illusItem === 'NONE') return null;
+  for (const cat of ILLUS_CATS) {
+    const item = cat.items.find(i => i.id === STATE.illusItem);
+    if (item) return item;
+  }
+  return null;
+}
+function getLayoutCompat(layoutId) {
+  if (!STATE.archetype || !STATE.step2) return 'ok';
+  const compat = LAYOUT_COMPAT[STATE.archetype]?.[STATE.step2];
+  return compat?.[layoutId] || 'ok';
+}
+
+function canProceed() {
+  switch (STATE.step) {
+    case 1: return !!STATE.archetype;
+    case 2: return !!STATE.step2;
+    case 3: return !!STATE.layout;
+    case 4: return !!STATE.palette;
+    case 5: return !!STATE.font;
+    case 6: {
+      if (STATE.archetype === 'A1') {
+        // Need: frame decoration + illustration selection (item or NONE) + size if item selected
+        const hasDeco = !!STATE.frameDecoration;
+        const hasIllus = !!STATE.illusItem;
+        const hasSize = STATE.illusItem === 'NONE' || !!STATE.illusSize;
+        return hasDeco && hasIllus && hasSize;
+      }
+      if (STATE.archetype === 'A2') {
+        return !!STATE.illusItem && !!STATE.illusSize;
+      }
+      return !!STATE.illusItem;
+    }
+    case 7: return true;
+    default: return false;
+  }
+}
+
+function select(key, value) {
+  STATE[key] = value;
+  if (key === 'archetype') { STATE.step2 = null; STATE.layout = null; STATE.frameDecoration = null; STATE.illusSize = null; STATE.illusItem = null; STATE.illusCategory = null; }
+  if (key === 'step2') { STATE.layout = null; }
+  if (key === 'illusItem' && value !== 'NONE') { /* keep size if re-picking item */ }
+  render();
+}
+
+function selectCat(catId) {
+  STATE.illusCategory = catId;
+  if (!catId) STATE.illusItem = null;
+  render();
+}
+
+function jumpTo(step) {
+  if (step <= STATE.step) { STATE.step = step; render(); }
+}
+
+// ═══════════════════════════════════════════════════════════
+// DIAGRAMS
+// ═══════════════════════════════════════════════════════════
+
+function layoutDiagram(layout) {
+  if (layout.type === 'vertical') {
+    const topH = layout.textFirst ? '32%' : '68%';
+    const botH = layout.textFirst ? '68%' : '32%';
+    const topBg = layout.textFirst ? '#BFDBFE' : '#FED7AA';
+    const botBg = layout.textFirst ? '#FED7AA' : '#BFDBFE';
+    const topLabel = layout.textFirst ? 'T' : 'V';
+    const botLabel = layout.textFirst ? 'V' : 'T';
+    return `<div class="layout-diagram" style="flex-direction:column;">
+      <div style="height:${topH};background:${topBg};display:flex;align-items:center;justify-content:center;font-size:6px;font-weight:800;color:${topBg==='#BFDBFE'?'#1E40AF':'#92400E'}">${topLabel}</div>
+      <div style="height:${botH};background:${botBg};display:flex;align-items:center;justify-content:center;font-size:6px;font-weight:800;color:${botBg==='#BFDBFE'?'#1E40AF':'#92400E'}">${botLabel}</div>
+    </div>`;
+  }
+  if (layout.type === 'overlay') {
+    return `<div class="layout-diagram" style="position:relative;background:#FED7AA;">
+      <div style="position:absolute;inset:0;background:rgba(191,219,254,0.7);display:flex;align-items:center;justify-content:center;font-size:6px;font-weight:800;color:#1E3A5F;">T</div>
+      <div style="width:100%;height:100%;display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;font-size:6px;color:#92400E;font-weight:800;">V</div>
+    </div>`;
+  }
+  if (layout.type === 'horizontal') {
+    const leftBg = layout.textFirst ? '#BFDBFE' : '#FED7AA';
+    const rightBg = layout.textFirst ? '#FED7AA' : '#BFDBFE';
+    const leftLabel = layout.textFirst ? 'T' : 'V';
+    const rightLabel = layout.textFirst ? 'V' : 'T';
+    return `<div class="ld-row">
+      <div style="width:40%;background:${leftBg};display:flex;align-items:center;justify-content:center;font-size:6px;font-weight:800;color:${leftBg==='#BFDBFE'?'#1E40AF':'#92400E'}">${leftLabel}</div>
+      <div style="width:60%;background:${rightBg};display:flex;align-items:center;justify-content:center;font-size:6px;font-weight:800;color:${rightBg==='#BFDBFE'?'#1E40AF':'#92400E'}">${rightLabel}</div>
+    </div>`;
+  }
+  if (layout.type === 'centre-accent') {
+    // Frame border on all edges, text fills centre, tiny illustration pinned to bottom-right corner
+    return `<div class="layout-diagram" style="flex-direction:column;border:3px solid #F59E0B;position:relative;background:#BFDBFE;">
+      <div style="flex:1;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:800;color:#1E40AF;">T</div>
+      <div style="position:absolute;bottom:4px;right:4px;width:12px;height:12px;background:#FED7AA;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:5px;font-weight:800;color:#92400E;">V</div>
+    </div>`;
+  }
+  return `<div class="layout-diagram"></div>`;
+}
+
+function step2Diagram(type) {
+  const wrapStyle = 'width:40px;height:56px;border:1.5px solid #CBD5E1;border-radius:5px;overflow:hidden;background:#F8FAFC;margin-bottom:8px;flex-shrink:0;';
+  const diagrams = {
+    'frame-full': `<div style="${wrapStyle}background:#FED7AA;position:relative;"><div style="position:absolute;inset:5px;background:#F8FAFC;border-radius:2px;"></div></div>`,
+    'frame-dual': `<div style="${wrapStyle}display:flex;flex-direction:column;"><div style="height:20%;background:#FED7AA;"></div><div style="flex:1;background:#F8FAFC;"></div><div style="height:20%;background:#FED7AA;"></div></div>`,
+    'frame-single': `<div style="${wrapStyle}display:flex;flex-direction:column;"><div style="flex:1;background:#F8FAFC;"></div><div style="height:18%;background:#FED7AA;"></div></div>`,
+    'frame-corner': `<div style="${wrapStyle}position:relative;background:#F8FAFC;"><div style="position:absolute;top:0;left:0;width:10px;height:10px;background:#FED7AA;border-radius:0 0 4px 0;"></div><div style="position:absolute;top:0;right:0;width:10px;height:10px;background:#FED7AA;border-radius:0 0 0 4px;"></div><div style="position:absolute;bottom:0;left:0;width:10px;height:10px;background:#FED7AA;border-radius:0 4px 0 0;"></div><div style="position:absolute;bottom:0;right:0;width:10px;height:10px;background:#FED7AA;border-radius:4px 0 0 0;"></div></div>`,
+    'frame-arch': `<div style="${wrapStyle}position:relative;background:#F8FAFC;"><div style="position:absolute;top:0;left:0;right:0;height:18px;background:#FED7AA;border-radius:0 0 40px 40px / 0 0 30px 30px;"></div></div>`,
+    'weight-light': `<div style="${wrapStyle}display:flex;align-items:center;justify-content:center;background:#FEF9C3;font-size:18px;">🌼</div>`,
+    'weight-medium': `<div style="${wrapStyle}display:flex;align-items:center;justify-content:center;background:#FEF9C3;font-size:14px;">🌸🌼</div>`,
+    'weight-dense': `<div style="${wrapStyle}display:flex;align-items:center;justify-content:center;background:#FEF9C3;font-size:11px;">🌸🌼🌺</div>`,
+    'overlay-full': `<div style="${wrapStyle}background:linear-gradient(rgba(0,0,0,0.55),rgba(0,0,0,0.55)),#93C5FD;"></div>`,
+    'overlay-top': `<div style="${wrapStyle}background:linear-gradient(rgba(0,0,0,0.65) 0%,rgba(0,0,0,0.1) 60%,transparent 100%),#93C5FD;"></div>`,
+    'overlay-bottom': `<div style="${wrapStyle}background:linear-gradient(transparent 0%,rgba(0,0,0,0.1) 40%,rgba(0,0,0,0.65) 100%),#93C5FD;"></div>`,
+    'overlay-vignette': `<div style="${wrapStyle}background:radial-gradient(circle at 50% 50%,rgba(0,0,0,0.05) 30%,rgba(0,0,0,0.6) 100%),#93C5FD;"></div>`,
+    'overlay-caption': `<div style="${wrapStyle}background:#93C5FD;display:flex;flex-direction:column;"><div style="flex:1;"></div><div style="height:22%;background:rgba(0,0,0,0.55);"></div></div>`,
+    'anim-particle': `<div style="${wrapStyle}display:flex;align-items:center;justify-content:center;background:#FEF3C7;font-size:16px;">✨</div>`,
+    'anim-bloom': `<div style="${wrapStyle}display:flex;align-items:center;justify-content:center;background:#FEF3C7;font-size:16px;">🌸</div>`,
+    'anim-drift': `<div style="${wrapStyle}display:flex;align-items:center;justify-content:center;background:#FEF3C7;font-size:16px;">🍃</div>`,
+    'anim-fade': `<div style="${wrapStyle}display:flex;align-items:center;justify-content:center;background:#EFF6FF;font-size:13px;color:#1E40AF;font-weight:800;opacity:0.5;">AB</div>`,
+    'anim-typewriter': `<div style="${wrapStyle}display:flex;align-items:center;justify-content:center;background:#EFF6FF;font-size:11px;font-weight:800;color:#1E40AF;">A▋</div>`,
+    'anim-rise': `<div style="${wrapStyle}display:flex;flex-direction:column;align-items:center;justify-content:flex-end;background:#EFF6FF;padding-bottom:4px;"><div style="font-size:8px;font-weight:800;color:#1E40AF;">↑ GM</div></div>`,
+    'render-real': `<div style="${wrapStyle}display:flex;align-items:center;justify-content:center;background:#DBEAFE;font-size:20px;">👤</div>`,
+    'render-illus': `<div style="${wrapStyle}display:flex;align-items:center;justify-content:center;background:#FDE8D8;font-size:20px;">🎨</div>`,
+  };
+  return diagrams[type] || `<div style="${wrapStyle}"></div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// PROGRESS BAR
+// ═══════════════════════════════════════════════════════════
+
+function renderProgress() {
+  const el = document.getElementById('progressSteps');
+  let html = '';
+  STEPS.forEach((s, i) => {
+    const isDone = STATE.step > s.id;
+    const isActive = STATE.step === s.id;
+    const cls = isDone ? 'done' : isActive ? 'active' : '';
+    html += `<div class="prog-step ${cls}">
+      <div class="num"><span>${s.id}</span></div>
+      <span class="label">${s.label}</span>
+    </div>`;
+    if (i < STEPS.length - 1) {
+      html += `<div class="prog-connector ${isDone ? 'done' : ''}"></div>`;
+    }
+  });
+  el.innerHTML = html;
+}
+
+// ═══════════════════════════════════════════════════════════
+// SUMMARY CHIPS
+// ═══════════════════════════════════════════════════════════
+
+function renderChips() {
+  const chips = [];
+  if (STATE.archetype) {
+    const a = getArchetype();
+    chips.push(`<div class="chip" onclick="jumpTo(1)"><span>Template:</span><span class="chip-label">${a.id}</span></div>`);
+  }
+  if (STATE.step2) chips.push(`<div class="chip" onclick="jumpTo(2)"><span>Style:</span><span class="chip-label">${STATE.step2}</span></div>`);
+  if (STATE.layout) {
+    const l = getLayout();
+    chips.push(`<div class="chip" onclick="jumpTo(3)"><span>Layout:</span><span class="chip-label">${l.id}</span></div>`);
+  }
+  if (STATE.palette) {
+    const p = getPalette();
+    chips.push(`<div class="chip" onclick="jumpTo(4)"><span>Colour:</span><span class="chip-label" style="display:inline-flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:50%;background:${p.bg};display:inline-block;border:1px solid #ccc;"></span>${p.name}</span></div>`);
+  }
+  if (STATE.font) {
+    const f = getFont();
+    chips.push(`<div class="chip" onclick="jumpTo(5)"><span>Font:</span><span class="chip-label">${f.name}</span></div>`);
+  }
+  if (STATE.frameDecoration) {
+    chips.push(`<div class="chip" onclick="jumpTo(6)"><span>Frame:</span><span class="chip-label">${STATE.frameDecoration}</span></div>`);
+  }
+  if (STATE.illusItem) {
+    const item = getIllusItem();
+    const label = STATE.illusItem === 'NONE' ? 'None (frame only)' : item ? item.name : '—';
+    chips.push(`<div class="chip" onclick="jumpTo(6)"><span>Visual:</span><span class="chip-label">${label}</span></div>`);
+  }
+  if (STATE.illusSize) {
+    chips.push(`<div class="chip" onclick="jumpTo(6)"><span>Size:</span><span class="chip-label">${STATE.illusSize}</span></div>`);
+  }
+  return chips.length ? `<div class="summary-strip">${chips.join('')}</div>` : '';
+}
+
+// ═══════════════════════════════════════════════════════════
+// STEP RENDERERS
+// ═══════════════════════════════════════════════════════════
+
+function renderStep1() {
+  return `
+    <div class="step-header">
+      <div class="step-eyebrow">Step 1 of 7</div>
+      <div class="step-title">Choose Template Style</div>
+      <div class="step-desc">Each template style produces a different kind of poster composition. Select based on the visual feel you want.</div>
+      <div class="step-hint">💡 C1 and C2 generate the <strong>static base</strong> — animation layers are added in production after generation.</div>
+    </div>
+    <div class="cat-locked"><span class="lock-icon">🔒</span> Category: Good Morning</div>
+    <div class="options-grid cols-3">
+      ${ARCHETYPES.map(a => `
+        <div class="opt-card ${STATE.archetype === a.id ? 'selected' : ''}" onclick="select('archetype','${a.id}')">
+          <div class="opt-icon">${a.icon}</div>
+          <div class="opt-code">${a.codeName}</div>
+          <div class="opt-name">${a.name}</div>
+          <div class="opt-desc">${a.desc}</div>
+        </div>
+      `).join('')}
+    </div>`;
+}
+
+function renderStep2() {
+  const arch = getArchetype();
+  const options = STEP2_OPTIONS[arch.step2Key];
+  const cols = options.length <= 3 ? options.length : options.length === 5 ? 5 : 3;
+  return `
+    <div class="step-header">
+      <div class="step-eyebrow">Step 2 of 7 · ${arch.codeName}</div>
+      <div class="step-title">${arch.step2Label}</div>
+      <div class="step-desc">This choice is specific to the ${arch.name} template. It determines the primary structural element.</div>
+    </div>
+    <div class="options-grid cols-${cols}">
+      ${options.map(o => `
+        <div class="opt-card ${STATE.step2 === o.id ? 'selected' : ''}" onclick="select('step2','${o.id}')">
+          ${step2Diagram(o.diagramType)}
+          <div class="opt-code">${o.id}</div>
+          <div class="opt-name">${o.name}</div>
+          <div class="opt-desc">${o.desc}</div>
+        </div>
+      `).join('')}
+    </div>`;
+}
+
+function renderStep3() {
+  const compatClass = (id) => {
+    const c = getLayoutCompat(id);
+    return c === 'best' ? 'recommended' : c === 'caution' ? 'caution' : '';
+  };
+  // For A1, show L6 hint
+  const isA1 = STATE.archetype === 'A1';
+  return `
+    <div class="step-header">
+      <div class="step-eyebrow">Step 3 of 7</div>
+      <div class="step-title">Choose Layout</div>
+      <div class="step-desc">Layout defines where text appears and where the visual sits. <span style="color:#1E40AF;font-weight:600;">★ Best</span> = recommended for your choices. <span style="color:#B45309;font-weight:600;">~ With care</span> = usable but review.</div>
+      ${isA1 ? '<div class="step-hint">🖼️ <strong>L6 Text Centre</strong> is new — use it when you want text in the middle with frame on all edges and a small illustration accent at top or bottom.</div>' : ''}
+    </div>
+    <div class="options-grid cols-3" style="grid-template-columns:repeat(3,1fr);">
+      ${LAYOUTS.map(l => `
+        <div class="opt-card ${STATE.layout === l.id ? 'selected' : ''} ${compatClass(l.id)}" onclick="select('layout','${l.id}')">
+          ${layoutDiagram(l)}
+          <div class="opt-code">${l.id}</div>
+          <div class="opt-name">${l.name}</div>
+          <div class="opt-desc">${l.desc}</div>
+        </div>
+      `).join('')}
+    </div>`;
+}
+
+function renderStep4() {
+  const isPhotoArch = STATE.archetype === 'B1';
+  return `
+    <div class="step-header">
+      <div class="step-eyebrow">Step 4 of 7</div>
+      <div class="step-title">Choose Colour Palette</div>
+      <div class="step-desc">${isPhotoArch ? 'For Photo Background (B1), the palette drives your <strong>text colour and overlay tone</strong> — the photo itself defines the background.' : 'Palette sets the background and text colour pair. Each palette is named for the feeling it creates.'}</div>
+    </div>
+    <div class="options-grid cols-3">
+      ${PALETTES.map(p => `
+        <div class="opt-card palette-card ${STATE.palette === p.id ? 'selected' : ''}" onclick="select('palette','${p.id}')">
+          <div class="palette-swatch-row">
+            <div class="swatch" style="background:${p.bg};"></div>
+            <div class="swatch" style="background:${p.text};"></div>
+            <div class="swatch" style="background:${p.accent};"></div>
+          </div>
+          <div class="palette-id">${p.id}</div>
+          <div class="palette-name">${p.name}</div>
+          <div class="palette-vibe">${p.vibe}</div>
+        </div>
+      `).join('')}
+    </div>`;
+}
+
+function renderStep5() {
+  const fontStyles = {
+    'GM-F1': 'font-family: Georgia, serif; font-style: italic;',
+    'GM-F2': 'font-family: Arial, sans-serif; font-weight: 900; letter-spacing: 1px;',
+    'GM-F3': 'font-family: Arial, sans-serif; font-weight: 600;',
+    'GM-F4': 'font-family: Georgia, serif; font-weight: 700;',
+  };
+  return `
+    <div class="step-header">
+      <div class="step-eyebrow">Step 5 of 7</div>
+      <div class="step-title">Choose Font Pairing</div>
+      <div class="step-desc">Font sets the tone for your text overlay. Each pairing specifies a heading font (for the main greeting) and a body font (for sub-text or quote).</div>
+    </div>
+    <div class="options-grid cols-2">
+      ${FONTS.map(f => `
+        <div class="opt-card ${STATE.font === f.id ? 'selected' : ''}" onclick="select('font','${f.id}')">
+          <div class="font-sample" style="${fontStyles[f.id]}">${f.sample}</div>
+          <div class="opt-code">${f.id}</div>
+          <div class="opt-name">${f.name}</div>
+          <div class="opt-desc">${f.heading} + ${f.body} · ${f.feel}</div>
+        </div>
+      `).join('')}
+    </div>`;
+}
+
+function renderStep6() {
+  const arch = STATE.archetype;
+
+  if (arch === 'A1') {
+    return renderStep6_A1();
+  }
+
+  // A2: illustration picker + size
+  if (arch === 'A2') {
+    return renderStep6_A2();
+  }
+
+  // B1, C1, C2, E1: standard category → item picker
+  const labelMap = { B1: 'Photo Scene', C1: 'Visual Element (Static Base)', C2: 'Background Scene', E1: 'Avatar Context' };
+  const descMap = {
+    B1: 'Choose the photo scene for the background. Nature and sky categories work best.',
+    C1: 'Choose the element that will animate. This prompt generates the static base — animation is added in production.',
+    C2: 'Choose the background scene behind the animating text. Minimal, uncluttered scenes work best.',
+    E1: 'Choose the setting and context for the AI avatar. Lifestyle categories work best.',
+  };
+  const hintMap = {
+    B1: '💡 GM-I2 (Nature & Sky) and GM-I6 (Birds) give the most natural photo backgrounds for B1.',
+    C1: '💡 For C1, GM-I3 (Flowers), GM-I4 (Spiritual) and GM-I1 (Beverages) produce the best animated elements.',
+    C2: '💡 For C2, GM-I2 (Nature & Sky) — especially Dawn Sky Gradient — makes the best minimal background.',
+    E1: '💡 For E1, GM-I5 (Lifestyle) provides the best avatar context.',
+  };
+
+  if (!STATE.illusCategory) {
+    return `
+      <div class="step-header">
+        <div class="step-eyebrow">Step 6 of 7</div>
+        <div class="step-title">Choose ${labelMap[arch] || 'Visual'}</div>
+        <div class="step-desc">${descMap[arch] || 'Select a visual element.'}</div>
+        ${hintMap[arch] ? `<div class="step-hint">${hintMap[arch]}</div>` : ''}
+      </div>
+      <div class="options-grid cols-3">
+        ${ILLUS_CATS.map(cat => `
+          <div class="opt-card" onclick="selectCat('${cat.id}')">
+            <div class="cat-card">
+              <div class="cat-icon">${cat.icon}</div>
+              <div class="cat-info">
+                <div class="cat-name">${cat.name}</div>
+                <div class="cat-count">${cat.count} visuals</div>
+                <div class="opt-desc" style="margin-top:4px;">${cat.desc}</div>
+              </div>
+            </div>
+          </div>
+        `).join('')}
+      </div>`;
+  } else {
+    const cat = ILLUS_CATS.find(c => c.id === STATE.illusCategory);
+    return `
+      <div class="step-header">
+        <div class="step-eyebrow">Step 6 of 7 · ${cat.icon} ${cat.name}</div>
+        <div class="step-title">Choose Specific Visual</div>
+        <div class="step-desc">This will form the core subject of your AI image prompt.</div>
+      </div>
+      <button class="illus-back" onclick="selectCat(null)">← Back to categories</button>
+      <div class="options-grid cols-3">
+        ${cat.items.map(item => `
+          <div class="opt-card item-card ${STATE.illusItem === item.id ? 'selected' : ''}" onclick="select('illusItem','${item.id}')">
+            <div class="item-id">${item.id}</div>
+            <div class="item-name">${item.name}</div>
+            <div class="item-desc">${item.desc}</div>
+            <span class="item-archs">${item.archs}</span>
+          </div>
+        `).join('')}
+      </div>`;
+  }
+}
+
+function renderStep6_A1() {
+  // Three sub-sections: terminology note → frame decoration → illustration → size
+
+  const illusItemSelected = STATE.illusItem && STATE.illusItem !== 'NONE';
+  const noIllus = STATE.illusItem === 'NONE';
+
+  const illusSection = !STATE.illusCategory
+    ? `
+      <!-- Category picker -->
+      <div class="options-grid cols-3">
+        ${ILLUS_CATS.map(cat => `
+          <div class="opt-card" onclick="selectCat('${cat.id}')">
+            <div class="cat-card">
+              <div class="cat-icon">${cat.icon}</div>
+              <div class="cat-info">
+                <div class="cat-name">${cat.name}</div>
+                <div class="cat-count">${cat.count} visuals</div>
+              </div>
+            </div>
+          </div>
+        `).join('')}
+        <div class="opt-card ${noIllus ? 'selected' : ''}" onclick="select('illusItem','NONE');STATE.illusCategory=null;">
+          <div class="opt-icon">✗</div>
+          <div class="opt-name">No Illustration</div>
+          <div class="opt-desc">Frame only — text on solid/gradient background. Clean, typographic poster.</div>
+        </div>
+      </div>`
+    : `
+      <button class="illus-back" onclick="selectCat(null)">← Back to categories</button>
+      <div class="options-grid cols-3">
+        ${ILLUS_CATS.find(c => c.id === STATE.illusCategory)?.items.map(item => `
+          <div class="opt-card item-card ${STATE.illusItem === item.id ? 'selected' : ''}" onclick="select('illusItem','${item.id}')">
+            <div class="item-id">${item.id}</div>
+            <div class="item-name">${item.name}</div>
+            <div class="item-desc">${item.desc}</div>
+            <span class="item-archs">${item.archs}</span>
+          </div>
+        `).join('') || ''}
+      </div>`;
+
+  const sizeSection = illusItemSelected ? `
+    <div class="sub-section">
+      <div class="sub-section-header">
+        <div class="sub-section-num">3</div>
+        <div class="sub-section-title">Illustration Size</div>
+        <span class="sub-section-tag">How much canvas the illustration occupies</span>
+      </div>
+      <div class="options-grid cols-3">
+        ${ILLUS_SIZE_OPTS.map(s => `
+          <div class="opt-card ${STATE.illusSize === s.id ? 'selected' : ''}" onclick="select('illusSize','${s.id}')">
+            <div class="opt-name">${s.name}</div>
+            <div class="opt-desc">${s.desc}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>` : '';
+
+  return `
+    <div class="step-header">
+      <div class="step-eyebrow">Step 6 of 7 · A1 — Text + Frame</div>
+      <div class="step-title">Frame, Illustration & Visual Setup</div>
+      <div class="step-desc">A1 has three distinct asset controls. Set all three carefully to avoid over-ornamentation.</div>
+    </div>
+
+    <div class="terminology-box">
+      <h4>⚠️ 3 Separate Asset Types in A1 — Don't Confuse Them</h4>
+      <div class="terminology-row">
+        <div class="term-chip">
+          <strong>① BACKGROUND</strong>
+          <span>Solid colour or gradient fill behind everything. Set by your palette choice (Step 4). No AI generation needed for this layer.</span>
+        </div>
+        <div class="term-chip">
+          <strong>② FRAME ELEMENTS</strong>
+          <span>Decorative motifs on the border frame itself (florals, paisleys, mandalas on the frame lines). NOT the same as illustration. Controlled by Frame Decoration Level below.</span>
+        </div>
+        <div class="term-chip">
+          <strong>③ ILLUSTRATION</strong>
+          <span>The standalone flat 2D asset placed inside the canvas (chai cup, lotus, sunshine, etc.). Picked from the library below. Generated as a separate AI image prompt.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sub-section">
+      <div class="sub-section-header">
+        <div class="sub-section-num">1</div>
+        <div class="sub-section-title">Frame Decoration Level</div>
+        <span class="sub-section-tag">Controls the frame border — not the illustration</span>
+      </div>
+      <div class="step-hint" style="margin-bottom:14px;">💡 Default is <strong>Simple</strong>. Use Detailed only for traditional/devotional themes. Over-ornamentation makes the frame compete with the illustration.</div>
+      <div class="options-grid cols-3">
+        ${FRAME_DECO_OPTS.map(f => `
+          <div class="opt-card ${STATE.frameDecoration === f.id ? 'selected' : ''}" onclick="select('frameDecoration','${f.id}')">
+            <div class="opt-icon" style="font-size:22px;">${f.icon}</div>
+            <div class="opt-name">${f.name}</div>
+            <div class="opt-desc">${f.desc}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <div class="sub-section">
+      <div class="sub-section-header">
+        <div class="sub-section-num">2</div>
+        <div class="sub-section-title">Illustration</div>
+        <span class="sub-section-tag">The flat 2D asset inside the canvas — or none</span>
+      </div>
+      ${illusSection}
+    </div>
+
+    ${sizeSection}`;
+}
+
+function renderStep6_A2() {
+  if (!STATE.illusCategory) {
+    return `
+      <div class="step-header">
+        <div class="step-eyebrow">Step 6 of 7 · A2 — Text + Illustrations</div>
+        <div class="step-title">Illustration & Size</div>
+        <div class="step-desc">Illustrations are the primary visual for A2. Pick the element first, then set how large it should be on the canvas.</div>
+      </div>
+
+      <div class="sub-section">
+        <div class="sub-section-header">
+          <div class="sub-section-num">1</div>
+          <div class="sub-section-title">Choose Illustration Category</div>
+        </div>
+        <div class="options-grid cols-3">
+          ${ILLUS_CATS.map(cat => `
+            <div class="opt-card" onclick="selectCat('${cat.id}')">
+              <div class="cat-card">
+                <div class="cat-icon">${cat.icon}</div>
+                <div class="cat-info">
+                  <div class="cat-name">${cat.name}</div>
+                  <div class="cat-count">${cat.count} visuals</div>
+                  <div class="opt-desc" style="margin-top:4px;">${cat.desc}</div>
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>`;
+  }
+
+  const cat = ILLUS_CATS.find(c => c.id === STATE.illusCategory);
+  const showSize = !!STATE.illusItem;
+
+  return `
+    <div class="step-header">
+      <div class="step-eyebrow">Step 6 of 7 · A2 — Text + Illustrations</div>
+      <div class="step-title">Illustration & Size · ${cat.icon} ${cat.name}</div>
+      <div class="step-desc">Select the specific illustration, then set how large it appears on the canvas.</div>
+    </div>
+
+    <div class="sub-section">
+      <div class="sub-section-header">
+        <div class="sub-section-num">1</div>
+        <div class="sub-section-title">Choose Specific Illustration</div>
+      </div>
+      <button class="illus-back" onclick="selectCat(null)">← Back to categories</button>
+      <div class="options-grid cols-3">
+        ${cat.items.map(item => `
+          <div class="opt-card item-card ${STATE.illusItem === item.id ? 'selected' : ''}" onclick="select('illusItem','${item.id}')">
+            <div class="item-id">${item.id}</div>
+            <div class="item-name">${item.name}</div>
+            <div class="item-desc">${item.desc}</div>
+            <span class="item-archs">${item.archs}</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    ${showSize ? `
+    <div class="sub-section">
+      <div class="sub-section-header">
+        <div class="sub-section-num">2</div>
+        <div class="sub-section-title">Illustration Size</div>
+        <span class="sub-section-tag">How much canvas the illustration occupies</span>
+      </div>
+      <div class="options-grid cols-3">
+        ${ILLUS_SIZE_OPTS.map(s => `
+          <div class="opt-card ${STATE.illusSize === s.id ? 'selected' : ''}" onclick="select('illusSize','${s.id}')">
+            <div class="opt-name">${s.name}</div>
+            <div class="opt-desc">${s.desc}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>` : ''}`;
+}
+
+function renderStep7() {
+  return `
+    <div class="step-header">
+      <div class="step-eyebrow">Step 7 of 7</div>
+      <div class="step-title">Add Text (Optional)</div>
+      <div class="step-desc">Enter the message or quote for this poster. <strong>This text will NOT be sent to the AI image generator</strong> — it is reserved as a separate overlay note. The AI prompt will only be told to leave a clean space.</div>
+      <div class="step-hint">⚠️ Never include Hindi/Devanagari text in an AI image prompt — it will be garbled. Always add text manually in your design tool after generation.</div>
+    </div>
+    <div class="text-input-wrap">
+      <label style="display:block;font-size:13px;font-weight:700;color:#1E3A5F;margin-bottom:8px;">Good Morning message or quote</label>
+      <textarea id="textInput" placeholder="e.g. सुप्रभात! आपका दिन शुभ हो. OR Good Morning! Have a wonderful day." oninput="STATE.textInput=this.value;">${STATE.textInput}</textarea>
+      <div style="font-size:12px;font-weight:700;color:#64748B;margin-top:12px;margin-bottom:6px;">Language of text:</div>
+      <div class="lang-row">
+        ${['Hindi', 'English', 'Hinglish', 'Regional'].map(lang => `
+          <button class="lang-btn ${STATE.textLang === lang ? 'active' : ''}" onclick="STATE.textLang='${lang}';render();">${lang}</button>
+        `).join('')}
+      </div>
+      <div class="text-hint">If left blank, the prompt will instruct the AI to leave clean uncluttered space at the designated text position for you to overlay text manually.</div>
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// PROMPT GENERATION
+// ═══════════════════════════════════════════════════════════
+
+function getTextSpaceInstruction(layout, textInput, archetype) {
+  const len = textInput.trim().split(/\s+/).filter(Boolean).length;
+  const size = len === 0 ? 'clean empty' : len <= 5 ? 'small clear' : len <= 15 ? 'clear' : 'generous clear';
+
+  // B1 = full-bleed photo. Text overlay is applied as a POST-PROCESS design layer — AI should NOT add any text zone.
+  // Return empty string so no text-space instruction is added to the B1 prompt.
+  if (archetype === 'B1') {
+    return '';
+  }
+
+  const posMap = {
+    L1: `${size} space in the upper 30% of the image for text overlay`,
+    L2: `${size} central area with softened or slightly lighter tones for text overlay`,
+    L3: `${size} space on the left half of the image for text overlay, visual subject anchored on the right`,
+    L4: `${size} space on the right half of the image for text overlay, visual subject anchored on the left`,
+    L5: `${size} space in the lower 25% of the image for text overlay`,
+    L6: `completely empty and clear central zone occupying the full middle 60 percent of the canvas for text overlay, a single small flat illustration element placed only at the bottom-right or bottom-left corner, all other areas of canvas must be plain solid background with no imagery`,
+  };
+  return posMap[layout] || 'clear space reserved for text overlay';
+}
+
+function buildA1FrameDesc(step2, frameDecoration) {
+  const frameShapes = {
+    F1: 'rectangular border frame running along all four edges of the canvas',
+    F2: 'horizontal band frame at the top and bottom edges only',
+    F3: 'single decorative band along the bottom edge only',
+    F4: 'decorative accents at all four corners of the canvas',
+    F5: 'curved arch canopy framing the top of the canvas',
+  };
+  const decoStyle = FRAME_DECO_OPTS.find(d => d.id === frameDecoration);
+  const decoPhrase = decoStyle ? decoStyle.promptPhrase : 'simple clean border, no excessive ornamentation';
+
+  return `${frameShapes[step2] || 'decorative border frame'}, ${decoPhrase}`;
+}
+
+function buildSubjectLine(state) {
+  const { archetype, step2, layout, frameDecoration, illusItem: illusItemId, illusSize: illusSizeId } = state;
+  const illusItem = getIllusItem();
+  const illusSize = getIllusSize();
+
+  const overlayDescs = {
+    O1: 'with a uniform dark overlay treatment for strong text contrast',
+    O2: 'with gradient darkening toward the top for text readability',
+    O3: 'with gradient darkening toward the bottom for text readability',
+    O4: 'with vignette darkening at the edges, bright and vivid at centre',
+    O5: 'with a naturally darker lower caption bar area',
+  };
+  const weightDescs = {
+    Light: (item) => `${item} as the sole primary element, minimal composition, generous negative space`,
+    Medium: (item) => `${item} as primary element with two to three supporting morning illustration elements`,
+    Dense: (item) => `${item} surrounded by five to six complementary morning illustration elements, rich festive composition`,
+  };
+  const animDescs = {
+    Particle: 'soft glowing particles and light sparkles floating gently, ethereal atmosphere',
+    Bloom: 'floral elements blooming outward in burst pattern, celebratory composition',
+    Drift: 'petals and leaves drifting naturally across the canvas, gentle movement',
+  };
+  const c2Descs = {
+    FadeIn: 'clean minimal background with soft gradient, designed for elegant text fade-in animation overlay',
+    Typewriter: 'simple structured background with clear horizontal zones, designed for typewriter text animation overlay',
+    Rise: 'atmospheric background with upward sense of movement, designed for rising text animation overlay',
+  };
+
+  if (archetype === 'A1') {
+    const frameDesc = buildA1FrameDesc(step2, frameDecoration);
+    const item = illusItem ? illusItem.name : null;
+    const sizePhrase = illusSize ? `, ${illusSize.promptPhrase}` : '';
+    const isL6 = state.layout === 'L6';
+
+    if (!item) {
+      // No illustration — frame only, solid BG
+      return `${frameDesc}, solid flat background fill, no illustration, no landscape, no background scene, clean open canvas for text`;
+    }
+    if (isL6) {
+      // L6: flat illustration ONLY at bottom corner, everything else plain
+      const cornerPos = 'bottom-right corner of the canvas';
+      return `${frameDesc}, solid flat plain background fill with no scenery or landscape, single isolated flat 2D ${item.toLowerCase()} illustration placed only at the ${cornerPos}${sizePhrase}, central 60 percent of canvas completely empty and plain`;
+    }
+    return `${frameDesc}, solid flat plain background fill with no scenery or landscape, ${item.toLowerCase()} flat 2D illustration placed inside the frame${sizePhrase}`;
+  }
+  if (archetype === 'A2') {
+    const item = illusItem ? illusItem.name : 'morning scene';
+    const sizePhrase = illusSize ? illusSize.promptPhrase : 'balanced scale';
+
+    // Layout-based placement zone for the illustration
+    const illusZone = {
+      L1: 'placed in the lower 65 percent of the canvas, upper 35 percent left as clean empty space for text',
+      L2: 'placed filling the full canvas as a rich illustration background',
+      L3: 'placed on the right two-thirds of the canvas, left one-third left as empty space for text',
+      L4: 'placed on the left two-thirds of the canvas, right one-third left as empty space for text',
+      L5: 'placed in the upper 65 percent of the canvas, lower 35 percent left as clean empty space for text',
+      L6: 'placed only in the bottom corner as a small accent, central zone fully clear for text',
+    };
+    const zone = illusZone[layout] || 'placed in the designated illustration zone';
+
+    // Density-specific supporting elements
+    const supportDesc = {
+      Light:  `${item} as the single primary illustration, no other elements, generous blank background`,
+      Medium: `${item} as the primary element with 2 to 3 complementary small morning motifs such as sunbeams dewdrops or small flowers arranged naturally around it`,
+      Dense:  `${item} as the central element surrounded by 5 to 6 varied morning elements such as flowers sunbeams birds leaves and morning dew arranged in a rich festive composition`,
+    };
+    const density = supportDesc[step2] || supportDesc.Medium;
+
+    return `flat 2D vector illustration — ${density}, ${zone}, ${sizePhrase}, solid plain background behind all illustration elements`;
+  }
+
+  if (archetype === 'B1') {
+    const item = illusItem ? illusItem.name : 'golden morning scene';
+
+    // B1 CORE RULE: ONE continuous full-bleed photograph. No zones, no panels, no composites.
+    // Overlay darkening is applied as a design layer AFTER generation — AI must NOT split the frame.
+    // Overlay type only affects the overall MOOD/ATMOSPHERE of the single photo.
+    const overlayMood = {
+      O1: 'moody cinematic atmosphere, consistent warm tones across the entire scene',
+      O2: 'bright airy top-lit morning atmosphere, warm morning light flooding the scene from above',
+      O3: 'warm golden morning atmosphere, subject well-lit, natural warmth throughout the scene',
+      O4: 'centrally lit with warm diffused morning light, soft natural depth in the scene',
+      O5: 'warm bright morning atmosphere, rich depth, subject glowing in natural morning light',
+    };
+
+    // Where the SUBJECT sits within the one continuous photo
+    const subjectFocus = {
+      L1: `${item} in the lower-centre of the frame with open morning sky or bright background above`,
+      L2: `${item} centred in the frame, surrounded by natural morning setting`,
+      L3: `${item} on the right side of the frame with natural Indian morning setting to the left`,
+      L4: `${item} on the left side of the frame with natural Indian morning setting to the right`,
+      L5: `${item} in the upper-centre of the frame with natural Indian morning setting below`,
+      L6: `${item} centred prominently in the frame, natural morning setting around it`,
+    };
+
+    const mood = overlayMood[step2] || 'warm golden morning light throughout';
+    const focus = subjectFocus[layout] || `${item} as the photographic subject in an Indian morning setting`;
+
+    return `${focus}, ${mood}, warm golden morning light, India morning atmosphere, single continuous full-bleed photograph, one unified scene filling the entire 9:16 canvas`;
+  }
+  if (archetype === 'C1') {
+    const item = illusItem ? illusItem.name : 'morning elements';
+    const animDesc = animDescs[step2] || 'floating animated elements';
+    return `${item}, ${animDesc}, static background designed for animation overlay`;
+  }
+  if (archetype === 'C2') {
+    const item = illusItem ? illusItem.name : 'morning sky';
+    return `${item}, ${c2Descs[step2] || 'minimal background for text animation'}`;
+  }
+  if (archetype === 'E1') {
+    const item = illusItem ? illusItem.name : 'morning setting';
+    const renderStyle = step2 === 'Realistic' ? 'photorealistic, natural warm lighting, high resolution' : 'stylised digital illustration, soft artistic rendering';
+    return `Indian person in morning setting, ${item} context, ${renderStyle}`;
+  }
+  return illusItem ? illusItem.name : 'morning scene';
+}
+
+function buildStyleLine(archetype, step2, frameDecoration) {
+  if (archetype === 'A1') {
+    const decoStyle = FRAME_DECO_OPTS.find(d => d.id === frameDecoration);
+    const baseStyle = 'clean flat vector illustration style, Indian morning aesthetic';
+    if (frameDecoration === 'Plain') return `${baseStyle}, no ornamentation, simple clean lines`;
+    if (frameDecoration === 'Simple') return `${baseStyle}, subtle traditional Indian art influence, restrained decoration`;
+    if (frameDecoration === 'Detailed') return `${baseStyle}, ornate traditional Indian folk art style, detailed motif work on frame`;
+    return baseStyle;
+  }
+  if (archetype === 'A2') {
+    const styleMap = {
+      Light: 'clean flat vector illustration style, minimal watercolor wash background, 2D artwork not photographic, solid colour background behind the illustration, airy and clean, Indian morning aesthetic',
+      Medium: 'warm flat vector and watercolor illustration style, 2D artwork not photographic, solid or simple gradient background behind the illustrations, vibrant but balanced composition, Indian art influence',
+      Dense: 'rich detailed flat vector illustration style, 2D artwork not photographic, vibrant festive Indian art style, all elements clearly separated and individually recognisable, elaborate composition with solid or gradient background',
+    };
+    return styleMap[step2] || 'flat vector illustration style, 2D artwork, solid background, Indian morning aesthetic';
+  }
+  if (archetype === 'B1') return 'photorealistic photography, DSLR quality, natural lighting, sharp focus, no CGI, no illustration, no graphic design elements, no decorative overlays, no added badges or icons, pure photography';
+  if (archetype === 'C1') return 'digital illustration, clean vibrant design, elements clearly separated for animation, suitable for motion graphics';
+  if (archetype === 'C2') return 'clean minimal digital art, simple background, uncluttered, no illustration overlapping text zone';
+  if (archetype === 'E1') return step2 === 'Realistic' ? 'photorealistic digital art, professional portrait lighting' : 'stylised digital illustration, warm artistic rendering, clean crisp lines';
+  return 'flat illustration style';
+}
+
+function buildNegativeTerms(archetype, frameDecoration, layout) {
+  const base = 'text letters words numbers typography watermarks logos blurry low-quality';
+
+  if (archetype === 'B1') {
+    // Anti-composite terms FIRST — most critical instruction for B1
+    return `collage composite split panel two photos stacked dual image inset photo multiple photographs image within image divided frame second image photo montage tiled images ${base} illustration graphic design overlay diya icon badge logo stamp decorative border frame border ornament illustrated element vector art flat design solid colour band overlay strip orange bar maroon bar dark band blank area empty zone`;
+  }
+
+  if (archetype === 'A2') {
+    // Block photographic/scene backgrounds — A2 must have flat solid BG with 2D illustrations
+    return `${base} photographic background photo background landscape photograph realistic background 3D render multiple conflicting styles text in illustration`;
+  }
+
+  if (archetype === 'A1') {
+    // Always block photographic/scene backgrounds for A1 — it must be a solid/gradient fill
+    const a1Base = `${base} photographic background landscape scene photo background gradient sky illustration in center background imagery multiple illustrations`;
+    if (layout === 'L6') {
+      // Extra-strong block for L6: centre must stay empty
+      const l6Extra = 'illustration in center illustration in middle element in center background scene landscape photo scenery any imagery in the central zone';
+      if (frameDecoration === 'Plain') return `${a1Base} ${l6Extra} ornate decoration excessive ornamentation motifs on frame`;
+      if (frameDecoration === 'Simple') return `${a1Base} ${l6Extra} heavy ornamentation excessive motifs throughout border`;
+      return `${a1Base} ${l6Extra}`;
+    }
+    if (frameDecoration === 'Plain') return `${a1Base} ornate decoration excessive ornamentation motifs on frame patterns on border complex frame`;
+    if (frameDecoration === 'Simple') return `${a1Base} heavy ornamentation overly decorated frame excessive motifs throughout border`;
+    return a1Base;
+  }
+  return base;
+}
+
+function buildMJPrompt(state) {
+  const { archetype, step2, layout, frameDecoration } = state;
+  const palette = getPalette();
+  const text = state.textInput.trim();
+
+  const subject = buildSubjectLine(state);
+  const colorDesc = palette ? palette.natural : 'warm morning tones';
+  const styleDesc = buildStyleLine(archetype, step2, frameDecoration);
+  const textSpace = getTextSpaceInstruction(layout, text, archetype);
+  const negative = buildNegativeTerms(archetype, frameDecoration, layout);
+  const isPhoto = archetype === 'B1' || (archetype === 'E1' && step2 === 'Realistic');
+  const styleFlag = isPhoto ? '--style raw' : '';
+
+  // B1: colour palette excluded — don't push into the subject line
+  const colorHint = archetype === 'B1' ? '' : `, ${colorDesc}`;
+  // B1: textSpace is empty string — don't add a trailing ", ," to the prompt
+  const textSpacePart = textSpace ? `, ${textSpace}` : '';
+
+  return `${subject}${colorHint}, ${styleDesc}${textSpacePart}, 9:16 portrait format --ar 9:16 --no ${negative} ${styleFlag}`.replace(/\s+/g, ' ').trim();
+}
+
+function buildFireflyPrompt(state) {
+  const { archetype, step2, layout, frameDecoration } = state;
+  const palette = getPalette();
+  const text = state.textInput.trim();
+
+  const subject = buildSubjectLine(state);
+  const colorDesc = palette ? palette.natural : 'warm morning tones';
+  const styleDesc = buildStyleLine(archetype, step2, frameDecoration);
+  const textSpace = getTextSpaceInstruction(layout, text, archetype);
+  const negative = buildNegativeTerms(archetype, frameDecoration, layout);
+
+  const colorHint = archetype === 'B1' ? '' : ` ${colorDesc}.`;
+  const textSpacePart = textSpace ? ` ${textSpace}.` : '';
+
+  return `${subject}. ${styleDesc}.${colorHint}${textSpacePart} Portrait 9:16 format for mobile. Do not include any ${negative.replace(/\s+/g, ', ')} anywhere in the image.`.replace(/\s+/g, ' ').trim();
+}
+
+function buildTextNote(text, lang, layout) {
+  if (!text.trim()) return null;
+  const posMap = {
+    L1: 'Upper third of poster',
+    L2: 'Centred overlay',
+    L3: 'Left half',
+    L4: 'Right half',
+    L5: 'Lower strip',
+    L6: 'Central zone (frame on all edges)',
+  };
+  return { text: text.trim(), lang, position: posMap[layout] || 'As per layout' };
+}
+
+// ═══════════════════════════════════════════════════════════
+// OUTPUT RENDERER
+// ═══════════════════════════════════════════════════════════
+
+function renderOutput() {
+  const mjPrompt = buildMJPrompt(STATE);
+  const ffPrompt = buildFireflyPrompt(STATE);
+  const textNote = buildTextNote(STATE.textInput, STATE.textLang, STATE.layout);
+  const arch = getArchetype();
+  const pal = getPalette();
+  const lay = getLayout();
+  const fon = getFont();
+  const item = getIllusItem();
+  const frameDeco = getFrameDeco();
+  const illusSize = getIllusSize();
+
+  const outputEl = document.getElementById('outputSection');
+  outputEl.className = 'output-wrap visible';
+  outputEl.innerHTML = `
+    <div class="output-header">
+      <h2>✨ Your Prompts are Ready</h2>
+      <p>Copy the prompt for your preferred tool. Add your text overlay manually in your design tool after generating the image.</p>
+      <div class="summary-table">
+        <div class="sum-cell"><div class="sum-label">Template</div><div class="sum-value">${arch ? arch.id + ' ' + arch.name : '—'}</div></div>
+        <div class="sum-cell"><div class="sum-label">Style</div><div class="sum-value">${STATE.step2 ? (() => { const opts = STEP2_OPTIONS[getArchetype()?.step2Key]; const o = opts?.find(x => x.id === STATE.step2); return o ? `${o.id} ${o.name}` : STATE.step2; })() : '—'}</div></div>
+        <div class="sum-cell"><div class="sum-label">Layout</div><div class="sum-value">${lay ? lay.id + ' ' + lay.name : '—'}</div></div>
+        <div class="sum-cell"><div class="sum-label">Palette</div><div class="sum-value">${pal ? pal.name : '—'}</div></div>
+        <div class="sum-cell"><div class="sum-label">Font</div><div class="sum-value">${fon ? fon.name : '—'}</div></div>
+        <div class="sum-cell"><div class="sum-label">Frame Deco</div><div class="sum-value">${frameDeco ? frameDeco.name : '—'}</div></div>
+        <div class="sum-cell"><div class="sum-label">Visual</div><div class="sum-value">${item ? item.name : (STATE.illusItem === 'NONE' ? 'None' : '—')}</div></div>
+        <div class="sum-cell"><div class="sum-label">Illus Size</div><div class="sum-value">${illusSize ? illusSize.name : '—'}</div></div>
+      </div>
+    </div>
+
+    ${textNote ? `
+    <div class="text-overlay-box">
+      <h4>📝 Text to Overlay Manually</h4>
+      <div class="text-overlay-content">${textNote.text}</div>
+      <div class="text-overlay-meta">
+        <span class="text-meta-chip">Language: ${textNote.lang}</span>
+        <span class="text-meta-chip">Position: ${textNote.position}</span>
+        <span class="text-meta-chip">Font: ${fon ? fon.name : '—'} · ${fon ? fon.heading : ''}</span>
+        <span class="text-meta-chip">Text colour: ${pal ? pal.text : '—'}</span>
+      </div>
+    </div>` : ''}
+
+    <div class="prompt-block">
+      <div class="prompt-header">
+        <div class="prompt-platform">
+          <div class="platform-dot" style="background:#000000;"></div>
+          <div>
+            <div class="platform-name">Midjourney / Leonardo.ai</div>
+            <div class="platform-sub">Use with /imagine in Midjourney, or paste directly in Leonardo.ai</div>
+          </div>
+        </div>
+        <button class="btn-copy" onclick="copyPrompt('mjPrompt',this)">Copy Prompt</button>
+      </div>
+      <div class="prompt-body">
+        <div class="prompt-text" id="mjPrompt">${mjPrompt}</div>
+        <div class="prompt-note"><strong>Midjourney tip:</strong> Type <code>/imagine</code> then paste. <code>--ar 9:16</code> sets portrait format. <code>--style raw</code> (for photo archetypes) gives more realistic output. Add <code>--v 6</code> for best quality.</div>
+      </div>
+    </div>
+
+    <div class="prompt-block">
+      <div class="prompt-header">
+        <div class="prompt-platform">
+          <div class="platform-dot" style="background:#E8613C;"></div>
+          <div>
+            <div class="platform-name">Adobe Firefly</div>
+            <div class="platform-sub">Paste in Adobe Firefly text-to-image or Adobe Express Generate</div>
+          </div>
+        </div>
+        <button class="btn-copy" onclick="copyPrompt('ffPrompt',this)">Copy Prompt</button>
+      </div>
+      <div class="prompt-body">
+        <div class="prompt-text" id="ffPrompt">${ffPrompt}</div>
+        <div class="prompt-note"><strong>Firefly tip:</strong> Set output to <strong>Portrait (4:7)</strong> which is closest to 9:16. In Content type, select <strong>Art</strong> for illustration archetypes (A1/A2/C1/C2) or <strong>Photo</strong> for B1/E1 Realistic.</div>
+      </div>
+    </div>
+
+    <div class="negative-box">
+      <h4>🚫 Negative Terms Built Into Both Prompts</h4>
+      <div class="negative-text">${buildNegativeTerms(STATE.archetype, STATE.frameDecoration, STATE.layout)}</div>
+    </div>
+
+    <button class="reset-btn" onclick="resetTool()">↩ Start Over — Generate a New Poster</button>
+  `;
+  outputEl.scrollIntoView({ behavior: 'smooth' });
+}
+
+function copyPrompt(id, btn) {
+  const text = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy Prompt'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+function resetTool() {
+  Object.assign(STATE, {
+    step: 1, archetype: null, step2: null, layout: null,
+    palette: null, font: null, illusCategory: null, illusItem: null,
+    frameDecoration: null, illusSize: null, textInput: '', textLang: 'Hindi',
+  });
+  const outputEl = document.getElementById('outputSection');
+  if (outputEl) outputEl.className = 'output-wrap';
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ═══════════════════════════════════════════════════════════
+// MAIN RENDER
+// ═══════════════════════════════════════════════════════════
+
+function render() {
+  renderProgress();
+  const app = document.getElementById('app');
+
+  const stepContent = {
+    1: renderStep1,
+    2: renderStep2,
+    3: renderStep3,
+    4: renderStep4,
+    5: renderStep5,
+    6: renderStep6,
+    7: renderStep7,
+  }[STATE.step]?.() || '';
+
+  const chips = renderChips();
+  const isLastStep = STATE.step === 7;
+  const canGo = canProceed();
+
+  app.innerHTML = `
+    ${chips}
+    <div id="stepPanel">${stepContent}</div>
+    <div class="nav-row">
+      <button class="btn btn-secondary" onclick="prevStep()" ${STATE.step === 1 ? 'style="visibility:hidden"' : ''}>← Back</button>
+      ${isLastStep
+        ? `<button class="btn btn-generate" onclick="generateOutput()">✨ Generate Prompts</button>`
+        : `<button class="btn btn-primary" onclick="nextStep()" ${!canGo ? 'disabled' : ''}>Continue →</button>`
+      }
+    </div>
+    <div id="outputSection" class="output-wrap"></div>
+  `;
+}
+
+function nextStep() {
+  if (!canProceed()) return;
+  STATE.step = Math.min(STATE.step + 1, 7);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  render();
+}
+function prevStep() {
+  if (STATE.step === 6 && STATE.illusCategory && STATE.archetype !== 'A1') {
+    STATE.illusCategory = null; render(); return;
+  }
+  STATE.step = Math.max(STATE.step - 1, 1);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  render();
+}
+function generateOutput() {
+  render();
+  renderOutput();
+}
+
+// INIT
+render();
+</script>
+</body>
+</html>
