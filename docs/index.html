@@ -353,6 +353,86 @@ const CUSTOM_PRESETS_E = [
   { id: 'Rich', name: 'Rich — Warm Botanical', desc: '30% empty, richer warm tones, larger illustration, visible watercolour effects, layered botanicals.', promptPhrase: 'rich warm botanical composition, moderate empty space, saturated warm pastel tones, larger illustration, visible watercolour effects, layered botanical elements, lush and inviting' },
 ];
 
+// ═══════════════════════════════════════════════════════════════
+// B1 PHOTO BACKGROUND — New data structures
+// ═══════════════════════════════════════════════════════════════
+
+const B1_MOOD_OPTIONS = [
+  { id: 'MD-1', name: 'Golden Warm', desc: 'Sunrise glow + warm amber tones. Classic Good Morning energy. Cozy and inviting.', promptPhrase: 'golden hour lighting, warm amber sunrise glow, long dramatic side shadows, soft warm directional light, warm colour grading with orange and amber tones, cozy sunrise warmth' },
+  { id: 'MD-2', name: 'Misty Soft', desc: 'Morning fog + muted natural tones. Dreamy, ethereal, calm. Peaceful dawn.', promptPhrase: 'misty foggy morning atmosphere, soft diffused light through haze, ethereal depth layers, natural muted colour grading, true-to-life balanced tones, gentle calm ambience' },
+  { id: 'MD-3', name: 'Bright & Vivid', desc: 'Clear daylight + saturated punchy colours. Crisp, sharp, maximum impact.', promptPhrase: 'bright natural daylight, clean crisp overhead sunlight, vivid saturated colour grading, punchy high-saturation colours, sharp detail throughout, maximum colour impact' },
+  { id: 'MD-4', name: 'Dramatic Rays', desc: 'God rays through clouds/trees + high contrast. Theatrical, atmospheric, powerful.', promptPhrase: 'dramatic crepuscular god rays breaking through clouds or tree canopy, volumetric light shafts, high contrast atmospheric lighting, deep shadows with bright highlights' },
+  { id: 'MD-5', name: 'Vintage Film', desc: 'Soft diffused light + faded film look. Lifted blacks, analog warmth. Nostalgic.', promptPhrase: 'soft even diffused lighting, gentle ambient illumination, vintage film colour grading, slightly faded with lifted blacks, muted desaturated highlights, analog film warmth' },
+  { id: 'MD-6', name: 'Soft Pastel', desc: 'Overcast gentle light + desaturated pastels. Calm, airy, minimal. Cool-toned softness.', promptPhrase: 'soft overcast sky, even diffused lighting with no harsh shadows, gentle pastel desaturated tones, cool blue-teal undertones, crisp fresh morning atmosphere, calm muted mood' },
+];
+
+const B1_INTENSITY_PRESETS = [
+  { id: 'Basic', name: 'Basic — Wide & Airy', desc: 'Wide-angle, distant framing. Lots of sky/space. Scene elements small in frame. Airy, breathable.', promptPhrase: 'wide-angle distant framing with generous sky and open space, scene elements appearing small within a vast landscape, airy breathable composition, environmental context dominates' },
+  { id: 'Medium', name: 'Medium — Balanced', desc: 'Standard focal length. Scene elements at comfortable scale. Balanced detail and context.', promptPhrase: 'standard focal length, balanced framing with scene elements at comfortable natural scale, good detail visible while maintaining environmental context' },
+  { id: 'Complex', name: 'Complex — Close & Immersive', desc: 'Tight framing, close-up detail. Shallow depth of field. Immersive, tactile. Maximum detail density.', promptPhrase: 'tight close-up framing with shallow depth of field, scene elements filling the frame, immersive tactile detail, bokeh background blur, maximum detail density' },
+];
+
+const B1_PHOTO_TRACKS = {
+  A: { name: 'HDR Saturated', desc: 'Viral WhatsApp-forward energy. HDR punch, oversaturated, dramatic.', promptPhrase: 'HDR photography style, heavily saturated vivid colours, dramatic tone mapping, sharp throughout, viral WhatsApp-forward aesthetic, punchy contrast' },
+  B: { name: 'Editorial Muted', desc: 'Kodak Portra film look. Muted earthy tones, editorial restraint.', promptPhrase: 'Kodak Portra 400 film photography style, muted earthy desaturated tones, gentle film grain, editorial restraint, analog warmth' },
+  C: { name: 'Desaturated Minimal', desc: 'High contrast, low saturation. Architectural, clean lines.', promptPhrase: 'desaturated high-contrast photography, low saturation, clean precise composition, architectural minimalism, strong geometric lines' },
+  D: { name: 'Bright Lifestyle', desc: 'Poppy blog photography. Bright, airy, slightly overexposed.', promptPhrase: 'bright lifestyle blog photography, slightly overexposed airy feel, cheerful poppy colours, clean whites, Instagram lifestyle aesthetic' },
+  E: { name: 'Soft Dreamy', desc: 'Pastel bokeh, soft focus edges. Romantic, gentle warmth.', promptPhrase: 'soft dreamy photography, gentle pastel tones, natural bokeh, slightly soft focus at edges, romantic warmth, delicate light' },
+};
+
+// Photorealistic descriptions for B1 scene elements (keyed by illustration item ID)
+const B1_PHOTO_DESC = {
+  'GM-I1-01': 'a steaming ceramic cup of chai with visible steam rising',
+  'GM-I1-02': 'an earthen clay kulhad filled with milky chai',
+  'GM-I1-03': 'a traditional South Indian brass filter coffee davara set',
+  'GM-I1-04': 'a cup of masala chai surrounded by whole spices — cinnamon sticks, cardamom pods, fresh ginger',
+  'GM-I1-05': 'a glass of freshly squeezed orange juice with pulp and an orange slice',
+  'GM-I1-06': 'a warm glass of golden haldi doodh turmeric milk',
+  'GM-I1-07': 'a hand-painted floral ceramic teapot with a matching teacup',
+  'GM-I1-08': 'a fresh green tender coconut with a straw',
+  'GM-I2-01': 'a panoramic sunrise over rolling green hills with golden mist in the valley',
+  'GM-I2-02': 'morning sun rays filtering through a dense forest canopy',
+  'GM-I2-03': 'macro dewdrops on a fresh green leaf with sunrise bokeh in the background',
+  'GM-I2-04': 'morning mist rising gently over a still river reflecting golden light',
+  'GM-I2-05': 'a wide golden sunrise over a calm ocean with the sun touching the horizon',
+  'GM-I2-06': 'a mountain peak bathed in warm first light of dawn',
+  'GM-I2-07': 'god rays streaming through morning fog in a misty valley',
+  'GM-I2-08': 'a vibrant rainbow arching over a green rain-washed landscape',
+  'GM-I2-09': 'a dawn sky gradient transitioning from deep navy to lavender to peach to warm gold',
+  'GM-I3-01': 'a fresh orange marigold garland (genda phool) draped naturally on a surface',
+  'GM-I3-02': 'a pink lotus flower in full bloom floating on still pond water',
+  'GM-I3-03': 'delicate white jasmine buds (mogra) on a green vine in soft light',
+  'GM-I3-04': 'a vivid red hibiscus flower with visible yellow stamens in morning light',
+  'GM-I3-05': 'a bright sunflower facing the morning sun with golden petals',
+  'GM-I3-06': 'creamy white frangipani (champa) flowers with golden yellow centres',
+  'GM-I3-07': 'a fresh rose bud with glistening morning dewdrops on its petals',
+  'GM-I3-08': 'rose and marigold petals floating gently on clear water surface',
+  'GM-I3-09': 'soft pink cherry blossom branches in gentle morning light',
+  'GM-I4-01': 'a single lit earthen diya with a warm golden flickering flame',
+  'GM-I4-02': 'a sacred golden OM symbol with radiant light rays emanating from behind',
+  'GM-I4-03': 'hands joined in namaste prayer gesture in warm light',
+  'GM-I4-04': 'delicate incense agarbatti smoke curling upward in a beam of morning light',
+  'GM-I4-05': 'a sacred tulsi plant in a traditional brass vrindavan planter',
+  'GM-I4-06': 'a polished brass temple bell (ghanti) hanging in golden light',
+  'GM-I4-07': 'a polished conch shell (shankh) in warm dawn light',
+  'GM-I4-08': 'a colourful rangoli pattern on a stone floor with morning light',
+  'GM-I4-09': 'an iridescent peacock feather with detailed eye-motif in soft warm light',
+  'GM-I5-01': 'a silhouette performing surya namaskar sun salutation against a vivid sunrise sky',
+  'GM-I5-02': 'a person meditating in lotus pose silhouetted against a glowing sunrise',
+  'GM-I5-03': 'an open window frame looking out at a beautiful golden morning sky',
+  'GM-I5-04': 'an open book and a steaming cup of chai on a wooden desk in morning light',
+  'GM-I5-05': 'a person on a morning walk along a tree-lined path in early golden light',
+  'GM-I5-06': 'a person watering plants on a sunlit balcony in the morning',
+  'GM-I5-07': 'a warm family breakfast scene at a dining table in soft morning light',
+  'GM-I5-08': 'a farmer silhouetted in a golden wheat field at sunrise',
+  'GM-I6-01': 'a flock of birds in V-formation against a colourful sunrise sky',
+  'GM-I6-02': 'a small sparrow perched on a blossoming branch in warm morning light',
+  'GM-I6-03': 'a majestic peacock with fully fanned tail feathers in golden light',
+  'GM-I6-04': 'a green Indian parrot perched on a leafy mango branch',
+  'GM-I6-05': 'an elegant sarus crane standing in a foggy morning field',
+  'GM-I6-06': 'colourful butterflies visiting dewy morning flowers',
+};
+
 const PALETTES_BASE = [
   { id: 'GM-C1', name: 'Sunrise Gold', vibe: 'Warm, energetic, festive',
     tracks: { A: { bg: '#FF8C1A', text: '#8B0000', accent: '#FFD700', secondary: '#FF6B00', natural: 'neon marigold with electric saffron and hot gold', roles: { canvas: 'warm vivid orange-amber (#FF8C1A) background', frame: 'golden metallic (#FFD700) frame and antique gold (#DAA520) motifs', illus: 'deep maroon (#8B0000), ivory cream (#FFF8E7), and bright red (#B8001F) — NOT orange', illusAccent: 'red and gold detail accents', textCol: 'dark maroon (#8B0000) or white', banColour: 'orange' } }, B: { bg: '#C2410C', text: '#FEF3C7', accent: '#B45309', secondary: '#84A98C', natural: 'dusty terracotta with ochre and cream', roles: { canvas: 'dusty terracotta (#C2410C) background', frame: 'ochre (#B45309) thin rule lines', illus: 'cream (#FEF3C7) and sage (#84A98C) — NOT terracotta', textCol: 'cream (#FEF3C7)', banColour: 'terracotta' } }, C: { bg: '#E8A317', text: '#4A2C0A', accent: '#B8860B', secondary: '#6B4423', natural: 'warm amber tonal, stamp aesthetic', roles: { canvas: 'warm amber (#E8A317) background', frame: 'deep amber (#B8860B) thin hairline', illus: 'dark brown (#6B4423) TONAL shades of amber, silhouette values in same hue family — monochromatic', illusAccent: 'ivory (#FFF8E7) single small accent dot', textCol: 'deep brown (#4A2C0A)', banColour: 'contrasting colours — keep monochromatic', isTonal: true } }, D: { bg: '#FACC15', text: '#7C2D12', accent: '#FB7185', secondary: '#A7F3D0', natural: 'bright sunny yellow with coral and mint pops', roles: { canvas: 'bright sunny yellow (#FACC15) background', frame: 'slate ink (#1E293B) thick outlines', illus: 'coral (#FB7185) and mint (#A7F3D0) — NOT yellow', textCol: 'deep brown (#7C2D12)', banColour: 'yellow' } }, E: { bg: '#FFF3E0', text: '#5D4037', accent: '#FFAB91', secondary: '#FFE0B2', natural: 'warm cream with soft peach and blush', roles: { canvas: 'warm cream (#FFF3E0) background', frame: 'soft terracotta (#FFAB91) thin lines', illus: 'warm brown (#5D4037) and peach (#FFAB91) — NOT cream', textCol: 'warm brown (#5D4037)', banColour: 'cream white' } } } },
@@ -475,9 +555,15 @@ const STATE = {
   illusSize: null,
   textInput: '',
   textLang: 'Hindi',
+  // B1 Photo Background specific
+  sceneElements: [],   // array of 1-3 illustration item IDs (first = main, rest = subsidiary)
+  mood: null,          // B1_MOOD_OPTIONS id (merged mood + colour grading)
 };
 
 function getSteps() {
+  if (STATE.archetype === 'B1') {
+    return ['template', 'style', 'layout', 'track', 'scene_elements', 'mood', 'intensity', 'font_text'];
+  }
   return ['template', 'style', 'layout', 'track', 'colour_finish', 'visual', 'intensity', 'font_text'];
 }
 
@@ -490,6 +576,9 @@ const STEP_LABELS = {
   visual: 'Visual',
   intensity: 'Intensity',
   font_text: 'Font & Text',
+  // B1 Photo Background specific steps
+  scene_elements: 'Scene Elements',
+  mood: 'Mood',
 };
 
 function getArchetype() { return ARCHETYPES.find(a => a.id === STATE.archetype); }
@@ -562,6 +651,9 @@ function canProceed() {
     }
     case 'intensity': return !!STATE.customPreset;
     case 'font_text': return !!STATE.font;
+    // B1 Photo Background specific steps
+    case 'scene_elements': return STATE.sceneElements.length >= 1 && STATE.sceneElements.length <= 3;
+    case 'mood': return !!STATE.mood;
     default: return false;
   }
 }
@@ -577,14 +669,29 @@ function select(key, value) {
     STATE.step2 = null; STATE.layout = null; STATE.track = null; STATE.palette = null; STATE.font = null;
     STATE.finish = null; STATE.illusRender = null; STATE.motifSet = null; STATE.customPreset = null;
     STATE.frameDecoration = null; STATE.illusSize = null; STATE.illusItem = null; STATE.illusCategory = null;
+    // B1 specific resets
+    STATE.sceneElements = []; STATE.mood = null;
   }
   if (key === 'step2') { STATE.layout = null; }
   if (key === 'track') {
     STATE.palette = null; STATE.font = null;
     STATE.finish = null; STATE.illusRender = null; STATE.motifSet = null; STATE.customPreset = null;
+    // B1 specific resets on track change
+    STATE.mood = null; STATE.customPreset = null;
   }
   if (key === 'frameDecoration' && value === 'Plain') {
     STATE.motifSet = null; // Plain frame = no motifs
+  }
+  render();
+}
+
+// B1: Multi-select scene elements (1-3 items)
+function toggleSceneElement(itemId) {
+  const idx = STATE.sceneElements.indexOf(itemId);
+  if (idx > -1) {
+    STATE.sceneElements.splice(idx, 1);
+  } else if (STATE.sceneElements.length < 3) {
+    STATE.sceneElements.push(itemId);
   }
   render();
 }
@@ -666,13 +773,39 @@ function renderStep2() {
 }
 
 function renderStep3() {
-  return `<div class="step-header"><div class="step-eyebrow">Step 3 · Layout</div><div class="step-title">Text & Visual Arrangement</div><div class="step-desc">How should text and visuals be positioned on the canvas?</div></div><div class="options-grid cols-3">${LAYOUTS.map(l => `<div class="opt-card ${STATE.layout === l.id ? 'selected' : ''}" onclick="select('layout','${l.id}')"><div>${layoutDiagram(l.id)}</div><div class="opt-name">${l.name}</div><div class="opt-desc">${l.desc}</div></div>`).join('')}</div>`;
+  // For B1, show compatibility badges based on overlay selection
+  const compat = (STATE.archetype && STATE.step2) ? LAYOUT_COMPAT[STATE.archetype]?.[STATE.step2] : null;
+  const stepDesc = STATE.archetype === 'B1'
+    ? 'Where should text sit on the photograph? Badges show compatibility with your overlay choice.'
+    : 'How should text and visuals be positioned on the canvas?';
+
+  return `<div class="step-header"><div class="step-eyebrow">Step 3 · Layout</div><div class="step-title">Text & Visual Arrangement</div><div class="step-desc">${stepDesc}</div></div><div class="options-grid cols-3">${LAYOUTS.map(l => {
+    const badge = compat ? compat[l.id] : null;
+    const badgeCls = badge === 'best' ? 'recommended' : badge === 'ok' ? 'compatible' : badge === 'caution' ? 'caution' : '';
+    return `<div class="opt-card ${STATE.layout === l.id ? 'selected' : ''} ${badgeCls}" onclick="select('layout','${l.id}')"><div>${layoutDiagram(l.id)}</div><div class="opt-name">${l.name}</div><div class="opt-desc">${l.desc}</div></div>`;
+  }).join('')}</div>`;
 }
 
 function renderStep4() {
   const compat = LAYOUT_COMPAT[STATE.archetype][STATE.step2];
   const compatStatus = compat[STATE.layout];
-  return `<div class="step-header"><div class="step-eyebrow">Step 4 · Track Selection</div><div class="step-title">Visual Aesthetic & Energy</div><div class="step-desc">Each track has its own palette, illustrations, and design language. Pick the vibe that matches your message.</div></div><div style="background:#FFFBEB;border:1px solid #FCD34D;padding:12px 16px;border-radius:10px;margin-bottom:18px;font-size:13px;color:#92400E;"><strong>Layout Compatibility:</strong> Your choice is <span style="font-weight:700;">${compatStatus}</span>.</div><div class="options-grid cols-4">${TRACKS.map(t => `<div class="opt-card ${STATE.track === t.id ? 'selected' : ''}" onclick="select('track','${t.id}')"><div class="opt-icon">${t.icon}</div><div class="opt-name">${t.name}</div><div class="opt-desc" style="font-size:11px;margin-bottom:6px;">${t.tagline}</div><div style="font-size:11px;color:#64748B;">${t.desc}</div></div>`).join('')}</div>`;
+  const isB1 = STATE.archetype === 'B1';
+  const stepDesc = isB1
+    ? 'For photo backgrounds, each track defines a <strong>photography aesthetic</strong> — the colour treatment, contrast, and visual style of the photograph.'
+    : 'Each track has its own palette, illustrations, and design language. Pick the vibe that matches your message.';
+  const stepTitle = isB1 ? 'Photography Aesthetic' : 'Visual Aesthetic & Energy';
+
+  let html = `<div class="step-header"><div class="step-eyebrow">Step 4 · Track Selection</div><div class="step-title">${stepTitle}</div><div class="step-desc">${stepDesc}</div></div><div style="background:#FFFBEB;border:1px solid #FCD34D;padding:12px 16px;border-radius:10px;margin-bottom:18px;font-size:13px;color:#92400E;"><strong>Layout Compatibility:</strong> Your choice is <span style="font-weight:700;">${compatStatus}</span>.</div>`;
+
+  if (isB1) {
+    html += `<div class="options-grid cols-5">${TRACKS.map(t => {
+      const photoTrack = B1_PHOTO_TRACKS[t.id];
+      return `<div class="opt-card ${STATE.track === t.id ? 'selected' : ''}" onclick="select('track','${t.id}')"><div class="opt-icon">${t.icon}</div><div class="opt-name">${t.name}</div><div class="opt-desc" style="font-size:11px;margin-bottom:4px;">${t.tagline}</div><div style="background:#F0F9FF;border:1px solid #BFDBFE;border-radius:6px;padding:4px 8px;margin-top:6px;font-size:10px;color:var(--primary);"><strong>📷 Photo:</strong> ${photoTrack.desc}</div></div>`;
+    }).join('')}</div>`;
+  } else {
+    html += `<div class="options-grid cols-4">${TRACKS.map(t => `<div class="opt-card ${STATE.track === t.id ? 'selected' : ''}" onclick="select('track','${t.id}')"><div class="opt-icon">${t.icon}</div><div class="opt-name">${t.name}</div><div class="opt-desc" style="font-size:11px;margin-bottom:6px;">${t.tagline}</div><div style="font-size:11px;color:#64748B;">${t.desc}</div></div>`).join('')}</div>`;
+  }
+  return html;
 }
 
 function renderStepColourFinish() {
@@ -696,7 +829,8 @@ function renderStepColourFinish() {
 }
 
 function renderStepFontText() {
-  let html = `<div class="step-header"><div class="step-eyebrow">Step 8 · Font & Text</div><div class="step-title">Typography + Your Message</div><div class="step-desc">Pick your font style, then enter the text for your poster.</div></div>`;
+  const stepNum = getSteps().length;
+  let html = `<div class="step-header"><div class="step-eyebrow">Step ${stepNum} · Font & Text</div><div class="step-title">Typography + Your Message</div><div class="step-desc">Pick your font style, then enter the text for your poster.</div></div>`;
 
   html += `<div class="sub-section"><div class="sub-section-header"><div class="sub-section-num">1</div><div class="sub-section-title">Typography Style</div></div><div class="options-grid cols-4">${FONTS_BASE.map(f => {
     const tv = f.tracks[STATE.track];
@@ -751,12 +885,88 @@ function renderStep9() {
   return `<div class="step-header"><div class="step-eyebrow">Step 7 · Intensity</div><div class="step-title">Customization Preset</div><div class="step-desc">Choose how bold or restrained your design should be.</div></div><div class="options-grid cols-3">${presets.map(p => `<div class="opt-card ${STATE.customPreset === p.id ? 'selected' : ''}" onclick="select('customPreset','${p.id}')"><div class="opt-name">${p.name}</div><div class="opt-desc">${p.desc}</div></div>`).join('')}</div>`;
 }
 
+// ═══════════════════════════════════════════════════════════════
+// B1 PHOTO BACKGROUND — Render functions
+// ═══════════════════════════════════════════════════════════════
+
+function renderB1SceneElements() {
+  const selCount = STATE.sceneElements.length;
+  const mainEl = selCount >= 1 ? STATE.sceneElements[0] : null;
+
+  let html = `<div class="step-header"><div class="step-eyebrow">Step 5 · Scene Elements</div><div class="step-title">Choose 1–3 Scene Elements</div><div class="step-desc">Pick the elements that will compose into one photorealistic scene. The <strong>first item you select becomes the main subject</strong> (foreground, focal point). Any additional picks become supporting elements in the background.</div></div>`;
+
+  // Status bar
+  html += `<div style="background:${selCount >= 1 ? 'var(--success-light)' : '#FEF9C3'};border:1px solid ${selCount >= 1 ? '#86EFAC' : '#FCD34D'};padding:10px 16px;border-radius:10px;margin-bottom:14px;font-size:13px;color:${selCount >= 1 ? '#166534' : '#92400E'};display:flex;align-items:center;gap:8px;"><strong>${selCount}/3 selected</strong> · ${selCount === 0 ? 'Pick at least 1' : selCount < 3 ? 'You can add more' : 'Maximum reached'}</div>`;
+
+  // Show current selection order (main vs subsidiary)
+  if (selCount >= 1) {
+    const selItems = STATE.sceneElements.map((id, idx) => {
+      for (const cat of ILLUS_CATS) {
+        const item = cat.items.find(i => i.id === id);
+        if (item) return { ...item, role: idx === 0 ? 'Main' : 'Supporting' };
+      }
+      return null;
+    }).filter(Boolean);
+
+    html += `<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;">${selItems.map((item, idx) => {
+      const isMain = idx === 0;
+      return `<div style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600;border:1px solid ${isMain ? 'var(--primary)' : 'var(--border)'};background:${isMain ? '#EFF6FF' : 'var(--card)'};color:${isMain ? 'var(--primary)' : 'var(--muted)'};">${isMain ? '⭐' : '○'} <span style="color:var(--primary);font-weight:700;">${item.name}</span> <span style="font-weight:400;">${item.role}</span> <span onclick="toggleSceneElement('${item.id}')" style="cursor:pointer;color:var(--danger);margin-left:4px;">✕</span></div>`;
+    }).join('')}</div>`;
+  }
+
+  // Show ALL illustration categories (no B1 filter — common catalogue)
+  ILLUS_CATS.forEach(cat => {
+    html += `<div class="sub-section"><div class="sub-section-header"><div class="sub-section-num">${cat.icon}</div><div class="sub-section-title">${cat.name}</div><div class="sub-section-tag">${cat.items.length} options</div></div><div class="options-grid cols-4">${cat.items.map(i => {
+      const isSel = STATE.sceneElements.includes(i.id);
+      const selIdx = STATE.sceneElements.indexOf(i.id);
+      const isMaxed = selCount >= 3 && !isSel;
+      const photoDesc = B1_PHOTO_DESC[i.id] || i.desc;
+      const roleLabel = selIdx === 0 ? '⭐ Main' : selIdx > 0 ? `○ Supporting ${selIdx + 1}` : '';
+      return `<div class="opt-card ${isSel ? 'selected' : ''} ${isMaxed ? 'caution' : ''}" onclick="${isMaxed ? '' : `toggleSceneElement('${i.id}')`}" style="${isMaxed ? 'cursor:not-allowed;opacity:0.5;' : ''}">${roleLabel ? `<div style="font-size:10px;font-weight:700;color:${selIdx === 0 ? 'var(--primary)' : 'var(--muted)'};margin-bottom:4px;">${roleLabel}</div>` : ''}<div class="opt-name">${i.name}</div><div class="opt-desc">${photoDesc}</div></div>`;
+    }).join('')}</div></div>`;
+  });
+
+  return html;
+}
+
+function renderB1Mood() {
+  // Show track-specific suggestion if track is selected
+  const trackSuggestions = {
+    A: ['MD-1', 'MD-3'],  // Shiny Maximal → Golden Warm, Bright & Vivid
+    B: ['MD-2', 'MD-5'],  // Modern Desi → Misty Soft, Vintage Film
+    C: ['MD-6', 'MD-2'],  // Minimalist Classy → Soft Pastel, Misty Soft
+    D: ['MD-3', 'MD-1'],  // Artsy Playful → Bright & Vivid, Golden Warm
+    E: ['MD-6', 'MD-1'],  // Soft & Warm → Soft Pastel, Golden Warm
+  };
+  const suggested = STATE.track ? (trackSuggestions[STATE.track] || []) : [];
+  const trackName = STATE.track ? TRACKS.find(t => t.id === STATE.track)?.name : '';
+
+  let html = `<div class="step-header"><div class="step-eyebrow">Step 6 · Mood</div><div class="step-title">Lighting & Colour Mood</div><div class="step-desc">Sets the atmosphere of the photograph — both the lighting and colour treatment in one pick.</div></div>`;
+
+  if (suggested.length > 0) {
+    html += `<div style="background:#F0F9FF;border:1px solid #BFDBFE;padding:10px 16px;border-radius:10px;margin-bottom:18px;font-size:12px;color:var(--primary);"><strong>💡 Suggested for ${trackName}:</strong> ${suggested.map(id => B1_MOOD_OPTIONS.find(m => m.id === id)?.name).filter(Boolean).join(' or ')}</div>`;
+  }
+
+  html += `<div class="options-grid cols-3">${B1_MOOD_OPTIONS.map(m => {
+    const isSuggested = suggested.includes(m.id);
+    return `<div class="opt-card ${STATE.mood === m.id ? 'selected' : ''} ${isSuggested ? 'recommended' : ''}" onclick="select('mood','${m.id}')"><div class="opt-name">${m.name}</div><div class="opt-desc">${m.desc}</div></div>`;
+  }).join('')}</div>`;
+
+  return html;
+}
+
+function renderB1Intensity() {
+  const stepNum = getSteps().indexOf('intensity') + 1;
+  return `<div class="step-header"><div class="step-eyebrow">Step ${stepNum} · Intensity</div><div class="step-title">Camera Distance & Detail</div><div class="step-desc">Controls how close the camera is to the scene — from a distant landscape to an immersive close-up.</div></div><div class="options-grid cols-3">${B1_INTENSITY_PRESETS.map(p => `<div class="opt-card ${STATE.customPreset === p.id ? 'selected' : ''}" onclick="select('customPreset','${p.id}')"><div class="opt-name">${p.name}</div><div class="opt-desc">${p.desc}</div></div>`).join('')}</div>`;
+}
+
 function render() {
   renderProgress();
 
   const stepId = getCurrentStepId();
   let content = '';
 
+  const isB1 = STATE.archetype === 'B1';
   switch (stepId) {
     case 'template': content = renderStep1(); break;
     case 'style': content = renderStep2(); break;
@@ -764,8 +974,11 @@ function render() {
     case 'track': content = renderStep4(); break;
     case 'colour_finish': content = renderStepColourFinish(); break;
     case 'visual': content = renderStep8(); break;
-    case 'intensity': content = renderStep9(); break;
+    case 'intensity': content = isB1 ? renderB1Intensity() : renderStep9(); break;
     case 'font_text': content = renderStepFontText(); break;
+    // B1 Photo Background specific steps
+    case 'scene_elements': content = renderB1SceneElements(); break;
+    case 'mood': content = renderB1Mood(); break;
   }
 
   const steps = getSteps();
@@ -959,11 +1172,170 @@ function gatherPromptData() {
 }
 
 function buildPrompt(platform) {
+  if (STATE.archetype === 'B1') {
+    const d = gatherB1PromptData();
+    if (platform === 'Midjourney') return buildB1MJPrompt(d);
+    if (platform === 'Leonardo.AI') return buildB1LeonardoPrompt(d);
+    return buildB1FireflyPrompt(d);
+  }
   const d = gatherPromptData();
-
   if (platform === 'Midjourney') return buildMJPrompt(d);
   if (platform === 'Leonardo.AI') return buildLeonardoPrompt(d);
   return buildFireflyPrompt(d);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// B1 PHOTO BACKGROUND — Prompt Data & Builders
+// ═══════════════════════════════════════════════════════════════
+
+function gatherB1PromptData() {
+  const step2Opt = getStep2Option(); // overlay
+  const layout = getLayout();
+  const track = getTrack();
+  const font = getFont();
+  const photoTrack = B1_PHOTO_TRACKS[STATE.track];
+  const mood = STATE.mood ? B1_MOOD_OPTIONS.find(m => m.id === STATE.mood) : null;
+  const intensity = STATE.customPreset ? B1_INTENSITY_PRESETS.find(p => p.id === STATE.customPreset) : null;
+
+  // Build scene description — first = main (foreground hero), rest = subsidiary (background/supporting)
+  const sceneItems = STATE.sceneElements.map(id => {
+    for (const cat of ILLUS_CATS) {
+      const item = cat.items.find(i => i.id === id);
+      if (item) return { ...item, photoDesc: B1_PHOTO_DESC[id] || item.desc };
+    }
+    return null;
+  }).filter(Boolean);
+
+  let scenePh = '';
+  if (sceneItems.length === 1) {
+    scenePh = `${sceneItems[0].photoDesc} as the hero subject in the foreground`;
+  } else if (sceneItems.length === 2) {
+    scenePh = `${sceneItems[0].photoDesc} as the main subject in the foreground, with ${sceneItems[1].photoDesc} as a supporting element in the background`;
+  } else if (sceneItems.length === 3) {
+    scenePh = `${sceneItems[0].photoDesc} as the main subject in the foreground, with ${sceneItems[1].photoDesc} and ${sceneItems[2].photoDesc} as supporting elements in the mid-ground and background`;
+  }
+
+  // Overlay phrase
+  let overlayPh = '';
+  if (step2Opt) {
+    if (step2Opt.id === 'O1') overlayPh = 'uniform dark semi-transparent overlay across the entire image for text readability';
+    else if (step2Opt.id === 'O2') overlayPh = 'gradient overlay darker at the top fading to clear at the bottom, creating a text-readable zone at top';
+    else if (step2Opt.id === 'O3') overlayPh = 'gradient overlay darker at the bottom fading to clear at the top, creating a text-readable zone at bottom';
+    else if (step2Opt.id === 'O4') overlayPh = 'vignette overlay with darkened edges and bright vivid centre, text-readable at centre';
+    else if (step2Opt.id === 'O5') overlayPh = 'dark caption bar strip at the bottom of the image for text placement';
+  }
+
+  // Layout text zone
+  let textZonePh = '';
+  if (layout.id === 'L1') textZonePh = 'text overlay zone at the top of the image';
+  else if (layout.id === 'L2') textZonePh = 'text overlay centred on the image';
+  else if (layout.id === 'L3') textZonePh = 'text overlay on the left half of the image';
+  else if (layout.id === 'L4') textZonePh = 'text overlay on the right half of the image';
+  else if (layout.id === 'L5') textZonePh = 'text overlay zone at the bottom of the image';
+  else if (layout.id === 'L6') textZonePh = 'text overlay centred occupying the central area of the image';
+
+  // B1 negatives
+  let negs = ['illustration', 'cartoon', 'painting', 'drawing', 'sketch', 'vector', 'clipart', 'frame', 'border', 'decorative pattern', 'motif', 'ornamental', 'text', 'letters', 'words', 'watermarks', 'logos', 'blurry', 'low quality', 'artificial', 'CGI', 'rendered'];
+  if (STATE.track === 'A') negs.push('muted', 'desaturated', 'flat');
+  if (STATE.track === 'B') negs.push('oversaturated', 'HDR', 'neon', 'vivid');
+  if (STATE.track === 'C') negs.push('colorful', 'saturated', 'busy', 'cluttered');
+  if (STATE.track === 'D') negs.push('dark', 'moody', 'desaturated', 'muted');
+  if (STATE.track === 'E') negs.push('harsh', 'high contrast', 'neon', 'sharp edges');
+
+  return { step2Opt, layout, track, font, photoTrack, mood, intensity, sceneItems, scenePh, overlayPh, textZonePh, negs };
+}
+
+function buildB1MJPrompt(d) {
+  const parts = [];
+
+  // Core: photorealistic photograph
+  parts.push('photorealistic photograph, full-bleed image filling the entire canvas');
+
+  // Scene elements (main subject first, supporting after)
+  parts.push(d.scenePh);
+
+  // Mood (merged lighting + colour treatment)
+  if (d.mood) parts.push(d.mood.promptPhrase);
+
+  // Photography aesthetic (Track)
+  parts.push(d.photoTrack.promptPhrase);
+
+  // Intensity (camera distance)
+  if (d.intensity) parts.push(d.intensity.promptPhrase);
+
+  // Layout text zone
+  parts.push(d.textZonePh);
+
+  // Overlay
+  if (d.overlayPh) parts.push(d.overlayPh);
+
+  // Font hint
+  if (d.font) parts.push(`space for ${d.font.heading} style white text overlay`);
+
+  // Format
+  parts.push('9:16 portrait format, professional photography, high resolution');
+
+  const mainPrompt = parts.filter(p => p).join(', ');
+  const negs = d.negs.join(', ');
+  return `${mainPrompt} --ar 9:16 --s 250 --no ${negs}`;
+}
+
+function buildB1LeonardoPrompt(d) {
+  const lines = [];
+
+  lines.push(`Create a photorealistic ${d.photoTrack.name} style photograph for a Good Morning poster in 9:16 vertical format (1080x1920px). The image must be a full-bleed photograph — no frames, no borders, no illustration elements.`);
+
+  // Scene (main subject + supporting elements)
+  lines.push(`\nScene: ${d.scenePh}.`);
+
+  // Mood (merged lighting + colour)
+  if (d.mood) lines.push(`\nMood: ${d.mood.promptPhrase}.`);
+
+  // Photography Aesthetic
+  lines.push(`\nPhotography Aesthetic (Track ${d.track.id}): ${d.photoTrack.promptPhrase}.`);
+
+  // Camera / Intensity
+  if (d.intensity) lines.push(`\nCamera & Framing: ${d.intensity.promptPhrase}.`);
+
+  // Layout + Overlay
+  lines.push(`\nText Zone: ${d.textZonePh}. The overlay treatment is: ${d.overlayPh}. Leave this zone slightly darker/muted so white text is readable on top.`);
+
+  // Font hint
+  if (d.font) lines.push(`\nText style: White "${d.font.heading}" heading with "${d.font.body}" body text overlaid on the darkened zone.`);
+
+  // Negatives
+  lines.push(`\nNegative prompt: ${d.negs.join(', ')}`);
+
+  return lines.join('\n');
+}
+
+function buildB1FireflyPrompt(d) {
+  const lines = [];
+
+  lines.push(`A photorealistic ${d.photoTrack.name} style photograph for a Good Morning greeting poster in vertical 9:16 format. The image is a full-bleed photograph that fills the entire canvas — no frames, no borders, no illustration elements.`);
+
+  // Scene (main + supporting)
+  lines.push(`\nScene: The photograph features ${d.scenePh}.`);
+
+  // Mood (merged lighting + colour)
+  if (d.mood) lines.push(`\nMood: ${d.mood.promptPhrase}.`);
+
+  // Photography Aesthetic
+  lines.push(`\nPhotography Aesthetic: ${d.photoTrack.promptPhrase}.`);
+
+  // Camera / Intensity
+  if (d.intensity) lines.push(`\nCamera & Framing: ${d.intensity.promptPhrase}.`);
+
+  // Layout + Overlay
+  lines.push(`\nComposition: The image has a ${d.overlayPh}. The ${d.textZonePh} — this area should be slightly darker or muted to ensure white text overlay is readable.`);
+
+  // Font
+  if (d.font) lines.push(`\nText overlay: White ${d.font.heading} heading with ${d.font.body} body text.`);
+
+  // Do not include
+  lines.push(`\nDo not include: ${d.negs.join(', ')}.`);
+
+  return lines.join('\n');
 }
 
 function buildMJPrompt(d) {
@@ -1132,31 +1504,58 @@ function generatePrompts() {
   });
 
   // Build audit data
-  const d = gatherPromptData();
-  const illusItem = getIllusItem();
-  const illusRenderOpt = STATE.illusRender ? getIllusRenderOptions().find(r => r.id === STATE.illusRender) : null;
-  const motifOpt = STATE.motifSet ? getMotifOptions().find(m => m.id === STATE.motifSet) : null;
-  const finishOpt = STATE.finish ? getFinishOptions().find(f => f.id === STATE.finish) : null;
-  const presetOpt = STATE.customPreset ? getCustomPresets().find(p => p.id === STATE.customPreset) : null;
-  const fontOpt = getFont();
-  const sizeOpt = getIllusSizeLabel();
+  const isB1 = STATE.archetype === 'B1';
+  let auditRows = [];
 
-  const auditRows = [
-    { step: '1', label: 'Template', value: getArchetype().codeName, section: 'Frame / Density / Overlay' },
-    { step: '2', label: 'Style', value: d.step2Opt ? d.step2Opt.name : '—', section: d.framePh ? 'Frame (…)' : (d.overlayPh ? 'Overlay (…)' : 'Density (…)') },
-    { step: '3', label: 'Layout', value: getLayout().name, section: 'Layout (…)' },
-    { step: '4', label: 'Track', value: getTrack().name, section: 'Header + Style reference' },
-    { step: '5a', label: 'Palette', value: getPalette().name, section: 'Background & Finish' },
-    { step: '5b', label: 'Finish', value: finishOpt ? finishOpt.name : '—', section: 'Background & Finish' },
-    { step: '6a', label: 'Illustration', value: illusItem ? illusItem.name : (STATE.illusItem === 'NONE' ? 'None' : '—'), section: 'Illustration:' },
-    { step: '6b', label: 'Render Style', value: illusRenderOpt ? illusRenderOpt.name : '—', section: 'Render style (…)' },
-    { step: '6c', label: 'Size', value: sizeOpt ? sizeOpt.name : '—', section: 'Size:' },
-    { step: '6d', label: 'Frame Deco', value: STATE.frameDecoration || '—', section: 'Frame (…)' },
-    { step: '6e', label: 'Motif', value: motifOpt ? motifOpt.name : '—', section: 'Motif:' },
-    { step: '7', label: 'Intensity', value: presetOpt ? presetOpt.name : '—', section: 'Decoration intensity:' },
-    { step: '8a', label: 'Font', value: fontOpt ? fontOpt.name : '—', section: 'Text style:' },
-    { step: '8b', label: 'Text Colour', value: d.textColPh || '—', section: 'Text style:' },
-  ];
+  if (isB1) {
+    const d = gatherB1PromptData();
+    const fontOpt = getFont();
+    const moodOpt = STATE.mood ? B1_MOOD_OPTIONS.find(m => m.id === STATE.mood) : null;
+    const intensityOpt = STATE.customPreset ? B1_INTENSITY_PRESETS.find(p => p.id === STATE.customPreset) : null;
+    const photoTrack = B1_PHOTO_TRACKS[STATE.track];
+    const trackName = STATE.track ? TRACKS.find(t => t.id === STATE.track)?.name : '—';
+    const mainEl = d.sceneItems.length >= 1 ? d.sceneItems[0].name : '—';
+    const supportEls = d.sceneItems.slice(1).map(i => i.name).join(', ') || '—';
+
+    auditRows = [
+      { step: '1', label: 'Template', value: 'B1 — Photo Background', section: 'Photorealistic photograph' },
+      { step: '2', label: 'Overlay', value: d.step2Opt ? d.step2Opt.name : '—', section: 'Overlay treatment' },
+      { step: '3', label: 'Layout', value: getLayout().name, section: 'Text zone placement' },
+      { step: '4', label: 'Track', value: `${trackName} (${photoTrack ? photoTrack.name : ''})`, section: 'Photography aesthetic' },
+      { step: '5a', label: 'Main Element', value: mainEl, section: 'Scene: hero subject' },
+      { step: '5b', label: 'Supporting', value: supportEls, section: 'Scene: background elements' },
+      { step: '6', label: 'Mood', value: moodOpt ? moodOpt.name : '—', section: 'Mood (light + colour)' },
+      { step: '7', label: 'Intensity', value: intensityOpt ? intensityOpt.name : '—', section: 'Camera & Framing' },
+      { step: '8a', label: 'Font', value: fontOpt ? fontOpt.name : '—', section: 'Text style' },
+      { step: '8b', label: 'Text Colour', value: 'White (overlay)', section: 'Text style' },
+    ];
+  } else {
+    const d = gatherPromptData();
+    const illusItem = getIllusItem();
+    const illusRenderOpt = STATE.illusRender ? getIllusRenderOptions().find(r => r.id === STATE.illusRender) : null;
+    const motifOpt = STATE.motifSet ? getMotifOptions().find(m => m.id === STATE.motifSet) : null;
+    const finishOpt = STATE.finish ? getFinishOptions().find(f => f.id === STATE.finish) : null;
+    const presetOpt = STATE.customPreset ? getCustomPresets().find(p => p.id === STATE.customPreset) : null;
+    const fontOpt = getFont();
+    const sizeOpt = getIllusSizeLabel();
+
+    auditRows = [
+      { step: '1', label: 'Template', value: getArchetype().codeName, section: 'Frame / Density / Overlay' },
+      { step: '2', label: 'Style', value: d.step2Opt ? d.step2Opt.name : '—', section: d.framePh ? 'Frame (…)' : (d.overlayPh ? 'Overlay (…)' : 'Density (…)') },
+      { step: '3', label: 'Layout', value: getLayout().name, section: 'Layout (…)' },
+      { step: '4', label: 'Track', value: getTrack().name, section: 'Header + Style reference' },
+      { step: '5a', label: 'Palette', value: getPalette().name, section: 'Background & Finish' },
+      { step: '5b', label: 'Finish', value: finishOpt ? finishOpt.name : '—', section: 'Background & Finish' },
+      { step: '6a', label: 'Illustration', value: illusItem ? illusItem.name : (STATE.illusItem === 'NONE' ? 'None' : '—'), section: 'Illustration:' },
+      { step: '6b', label: 'Render Style', value: illusRenderOpt ? illusRenderOpt.name : '—', section: 'Render style (…)' },
+      { step: '6c', label: 'Size', value: sizeOpt ? sizeOpt.name : '—', section: 'Size:' },
+      { step: '6d', label: 'Frame Deco', value: STATE.frameDecoration || '—', section: 'Frame (…)' },
+      { step: '6e', label: 'Motif', value: motifOpt ? motifOpt.name : '—', section: 'Motif:' },
+      { step: '7', label: 'Intensity', value: presetOpt ? presetOpt.name : '—', section: 'Decoration intensity:' },
+      { step: '8a', label: 'Font', value: fontOpt ? fontOpt.name : '—', section: 'Text style:' },
+      { step: '8b', label: 'Text Colour', value: d.textColPh || '—', section: 'Text style:' },
+    ];
+  }
 
   let auditHTML = auditRows.map(r =>
     `<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.08);">
@@ -1171,7 +1570,7 @@ function generatePrompts() {
 
   let outputHTML = `<div class="output-header">
     <h2>Your Good Morning Poster Prompt</h2>
-    <p>Generated for ${getTrack().name} track · ${getPalette().name} palette</p>
+    <p>Generated for ${isB1 ? B1_PHOTO_TRACKS[STATE.track].name : getTrack().name} track${isB1 ? ' · Photo Background' : (' · ' + (getPalette() ? getPalette().name : '') + ' palette')}</p>
     <details style="margin-top:16px;cursor:pointer;">
       <summary style="font-size:13px;font-weight:700;color:#FCD34D;letter-spacing:0.5px;">PROMPT AUDIT — Every Step → Prompt Section</summary>
       <div style="margin-top:10px;background:rgba(0,0,0,0.2);border-radius:8px;padding:12px;max-height:320px;overflow-y:auto;">
