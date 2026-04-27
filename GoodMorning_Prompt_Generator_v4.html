@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JioAICloud · Good Morning Poster Generator v4</title>
+<style>
+:root {
+  --primary: #1E3A5F;
+  --primary-light: #2D5A8E;
+  --accent: #F59E0B;
+  --accent-light: #FEF3C7;
+  --success: #16A34A;
+  --success-light: #DCFCE7;
+  --danger: #DC2626;
+  --bg: #F1F5F9;
+  --card: #FFFFFF;
+  --border: #E2E8F0;
+  --text: #1E293B;
+  --muted: #64748B;
+  --radius: 12px;
+  --shadow: 0 2px 8px rgba(30,58,95,0.10);
+  --shadow-hover: 0 6px 20px rgba(30,58,95,0.18);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, 'Segoe UI', Arial, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+.header { background: var(--primary); padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; }
+.header-brand { display: flex; align-items: center; gap: 12px; }
+.header-logo { background: var(--accent); color: var(--primary); font-weight: 800; font-size: 14px; padding: 6px 10px; border-radius: 8px; letter-spacing: 0.5px; }
+.header-title { color: #fff; font-size: 16px; font-weight: 600; }
+.header-sub { color: #94A3B8; font-size: 13px; margin-top: 2px; }
+.header-badge { background: rgba(245,158,11,0.2); color: var(--accent); font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(245,158,11,0.3); }
+
+.progress-wrap { background: #fff; border-bottom: 1px solid var(--border); padding: 14px 32px; }
+.progress-steps { display: flex; align-items: center; gap: 0; max-width: 1060px; flex-wrap: wrap; }
+.prog-step { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); flex: 0 1 auto; }
+.prog-step .num { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; background: var(--border); color: var(--muted); transition: all 0.2s; flex-shrink: 0; }
+.prog-step.done .num { background: var(--success); color: #fff; }
+.prog-step.done .num::after { content: '\2713'; }
+.prog-step.done .num span { display: none; }
+.prog-step.active .num { background: var(--primary); color: #fff; }
+.prog-step .label { font-weight: 500; white-space: nowrap; }
+.prog-step.active .label { color: var(--primary); font-weight: 700; }
+.prog-step.done .label { color: var(--success); }
+.prog-connector { height: 2px; flex: 0 1 auto; min-width: 8px; background: var(--border); margin: 0 4px; border-radius: 1px; }
+.prog-connector.done { background: var(--success); }
+
+.main { max-width: 1060px; margin: 0 auto; padding: 32px 24px; }
+.step-header { margin-bottom: 24px; }
+.step-eyebrow { font-size: 12px; font-weight: 700; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+.step-title { font-size: 24px; font-weight: 800; color: var(--primary); margin-bottom: 8px; }
+.step-desc { font-size: 14px; color: var(--muted); line-height: 1.6; max-width: 700px; }
+.step-hint { display: inline-flex; align-items: center; gap: 6px; background: var(--accent-light); border: 1px solid #FCD34D; color: #92400E; font-size: 12px; padding: 6px 12px; border-radius: 20px; margin-top: 10px; }
+
+.options-grid { display: grid; gap: 14px; }
+.options-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+.options-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.options-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+.options-grid.cols-5 { grid-template-columns: repeat(5, 1fr); }
+.options-grid.cols-6 { grid-template-columns: repeat(6, 1fr); }
+.options-grid.cols-9 { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+.options-grid.cols-10 { grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); }
+@media (max-width: 700px) {
+  .options-grid.cols-4, .options-grid.cols-5, .options-grid.cols-6, .options-grid.cols-9, .options-grid.cols-10 { grid-template-columns: repeat(2, 1fr); }
+  .options-grid.cols-3 { grid-template-columns: repeat(2, 1fr); }
+}
+.opt-card { background: var(--card); border: 2px solid var(--border); border-radius: var(--radius); padding: 16px; cursor: pointer; transition: all 0.18s; position: relative; }
+.opt-card:hover { border-color: var(--primary-light); box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+.opt-card.selected { border-color: var(--primary); background: #EFF6FF; box-shadow: 0 0 0 3px rgba(30,58,95,0.12); }
+.opt-card.recommended::before { content: '\2605 Best'; position: absolute; top: 8px; right: 8px; background: var(--accent); color: #7C2D12; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 10px; }
+.opt-card.compatible::before { content: '\2713 Works'; position: absolute; top: 8px; right: 8px; background: var(--success-light); color: var(--success); font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 10px; }
+.opt-card.caution { opacity: 0.7; }
+.opt-card.caution::before { content: '~ With care'; position: absolute; top: 8px; right: 8px; background: #FEF9C3; color: #713F12; font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 10px; }
+.opt-card.selected::after { content: '\2713'; position: absolute; top: 10px; left: 10px; width: 20px; height: 20px; border-radius: 50%; background: var(--primary); color: #fff; font-size: 11px; font-weight: 700; display: grid; place-items: center; }
+.opt-code { font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 4px; }
+.opt-name { font-size: 15px; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+.opt-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+.opt-icon { font-size: 28px; margin-bottom: 10px; }
+
+.palette-card { padding: 14px; }
+.palette-swatch-row { display: flex; gap: 6px; margin-bottom: 10px; }
+.swatch { width: 28px; height: 28px; border-radius: 6px; border: 1px solid rgba(0,0,0,0.1); }
+.palette-name { font-size: 14px; font-weight: 700; color: var(--primary); margin-bottom: 3px; }
+.palette-id { font-size: 10px; color: var(--muted); font-weight: 600; }
+.palette-vibe { font-size: 11px; color: var(--muted); margin-top: 4px; line-height: 1.4; }
+
+.sub-section { margin-bottom: 28px; }
+.sub-section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 2px solid var(--border); }
+.sub-section-num { width: 26px; height: 26px; background: var(--primary); color: #fff; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 800; flex-shrink: 0; }
+.sub-section-title { font-size: 15px; font-weight: 800; color: var(--primary); }
+.sub-section-tag { font-size: 10px; font-weight: 700; background: #FEF3C7; color: #92400E; padding: 2px 8px; border-radius: 10px; }
+
+.text-input-wrap { background: var(--card); border: 2px solid var(--border); border-radius: var(--radius); padding: 20px; max-width: 600px; }
+.text-input-wrap textarea { width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-size: 15px; font-family: inherit; resize: vertical; min-height: 80px; color: var(--text); outline: none; transition: border-color 0.2s; }
+.text-input-wrap textarea:focus { border-color: var(--primary); }
+
+.nav-row { display: flex; align-items: center; justify-content: space-between; margin-top: 28px; }
+.btn { padding: 12px 28px; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.18s; border: none; }
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: var(--primary-light); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(30,58,95,0.3); }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+.btn-secondary { background: transparent; color: var(--primary); border: 2px solid var(--border); }
+.btn-secondary:hover { border-color: var(--primary); }
+.btn-generate { background: var(--accent); color: #7C2D12; font-size: 16px; padding: 14px 36px; }
+.btn-generate:hover { background: #D97706; transform: translateY(-2px); box-shadow: 0 6px 16px rgba(245,158,11,0.4); }
+
+.summary-strip { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.chip { display: inline-flex; align-items: center; gap: 5px; background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 4px 10px; font-size: 12px; color: var(--muted); cursor: pointer; }
+.chip .chip-label { font-weight: 600; color: var(--primary); }
+.chip:hover { border-color: var(--primary); }
+
+.output-wrap { display: none; }
+.output-wrap.visible { display: block; }
+.output-header { background: linear-gradient(135deg, var(--primary) 0%, #2D5A8E 100%); color: #fff; border-radius: var(--radius); padding: 28px; margin-bottom: 24px; }
+.output-header h2 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+.output-header p { font-size: 14px; color: #94A3B8; }
+.summary-table { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 20px; }
+@media (max-width: 700px) { .summary-table { grid-template-columns: repeat(2, 1fr); } }
+.sum-cell { background: rgba(255,255,255,0.1); border-radius: 8px; padding: 10px; }
+.sum-label { font-size: 10px; color: #94A3B8; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
+.sum-value { font-size: 13px; font-weight: 700; color: #fff; margin-top: 3px; }
+
+.prompt-block { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 18px; overflow: hidden; box-shadow: var(--shadow); }
+.prompt-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(--border); }
+.prompt-platform { display: flex; align-items: center; gap: 8px; }
+.platform-dot { width: 10px; height: 10px; border-radius: 50%; }
+.platform-name { font-size: 14px; font-weight: 700; color: var(--primary); }
+.platform-sub { font-size: 12px; color: var(--muted); }
+.btn-copy { padding: 7px 16px; border-radius: 8px; border: 1px solid var(--border); background: #fff; color: var(--primary); font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+.btn-copy:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+.btn-copy.copied { background: var(--success); color: #fff; border-color: var(--success); }
+.prompt-body { padding: 18px 20px; }
+.prompt-text { font-family: 'SF Mono', 'Consolas', monospace; font-size: 13px; line-height: 1.7; color: var(--text); background: #F8FAFC; border-radius: 8px; padding: 14px; word-break: break-word; white-space: pre-wrap; border: 1px solid var(--border); }
+.prompt-note { font-size: 12px; color: var(--muted); margin-top: 10px; line-height: 1.5; }
+.prompt-note strong { color: var(--primary); }
+
+.text-overlay-box { background: #FFFBEB; border: 1px solid #FCD34D; border-radius: var(--radius); padding: 18px 20px; margin-bottom: 18px; }
+.text-overlay-box h4 { font-size: 14px; font-weight: 700; color: #92400E; margin-bottom: 8px; }
+.text-overlay-content { font-size: 16px; font-weight: 600; color: var(--text); background: #fff; border-radius: 8px; padding: 12px 16px; border: 1px solid #FCD34D; }
+
+.negative-box { background: #FFF1F2; border: 1px solid #FECDD3; border-radius: var(--radius); padding: 14px 18px; margin-bottom: 18px; }
+.negative-box h4 { font-size: 12px; font-weight: 700; color: #BE123C; margin-bottom: 6px; }
+.negative-text { font-family: monospace; font-size: 12px; color: #881337; }
+
+.track-badge { display: inline-flex; align-items: center; gap: 6px; background: #F0F9FF; border: 1px solid #BFDBFE; color: var(--primary); font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 8px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-brand">
+    <div class="header-logo">Jio<span style="color:#1E3A5F;background:#FCD34D;padding:0 3px;border-radius:3px;">AI</span>Cloud</div>
+    <div>
+      <div class="header-title">Poster Prompt Generator</div>
+      <div class="header-sub">Greetings & Creation — Design Tool</div>
+    </div>
+  </div>
+  <div class="header-badge">Good Morning Pack · v4 · Track-Aware + Shiny Maximal</div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-steps" id="progressSteps"></div>
+</div>
+
+<div class="main" id="app"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// DATA STRUCTURES
+// ═══════════════════════════════════════════════════════════
+
+const ARCHETYPES = [
+  { id: 'A1', name: 'Frame Style', codeName: 'A1 — Text + Frame', icon: '🖼️',
+    desc: 'A decorative border/frame is the defining visual. Illustration and text sit inside the frame.',
+    step2Label: 'Choose Frame Type', step2Key: 'frames' },
+  { id: 'A2', name: 'Illustration Style', codeName: 'A2 — Text + Illustrations', icon: '🎨',
+    desc: 'Illustrations are the primary visual element. Free composition, no dominant frame.',
+    step2Label: 'Illustration Density', step2Key: 'illusWeights' },
+  { id: 'B1', name: 'Photo Background', codeName: 'B1 — Full Photo BG', icon: '📷',
+    desc: 'A photograph fills the entire canvas. Text and overlays sit on top.',
+    step2Label: 'Overlay Treatment', step2Key: 'overlays' },
+];
+
+const STEP2_OPTIONS = {
+  frames: [
+    { id: 'F1', name: 'Full Perimeter', desc: 'Frame runs along all 4 edges — complete border enclosing the canvas.', diagramType: 'frame-full' },
+    { id: 'F2', name: 'Dual Band', desc: 'Decorative bands at top and bottom edges only. Sides fully open.', diagramType: 'frame-dual' },
+    { id: 'F3', name: 'Single Band', desc: 'One decorative band at the bottom edge. Minimal, modern.', diagramType: 'frame-single' },
+    { id: 'F4', name: 'Corner Accents', desc: 'Decorative patches at all four corners. Most flexible — works with every layout.', diagramType: 'frame-corner' },
+    { id: 'F5', name: 'Arch / Canopy', desc: 'Curved arch overhead — header zone and upper side patches. Devotional feel.', diagramType: 'frame-arch' },
+  ],
+  illusWeights: [
+    { id: 'Light', name: 'Light', desc: '1–2 key illustration elements. Lots of breathing space. Clean, airy.', diagramType: 'weight-light' },
+    { id: 'Medium', name: 'Medium', desc: '3–4 illustration elements. Balanced and warm.', diagramType: 'weight-medium' },
+    { id: 'Dense', name: 'Dense', desc: '5–6 elements. Rich, festive, vibrant scene.', diagramType: 'weight-dense' },
+  ],
+  overlays: [
+    { id: 'O1', name: 'Full Dark', desc: 'Uniform dark overlay across entire image. Maximum text contrast.', diagramType: 'overlay-full' },
+    { id: 'O2', name: 'Gradient — Top Heavy', desc: 'Darker toward top, brighter at bottom. Best for text at top (L1).', diagramType: 'overlay-top' },
+    { id: 'O3', name: 'Gradient — Bottom Heavy', desc: 'Darker toward bottom, brighter at top. Best for text at bottom (L5).', diagramType: 'overlay-bottom' },
+    { id: 'O4', name: 'Vignette', desc: 'Centre bright and vivid, edges darkened. Best for centred text (L2).', diagramType: 'overlay-vignette' },
+    { id: 'O5', name: 'Caption Bar', desc: 'Lower strip naturally darker. Text sits in a defined bar at bottom.', diagramType: 'overlay-caption' },
+  ],
+};
+
+const LAYOUT_COMPAT = {
+  A1: { F1: { L1: 'ok', L2: 'ok', L3: 'ok', L4: 'ok', L5: 'ok', L6: 'best' }, F2: { L1: 'ok', L2: 'best', L3: 'best', L4: 'best', L5: 'ok', L6: 'ok' }, F3: { L1: 'best', L2: 'ok', L3: 'ok', L4: 'ok', L5: 'best', L6: 'caution' }, F4: { L1: 'best', L2: 'best', L3: 'best', L4: 'best', L5: 'best', L6: 'best' }, F5: { L1: 'caution', L2: 'ok', L3: 'ok', L4: 'ok', L5: 'best', L6: 'caution' } },
+  A2: { Light: { L1: 'best', L2: 'best', L3: 'best', L4: 'best', L5: 'best', L6: 'ok' }, Medium: { L1: 'best', L2: 'best', L3: 'best', L4: 'best', L5: 'best', L6: 'ok' }, Dense: { L1: 'ok', L2: 'best', L3: 'ok', L4: 'ok', L5: 'ok', L6: 'caution' } },
+  B1: { O1: { L1: 'best', L2: 'best', L3: 'ok', L4: 'ok', L5: 'best', L6: 'ok' }, O2: { L1: 'best', L2: 'ok', L3: 'ok', L4: 'ok', L5: 'caution', L6: 'ok' }, O3: { L1: 'caution', L2: 'ok', L3: 'ok', L4: 'ok', L5: 'best', L6: 'ok' }, O4: { L1: 'ok', L2: 'best', L3: 'caution', L4: 'caution', L5: 'ok', L6: 'best' }, O5: { L1: 'ok', L2: 'ok', L3: 'ok', L4: 'ok', L5: 'best', L6: 'ok' } },
+};
+
+const LAYOUTS = [
+  { id: 'L1', name: 'Text Top', desc: 'Text at top, visual fills lower portion.', type: 'vertical', textFirst: true },
+  { id: 'L2', name: 'Text Overlay', desc: 'Visual fills entire canvas, text centred on top.', type: 'overlay' },
+  { id: 'L3', name: 'Text Left', desc: 'Text on left half, visual anchored on right.', type: 'horizontal', textFirst: true },
+  { id: 'L4', name: 'Text Right', desc: 'Text on right half, visual anchored on left.', type: 'horizontal', textFirst: false },
+  { id: 'L5', name: 'Text Bottom', desc: 'Visual fills upper portion, text at bottom.', type: 'vertical', textFirst: false },
+  { id: 'L6', name: 'Text Centre', desc: 'Frame holds all 4 edges. Solid/gradient BG. Text occupies central 60%. Small illustration at corner only.', type: 'centre-accent', textFirst: true },
+];
+
+const TRACKS = [
+  { id: 'A', name: 'Shiny Maximal', icon: '✨', tagline: 'Jazzy desi, festive, loud on purpose', desc: 'Wedding-card energy meets Diwali poster.' },
+  { id: 'B', name: 'Modern Desi', icon: '🎨', tagline: 'Muted earthy, contemporary editorial', desc: 'Restrained.' },
+  { id: 'C', name: 'Cinematic', icon: '🎬', tagline: 'Classy muted, gallery-grade, film', desc: 'Editorial.' },
+  { id: 'D', name: 'Playful Illustrated', icon: '🎉', tagline: 'Flat bright, sticker/doodle, cheerful', desc: 'Gen-Z.' },
+];
+
+// Track A only: Finish options
+const FINISH_OPTIONS = [
+  { id: 'FN-1', name: 'Plain Solid', desc: 'Clean flat colour fill. Lets frame + illustration do the talking.', promptPhrase: 'solid flat colour fill, clean matte surface, no texture, no effects on background' },
+  { id: 'FN-2', name: 'Radial Gradient', desc: 'Centre-outward shimmer. Festive depth. Most versatile default.', promptPhrase: 'radial gradient from bright centre to darker edges, smooth luminous colour transition, glowing centre fading to rich saturated edges' },
+  { id: 'FN-3', name: 'Sparkle / Glitter', desc: 'Diwali card / celebration energy. Particles add festivity.', promptPhrase: 'sparkle particle overlay across background, tiny golden glitter dots scattered throughout, festive shimmer texture, magical sparkle effect' },
+  { id: 'FN-4', name: 'Metallic Foil', desc: 'Wedding card premium feel. Maximum bling.', promptPhrase: 'stamped metallic gold foil texture on background surface, embossed metallic finish, rich luxurious hammered gold appearance, foil-pressed surface' },
+  { id: 'FN-5', name: 'Bokeh Glow', desc: 'Warm fuzzy festive lights. Creates atmosphere.', promptPhrase: 'soft bokeh light orbs floating in background, warm golden out-of-focus lights scattered across canvas, festive fairy light atmosphere, dreamy depth' },
+];
+
+// Track A only: Illustration rendering styles
+const ILLUS_RENDER_OPTIONS = [
+  { id: 'IR-1', name: 'Ornamental Vector', desc: 'Gold-foil, paisley borders, symmetric, stamped-metal. Classic wedding card energy.', promptPhrase: 'ornamental vector illustration with gold-foil fills, paisley and mandala decorative borders framing the subject, stamped-metal shading, drop-shadows, sparkle particles, symmetric composition, traditional Indian ornamental art style' },
+  { id: 'IR-2', name: 'Colourful Vector', desc: 'Vivid flat colours, bold outlines, no gold. Cheerful poster style.', promptPhrase: 'vivid colourful flat vector illustration, bright saturated colours, clean bold outlines, festive Indian colour palette, no gold treatment, celebratory and cheerful, like a vibrant poster or greeting card' },
+  { id: 'IR-3', name: '3D Glossy', desc: 'Raised embossed, candy sheen, dimensional. Modern premium sticker.', promptPhrase: '3D glossy rendered illustration, raised embossed effect with smooth reflective surface, dimensional depth with candy-like sheen, plastic figurine quality, modern premium sticker aesthetic, sharp highlights and soft shadows' },
+];
+
+// Track A only: Motif sets
+const MOTIF_OPTIONS = [
+  { id: 'MT-1', name: 'Paisley (Ambi)', desc: 'Universal Indian, Kashmir shawl.', promptPhrase: 'paisley mango motif pattern on decorative elements, traditional ambi teardrop design, Kashmir shawl inspired ornament', bestWith: 'GM-C1, GM-C5' },
+  { id: 'MT-2', name: 'Mandala', desc: 'Spiritual, universal, sacred.', promptPhrase: 'circular mandala pattern on decorative elements, geometric sacred concentric rings design, symmetrical radial ornament', bestWith: 'GM-C5, GM-C8' },
+  { id: 'MT-3', name: 'Marigold Chain', desc: 'Puja, wedding, festival. Highest GM resonance.', promptPhrase: 'marigold garland chain pattern as border decoration, genda phool string, toran flower garland ornament', bestWith: 'GM-C1, GM-C2' },
+  { id: 'MT-4', name: 'Lotus Border', desc: 'Devotional, auspicious, sacred.', promptPhrase: 'lotus flower border pattern on decorative frame, sacred lotus row design, padma petal chain ornament', bestWith: 'GM-C4, GM-C5' },
+  { id: 'MT-5', name: 'Peacock Motif', desc: 'Royal, celebratory, Krishna.', promptPhrase: 'peacock feather eye motif pattern on decorative elements, mor pankh fan design, royal peacock ornament', bestWith: 'GM-C9, GM-C8' },
+  { id: 'MT-6', name: 'Diya Row', desc: 'Diwali, devotional, evening variants.', promptPhrase: 'row of lit diyas oil lamp pattern as border decoration, deepawali lamp chain, flame-topped traditional lamp ornament', bestWith: 'GM-C1, GM-C5' },
+  { id: 'MT-7', name: 'Rangoli Corners', desc: 'South + Central India, geometric.', promptPhrase: 'rangoli geometric pattern at corners and edges, traditional kolam dot-grid design, symmetric floor art ornament', bestWith: 'GM-C4, GM-C6' },
+  { id: 'MT-8', name: 'Temple Arch', desc: 'Devotional, architecture. Best with F5 frame.', promptPhrase: 'temple gopuram arch motif as frame header, mandir gate pillared design, traditional Indian temple architecture ornament', bestWith: 'GM-C5, GM-C1' },
+  { id: 'MT-9', name: 'Mehndi Swirls', desc: 'Wedding, feminine, bridal.', promptPhrase: 'mehndi henna swirl pattern on decorative elements, intricate vine and dot flowing design, bridal mehandi ornament', bestWith: 'GM-C7, GM-C2' },
+  { id: 'MT-10', name: 'Bel Patta Vine', desc: 'Auspicious, nature-devotional.', promptPhrase: 'bel leaf vine creeper border pattern, sacred bilva leaf chain, organic trailing leaf ornament', bestWith: 'GM-C4, GM-C5' },
+];
+
+// Track A only: Customization presets
+const CUSTOM_PRESETS = [
+  { id: 'Basic', name: 'Basic — Restrained Festive', desc: 'Minimal gold accents, matte finish, sparse motifs at corners only, no sparkle. Clean but still Track A.', promptPhrase: 'restrained festive decoration, minimal gold accents at corners only, matte finish, clean sparse composition with breathing space, subtle ornamentation' },
+  { id: 'Medium', name: 'Medium — Balanced Bling', desc: 'Prominent gold borders, satin sheen, motifs at corners + midpoints, moderate sparkle. The sweet spot.', promptPhrase: 'balanced festive decoration, prominent gold on borders and accents, satin metallic sheen, motifs at corners and midpoints, moderate sparkle, harmonious ornamental composition' },
+  { id: 'Complex', name: 'Complex — Maximum Desi', desc: 'Dominant gold fills throughout, heavy sparkle, full metallic foil, dense motifs everywhere. Indian wedding card energy.', promptPhrase: 'maximum festive decoration, dominant gold fills throughout all borders and surfaces, heavy sparkle particles covering background, full metallic foil finish, dense ornamental motifs filling every edge and corner, no empty space allowed, Indian wedding card maximalist energy, every surface decorated' },
+];
+
+// Palettes with 3 new Track A exclusive
+const PALETTES_BASE = [
+  { id: 'GM-C1', name: 'Sunrise Gold', vibe: 'Warm, energetic, festive',
+    tracks: { A: { bg: '#FF8C1A', text: '#8B0000', accent: '#FFD700', secondary: '#FF6B00', natural: 'neon marigold with electric saffron and hot gold',
+      roles: { canvas: 'warm vivid orange-amber (#FF8C1A) background', frame: 'golden metallic (#FFD700) frame and antique gold (#DAA520) motifs', illus: 'deep maroon (#8B0000), ivory cream (#FFF8E7), and bright red (#B8001F) — NOT orange', illusAccent: 'red and gold detail accents', textCol: 'dark maroon (#8B0000) or white', banColour: 'orange' }
+    }, B: { bg: '#C2410C', text: '#FEF3C7', accent: '#B45309', secondary: '#84A98C', natural: 'dusty terracotta with ochre and cream' }, C: { bg: '#FDE68A', text: '#1E3A5F', accent: '#0E7490', secondary: '#FEFCE8', natural: 'pale morning yellow with deep navy' }, D: { bg: '#FACC15', text: '#7C2D12', accent: '#FB7185', secondary: '#A7F3D0', natural: 'bright sunny yellow' } } },
+  { id: 'GM-C2', name: 'Soft Dawn', vibe: 'Personal, gentle, family',
+    tracks: { A: { bg: '#F97316', text: '#7C2D12', accent: '#FBBF24', secondary: '#FDE68A', natural: 'warm orange with golden amber',
+      roles: { canvas: 'warm orange (#F97316) background', frame: 'amber gold (#FBBF24) frame and pale golden (#FDE68A) motifs', illus: 'rich earthy brown (#7C2D12) and pale gold (#FDE68A) — NOT orange', illusAccent: 'golden accent details', textCol: 'dark brown (#7C2D12)', banColour: 'orange' }
+    }, B: { bg: '#FDE8D8', text: '#78350F', accent: '#FCA5A5', secondary: '#E7E5E4', natural: 'soft peachy cream with blush rose' }, C: { bg: '#FEF3C7', text: '#44403C', accent: '#D6BCFA', secondary: '#F5F5F4', natural: 'warm parchment' }, D: { bg: '#FECDD3', text: '#881337', accent: '#FDE68A', secondary: '#A7F3D0', natural: 'pink blush' } } },
+  { id: 'GM-C3', name: 'Morning Sky', vibe: 'Fresh, uplifting, motivational',
+    tracks: { A: { bg: '#3B82F6', text: '#FFFFFF', accent: '#FBBF24', secondary: '#1E40AF', natural: 'vivid sky blue with gold accents',
+      roles: { canvas: 'vivid sky blue (#3B82F6) background', frame: 'rich gold (#FFD700) frame — classic blue-gold royal contrast', illus: 'white (#FFFFFF) and warm gold (#FBBF24) — NOT blue', illusAccent: 'navy blue accents for depth', textCol: 'white or gold', banColour: 'blue' }
+    }, B: { bg: '#BFDBFE', text: '#1E3A5F', accent: '#94A3B8', secondary: '#F1F5F9', natural: 'soft sky blue with slate grey' }, C: { bg: '#1E3A5F', text: '#E2E8F0', accent: '#0E7490', secondary: '#0F172A', natural: 'deep navy with teal' }, D: { bg: '#38BDF8', text: '#0C4A6E', accent: '#FFFFFF', secondary: '#A7F3D0', natural: 'bright sky blue' } } },
+  { id: 'GM-C4', name: 'Fresh Garden', vibe: 'Natural, peaceful, wellness',
+    tracks: { A: { bg: '#15803D', text: '#FEF08A', accent: '#FFD700', secondary: '#166534', natural: 'deep emerald with gold highlights',
+      roles: { canvas: 'deep emerald green (#15803D) background', frame: 'gold (#FFD700) frame — jewel-tone contrast', illus: 'warm gold (#FEF08A), cream (#FFF8E7), and pale yellow — NOT green', illusAccent: 'dark green shadow details', textCol: 'gold or pale yellow', banColour: 'green' }
+    }, B: { bg: '#D1FAE5', text: '#064E3B', accent: '#A7F3D0', secondary: '#ECFDF5', natural: 'sage mint with deep forest' }, C: { bg: '#064E3B', text: '#D1FAE5', accent: '#0E7490', secondary: '#022C22', natural: 'deep forest with mint' }, D: { bg: '#4ADE80', text: '#14532D', accent: '#FDE68A', secondary: '#FB7185', natural: 'bright lime green' } } },
+  { id: 'GM-C5', name: 'Sacred Saffron', vibe: 'Devotional, traditional, spiritual',
+    tracks: { A: { bg: '#D97706', text: '#7F1D1D', accent: '#FFD700', secondary: '#B45309', natural: 'rich saffron gold with metallic gold',
+      roles: { canvas: 'rich warm saffron (#D97706) background', frame: 'gold (#FFD700) and deep maroon (#7F1D1D) frame — devotional gravitas', illus: 'deep maroon (#7F1D1D) and cream (#FEF3C7) — NOT saffron/yellow', illusAccent: 'gold sacred accents', textCol: 'deep maroon', banColour: 'saffron yellow' }
+    }, B: { bg: '#FEF3C7', text: '#7F1D1D', accent: '#D97706', secondary: '#FDE68A', natural: 'warm saffron cream with maroon' }, C: { bg: '#FEF3C7', text: '#44403C', accent: '#92400E', secondary: '#F5F5F4', natural: 'pale saffron' }, D: { bg: '#FDE68A', text: '#92400E', accent: '#FB923C', secondary: '#FEF9C3', natural: 'sunny saffron' } } },
+  { id: 'GM-C6', name: 'Minimal White', vibe: 'Clean, modern, versatile',
+    tracks: { A: { bg: '#F9FAFB', text: '#1F2937', accent: '#FFD700', secondary: '#F59E0B', natural: 'clean white with gold accents',
+      roles: { canvas: 'clean white (#F9FAFB) background', frame: 'gold (#FFD700) frame on white — elegant contrast', illus: 'warm orange (#F59E0B) and coral (#F87171) — vivid on white', illusAccent: 'gold accents', textCol: 'dark charcoal (#1F2937)', banColour: 'white monochrome' }
+    }, B: { bg: '#F9FAFB', text: '#1F2937', accent: '#64748B', secondary: '#E2E8F0', natural: 'clean white with slate grey' }, C: { bg: '#F9FAFB', text: '#1F2937', accent: '#0E7490', secondary: '#F1F5F9', natural: 'clean white with teal' }, D: { bg: '#F9FAFB', text: '#1F2937', accent: '#F87171', secondary: '#A7F3D0', natural: 'clean white' } } },
+  { id: 'GM-C7', name: 'Hot Pink Festive', vibe: 'Bollywood glamour, shaadi, celebration',
+    tracks: { A: { bg: '#EC4899', text: '#FFFFFF', accent: '#FBBF24', secondary: '#BE185D', natural: 'hot pink with gold and magenta, Bollywood glamour festive',
+      roles: { canvas: 'vivid hot pink (#EC4899) background', frame: 'gold (#FBBF24) frame on pink — Bollywood glamour', illus: 'white (#FFFFFF), gold (#FFD700), and deep magenta (#BE185D) — NOT pink', illusAccent: 'deep magenta accents for depth', textCol: 'white or gold', banColour: 'pink' }
+    } } },
+  { id: 'GM-C8', name: 'Royal Purple', vibe: 'Regal Dussehra, Navratri, premium festive',
+    tracks: { A: { bg: '#7C3AED', text: '#FEF3C7', accent: '#FFD700', secondary: '#5B21B6', natural: 'vivid purple with gold, regal Dussehra Navratri premium festive',
+      roles: { canvas: 'rich vivid purple (#7C3AED) background', frame: 'gold (#FFD700) frame on purple — regal royalty', illus: 'cream (#FEF3C7), gold (#FFD700), and white (#FFFFFF) — NOT purple', illusAccent: 'deep purple accent shadows', textCol: 'cream or gold', banColour: 'purple' }
+    } } },
+  { id: 'GM-C9', name: 'Peacock Teal', vibe: 'Rich Indian blue-gold, Krishna, monsoon',
+    tracks: { A: { bg: '#0891B2', text: '#FFFFFF', accent: '#FFD700', secondary: '#155E75', natural: 'peacock teal with gold, rich Indian blue-gold Krishna monsoon',
+      roles: { canvas: 'rich peacock teal-blue (#0891B2) background', frame: 'gold (#FFD700) frame on teal — peacock feather energy', illus: 'gold (#FFD700), white (#FFFFFF), and cream (#FEF3C7) — NOT teal/blue', illusAccent: 'deep teal accents for depth', textCol: 'white or gold', banColour: 'teal blue' }
+    } } },
+];
+
+// Fonts (abbreviated for space)
+const FONTS_BASE = [
+  { id: 'GM-F1', name: 'Warm Script', feel: 'Personal & warm', sample: 'Good Morning ☀️',
+    tracks: { A: { heading: 'Great Vibes', body: 'Montserrat', desc: 'Ornamental script with bold sans body. Gold-fill text treatments.' }, B: { heading: 'Kalam', body: 'Mukta', desc: 'Clean handwritten with modern Devanagari body.' }, C: { heading: 'Canela Thin', body: 'Inter', desc: 'Thin elegant serif with minimal sans body.' }, D: { heading: 'Caveat', body: 'Fredoka', desc: 'Hand-drawn marker with rounded playful body.' } } },
+  { id: 'GM-F2', name: 'Bold Display', feel: 'Energetic & confident', sample: 'GOOD MORNING',
+    tracks: { A: { heading: 'Cinzel Decorative', body: 'Poppins Bold', desc: 'Ornamental display with heavy sans body. Drop-shadows allowed.' }, B: { heading: 'Playfair Display', body: 'DM Sans', desc: 'Modern serif display with geometric sans body.' }, C: { heading: 'Bebas Neue', body: 'Oswald', desc: 'Condensed bold caps. Film-poster typography.' }, D: { heading: 'Baloo 2', body: 'Nunito', desc: 'Rounded bold with friendly sans body.' } } },
+  { id: 'GM-F3', name: 'Clean Modern', feel: 'Contemporary & versatile', sample: 'Good Morning',
+    tracks: { A: { heading: 'Poppins Black', body: 'Poppins', desc: 'Heavy sans with shimmer text treatment option.' }, B: { heading: 'Inter SemiBold', body: 'Inter', desc: 'Clean geometric sans. Pure editorial.' }, C: { heading: 'Oswald Medium', body: 'Inter Light', desc: 'Condensed modern with light body.' }, D: { heading: 'Fredoka SemiBold', body: 'Nunito', desc: 'Rounded friendly modern.' } } },
+  { id: 'GM-F4', name: 'Elegant Serif', feel: 'Sophisticated & literary', sample: 'Good Morning',
+    tracks: { A: { heading: 'Samarkan', body: 'Lora', desc: 'Indian decorative serif with classic body. Traditional grandeur.' }, B: { heading: 'Fraunces', body: 'Source Serif', desc: 'Variable-axis modern serif. Sophisticated editorial.' }, C: { heading: 'Bodoni Moda', body: 'Lora', desc: 'High-contrast classic serif. Magazine cover typography.' }, D: { heading: 'Patrick Hand', body: 'Shadows Into Light', desc: 'Handwritten serif-like with playful body.' } } },
+];
+
+// Illustration categories (abbreviated)
+const ILLUS_CATS = [
+  { id: 'GM-I1', name: 'Beverages', icon: '☕', count: 8, items: [
+    { id: 'GM-I1-01', name: 'Steaming Chai Cup', desc: 'Classic ceramic cup with rising steam.', archs: 'All' },
+    { id: 'GM-I1-02', name: 'Clay Kulhad with Chai', desc: 'Earthen kulhad.', archs: 'A1, A2' },
+    { id: 'GM-I1-03', name: 'Filter Coffee (Davara Set)', desc: 'South Indian brass tumbler + davara.', archs: 'A1, A2' },
+    { id: 'GM-I1-04', name: 'Masala Chai with Spices', desc: 'Cup surrounded by cinnamon, cardamom, ginger.', archs: 'A2' },
+    { id: 'GM-I1-05', name: 'Fresh Orange Juice', desc: 'Bright citrus glass.', archs: 'A2, B1' },
+    { id: 'GM-I1-06', name: 'Haldi Doodh', desc: 'Golden milk with turmeric.', archs: 'A2' },
+    { id: 'GM-I1-07', name: 'Floral Ceramic Teapot', desc: 'Decorated teapot with matching cup.', archs: 'A1, A2' },
+    { id: 'GM-I1-08', name: 'Tender Coconut Water', desc: 'Fresh coconut with straw.', archs: 'A2, B1' },
+  ]},
+  { id: 'GM-I2', name: 'Nature & Sky', icon: '🌅', count: 9, items: [
+    { id: 'GM-I2-01', name: 'Sunrise over Green Hills', desc: 'Golden horizon with soft valley mist.', archs: 'All' },
+    { id: 'GM-I2-02', name: 'Sun Rays through Forest', desc: 'Morning light through tree canopy.', archs: 'B1, A2' },
+    { id: 'GM-I2-03', name: 'Dew Drops on Leaf', desc: 'Macro dew drops with sunrise bokeh.', archs: 'A2, B1' },
+    { id: 'GM-I2-04', name: 'Morning Mist over River', desc: 'Still water with golden mist rising.', archs: 'B1' },
+    { id: 'GM-I2-05', name: 'Sunrise over Ocean', desc: 'Wide golden sea, sun on horizon.', archs: 'B1' },
+    { id: 'GM-I2-06', name: 'Mountain Peak at Golden Hour', desc: 'Peak bathed in warm first light.', archs: 'B1, A2' },
+    { id: 'GM-I2-07', name: 'Foggy Valley with Light Shafts', desc: 'God rays through morning fog.', archs: 'B1' },
+    { id: 'GM-I2-08', name: 'Rainbow after Morning Rain', desc: 'Rainbow over green landscape.', archs: 'B1, A2' },
+    { id: 'GM-I2-09', name: 'Dawn Sky Gradient', desc: 'Navy to lavender to peach to gold.', archs: 'B1' },
+  ]},
+  { id: 'GM-I3', name: 'Flowers & Botanicals', icon: '🌸', count: 9, items: [
+    { id: 'GM-I3-01', name: 'Marigold Garland (Genda)', desc: 'Classic Indian garland.', archs: 'A1, A2' },
+    { id: 'GM-I3-02', name: 'Lotus in Full Bloom', desc: 'Open lotus on still water. Sacred, pure.', archs: 'A1, A2, B1' },
+    { id: 'GM-I3-03', name: 'Jasmine Buds (Mogra)', desc: 'White jasmine vine.', archs: 'A1, A2' },
+    { id: 'GM-I3-04', name: 'Hibiscus (Gudhal Phool)', desc: 'Red hibiscus. Morning puja flower.', archs: 'A1, A2' },
+    { id: 'GM-I3-05', name: 'Sunflower Facing Sun', desc: 'Communicates morning energy.', archs: 'A2, B1' },
+    { id: 'GM-I3-06', name: 'Champa / Frangipani', desc: 'Creamy tropical flower.', archs: 'A1, A2' },
+    { id: 'GM-I3-07', name: 'Rose Bud with Dew', desc: 'Fresh rose with morning dew.', archs: 'A2, B1' },
+    { id: 'GM-I3-08', name: 'Petals Floating on Water', desc: 'Rose and marigold petals.', archs: 'B1, A2' },
+    { id: 'GM-I3-09', name: 'Cherry Blossom Branches', desc: 'Soft pink blossoms.', archs: 'A1, A2' },
+  ]},
+  { id: 'GM-I4', name: 'Spiritual & Devotional', icon: '🙏', count: 9, items: [
+    { id: 'GM-I4-01', name: 'Lit Diya with Warm Glow', desc: 'Single diya with halo.', archs: 'All' },
+    { id: 'GM-I4-02', name: 'OM Symbol with Light Rays', desc: 'Gold OM with radiant glow.', archs: 'A1, A2' },
+    { id: 'GM-I4-03', name: 'Hands in Namaste', desc: 'Joined palms.', archs: 'A2' },
+    { id: 'GM-I4-04', name: 'Agarbatti Smoke', desc: 'Incense smoke curl.', archs: 'A1, A2, B1' },
+    { id: 'GM-I4-05', name: 'Tulsi in Brass Pot', desc: 'Sacred tulsi in traditional planter.', archs: 'A1, A2' },
+    { id: 'GM-I4-06', name: 'Temple Bell (Ghanti)', desc: 'Brass temple bell.', archs: 'A1, A2' },
+    { id: 'GM-I4-07', name: 'Shankh (Conch Shell)', desc: 'Conch blown at dawn.', archs: 'A1, A2' },
+    { id: 'GM-I4-08', name: 'Rangoli at Dawn', desc: 'Colourful rangoli with morning light.', archs: 'A1, A2' },
+    { id: 'GM-I4-09', name: 'Peacock Feather', desc: 'Associated with Krishna.', archs: 'A1, A2' },
+  ]},
+  { id: 'GM-I5', name: 'Lifestyle & People', icon: '🧘', count: 8, items: [
+    { id: 'GM-I5-01', name: 'Surya Namaskar Silhouette', desc: 'Sun salutation at sunrise.', archs: 'A2, B1' },
+    { id: 'GM-I5-02', name: 'Meditating Figure at Sunrise', desc: 'Seated meditation silhouette.', archs: 'A2, B1' },
+    { id: 'GM-I5-03', name: 'Open Window with Sunrise', desc: 'Interior frame looking at golden morning sky.', archs: 'A1, A2, B1' },
+    { id: 'GM-I5-04', name: 'Book and Chai on Desk', desc: 'Morning reading setup.', archs: 'A2, B1' },
+    { id: 'GM-I5-05', name: 'Morning Walk in Park', desc: 'Figure on tree-lined path in early light.', archs: 'B1, A2' },
+    { id: 'GM-I5-06', name: 'Watering Plants on Balcony', desc: 'Morning plant routine with soft sunlight.', archs: 'A2, B1' },
+    { id: 'GM-I5-07', name: 'Family at Breakfast', desc: 'Warm group scene.', archs: 'B1' },
+    { id: 'GM-I5-08', name: 'Farmer at Sunrise', desc: 'Silhouette in golden field.', archs: 'B1, A2' },
+  ]},
+  { id: 'GM-I6', name: 'Birds & Wildlife', icon: '🦅', count: 6, items: [
+    { id: 'GM-I6-01', name: 'Bird Flock at Sunrise', desc: 'V-formation in morning sky.', archs: 'B1, A2' },
+    { id: 'GM-I6-02', name: 'Sparrow on Blossom Branch', desc: 'Small sparrow in morning light.', archs: 'A2, A1' },
+    { id: 'GM-I6-03', name: 'Peacock with Fanned Tail', desc: 'Majestic peacock in golden light.', archs: 'A2, B1' },
+    { id: 'GM-I6-04', name: 'Parrot on Mango Branch', desc: 'Green parrot on leafy branch.', archs: 'A2, A1' },
+    { id: 'GM-I6-05', name: 'Sarus Crane in Mist', desc: 'Elegant crane in foggy morning field.', archs: 'B1, A2' },
+    { id: 'GM-I6-06', name: 'Butterflies on Morning Flowers', desc: 'Butterflies on dewy flowers.', archs: 'A2, B1' },
+  ]},
+];
+
+const FRAME_DECO_OPTS = [
+  { id: 'Plain', name: 'Plain', desc: 'Clean border lines only. No motifs, no ornamentation. Modern, minimal.' },
+  { id: 'Simple', name: 'Simple', desc: 'Minimal motifs at corners or midpoints only (1–2 motif types). Subtle traditional touch.' },
+  { id: 'Detailed', name: 'Detailed', desc: 'Full ornate frame — florals, paisleys, mandalas throughout.' },
+];
+
+const ILLUS_SIZE_OPTS = [
+  { id: 'Small', name: 'Small Accent', desc: 'Under 15% of canvas. Decorative accent only — text is the star.' },
+  { id: 'Medium', name: 'Medium', desc: '30–40% of canvas. Balanced — illustration and text share visual weight.' },
+  { id: 'Large', name: 'Large / Hero', desc: '50%+ of canvas. Illustration is the visual anchor.' },
+];
+
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+
+const STATE = {
+  step: 1,
+  archetype: null,
+  step2: null,
+  layout: null,
+  track: null,
+  palette: null,
+  font: null,
+  finish: null,         // Track A only
+  illusRender: null,    // Track A only
+  motifSet: null,       // Track A only
+  customPreset: null,   // Track A only
+  illusCategory: null,
+  illusItem: null,
+  frameDecoration: null,
+  illusSize: null,
+  textInput: '',
+  textLang: 'Hindi',
+};
+
+// Dynamic step flow
+function getSteps() {
+  const isTrackA = STATE.track === 'A';
+  const stepIds = ['template', 'style', 'layout', 'track', 'colour'];
+  if (isTrackA) stepIds.push('finish');
+  stepIds.push('font');
+  stepIds.push('visual');
+  if (isTrackA) stepIds.push('intensity');
+  stepIds.push('text');
+  return stepIds;
+}
+
+const STEP_LABELS = {
+  template: 'Template',
+  style: 'Style',
+  layout: 'Layout',
+  track: 'Track',
+  colour: 'Colour',
+  finish: 'Finish',
+  font: 'Font',
+  visual: 'Visual',
+  intensity: 'Intensity',
+  text: 'Text',
+};
+
+// ═══════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════
+
+function getArchetype() { return ARCHETYPES.find(a => a.id === STATE.archetype); }
+function getTrack() { return TRACKS.find(t => t.id === STATE.track); }
+function getLayout() { return LAYOUTS.find(l => l.id === STATE.layout); }
+
+function getPalette() {
+  const base = PALETTES_BASE.find(p => p.id === STATE.palette);
+  if (!base || !STATE.track) return null;
+  const tv = base.tracks[STATE.track];
+  if (!tv) return null;
+  return { ...base, bg: tv.bg, text: tv.text, accent: tv.accent, secondary: tv.secondary, natural: tv.natural };
+}
+
+function getFont() {
+  const base = FONTS_BASE.find(f => f.id === STATE.font);
+  if (!base || !STATE.track) return null;
+  const tv = base.tracks[STATE.track];
+  return { ...base, heading: tv.heading, body: tv.body, desc: tv.desc };
+}
+
+function getIllusItem() {
+  if (!STATE.illusItem || STATE.illusItem === 'NONE') return null;
+  for (const cat of ILLUS_CATS) {
+    const item = cat.items.find(i => i.id === STATE.illusItem);
+    if (item) return item;
+  }
+  return null;
+}
+
+function canProceed() {
+  const steps = getSteps();
+  const stepIndex = steps.indexOf(getCurrentStepId());
+
+  switch (stepIndex) {
+    case 0: return !!STATE.archetype;
+    case 1: return !!STATE.step2;
+    case 2: return !!STATE.layout;
+    case 3: return !!STATE.track;
+    case 4: return !!STATE.palette;
+    case 5: return STATE.track === 'A' ? !!STATE.finish : true;
+    case 6: return !!STATE.font;
+    case 7: {
+      if (STATE.archetype === 'A1') {
+        return !!STATE.frameDecoration && !!STATE.illusItem && (STATE.illusItem === 'NONE' || !!STATE.illusSize);
+      }
+      if (STATE.archetype === 'A2') {
+        return !!STATE.illusItem && !!STATE.illusSize;
+      }
+      return !!STATE.illusItem;
+    }
+    case 8: return STATE.track === 'A' ? !!STATE.customPreset : true;
+    case 9: return true;
+    default: return false;
+  }
+}
+
+function getCurrentStepId() {
+  const steps = getSteps();
+  return steps[Math.min(STATE.step - 1, steps.length - 1)];
+}
+
+function select(key, value) {
+  STATE[key] = value;
+  if (key === 'archetype') {
+    STATE.step2 = null; STATE.layout = null; STATE.track = null; STATE.palette = null; STATE.font = null;
+    STATE.finish = null; STATE.illusRender = null; STATE.motifSet = null; STATE.customPreset = null;
+    STATE.frameDecoration = null; STATE.illusSize = null; STATE.illusItem = null; STATE.illusCategory = null;
+  }
+  if (key === 'step2') { STATE.layout = null; }
+  if (key === 'track') {
+    STATE.palette = null; STATE.font = null;
+    if (value !== 'A') {
+      STATE.finish = null; STATE.illusRender = null; STATE.motifSet = null; STATE.customPreset = null;
+    }
+  }
+  render();
+}
+
+function jumpTo(step) {
+  if (step <= STATE.step) { STATE.step = step; render(); }
+}
+
+// ═══════════════════════════════════════════════════════════
+// VISUAL DIAGRAMS
+// ═══════════════════════════════════════════════════════════
+
+function layoutDiagram(layout) {
+  const L = LAYOUTS.find(l => l.id === layout);
+  if (!L) return '';
+  const w = 52, h = 74;
+  if (L.type === 'vertical') {
+    const tH = L.textFirst ? 28 : 52, vH = L.textFirst ? 52 : 28;
+    const tY = L.textFirst ? 0 : vH, vY = L.textFirst ? tH : 0;
+    return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="margin-bottom:8px;flex-shrink:0;"><rect width="${w}" height="${h}" rx="4" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/>
+      <rect y="${tY}" width="${w}" height="${tH}" fill="#BFDBFE" rx="2"/><text x="${w/2}" y="${tY+tH/2+4}" text-anchor="middle" font-size="7" font-weight="800" fill="#1E40AF">T</text>
+      <rect y="${vY}" width="${w}" height="${vH}" fill="#FED7AA" rx="2"/><text x="${w/2}" y="${vY+vH/2+4}" text-anchor="middle" font-size="7" font-weight="800" fill="#92400E">V</text></svg>`;
+  }
+  if (L.type === 'overlay') {
+    return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="margin-bottom:8px;flex-shrink:0;"><rect width="${w}" height="${h}" rx="4" fill="#FED7AA" stroke="#CBD5E1" stroke-width="1.5"/>
+      <rect width="${w}" height="${h}" rx="4" fill="rgba(191,219,254,0.65)"/><text x="${w/2}" y="${h/2-4}" text-anchor="middle" font-size="7" font-weight="800" fill="#1E3A5F">T</text>
+      <text x="${w/2}" y="${h/2+10}" text-anchor="middle" font-size="6" font-weight="800" fill="#92400E">V</text></svg>`;
+  }
+  if (L.type === 'horizontal') {
+    const tW = 20, vW = w - tW;
+    const tX = L.textFirst ? 0 : vW, vX = L.textFirst ? tW : 0;
+    return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="margin-bottom:8px;flex-shrink:0;"><rect width="${w}" height="${h}" rx="4" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/>
+      <rect x="${tX}" width="${tW}" height="${h}" fill="#BFDBFE"/><text x="${tX+tW/2}" y="${h/2+4}" text-anchor="middle" font-size="7" font-weight="800" fill="#1E40AF">T</text>
+      <rect x="${vX}" width="${vW}" height="${h}" fill="#FED7AA"/><text x="${vX+vW/2}" y="${h/2+4}" text-anchor="middle" font-size="7" font-weight="800" fill="#92400E">V</text></svg>`;
+  }
+  if (L.type === 'centre-accent') {
+    return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="margin-bottom:8px;flex-shrink:0;"><rect width="${w}" height="${h}" rx="4" fill="#BFDBFE" stroke="#F59E0B" stroke-width="2.5"/>
+      <text x="${w/2}" y="${h/2+3}" text-anchor="middle" font-size="8" font-weight="800" fill="#1E40AF">T</text>
+      <rect x="${w-16}" y="${h-14}" width="12" height="10" rx="2" fill="#FED7AA"/><text x="${w-10}" y="${h-6}" text-anchor="middle" font-size="5" font-weight="800" fill="#92400E">V</text></svg>`;
+  }
+  return '';
+}
+
+function step2Diagram(type) {
+  const w = 38, h = 54;
+  const d = {
+    'frame-full': `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="margin-bottom:6px;"><rect width="${w}" height="${h}" rx="3" fill="#FED7AA" stroke="#CBD5E1" stroke-width="1"/><rect x="5" y="5" width="${w-10}" height="${h-10}" rx="2" fill="#F8FAFC"/></svg>`,
+    'frame-dual': `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="margin-bottom:6px;"><rect width="${w}" height="${h}" rx="3" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1"/><rect width="${w}" height="10" rx="3" fill="#FED7AA"/><rect y="${h-10}" width="${w}" height="10" rx="3" fill="#FED7AA"/></svg>`,
+    'frame-single': `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="margin-bottom:6px;"><rect width="${w}" height="${h}" rx="3" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1"/><rect y="${h-9}" width="${w}" height="9" rx="3" fill="#FED7AA"/></svg>`,
+    'frame-corner': `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="margin-bottom:6px;"><rect width="${w}" height="${h}" rx="3" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1"/><rect width="8" height="8" fill="#FED7AA"/><rect x="${w-8}" width="8" height="8" fill="#FED7AA"/><rect y="${h-8}" width="8" height="8" fill="#FED7AA"/><rect x="${w-8}" y="${h-8}" width="8" height="8" fill="#FED7AA"/></svg>`,
+    'frame-arch': `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="margin-bottom:6px;"><rect width="${w}" height="${h}" rx="3" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1"/><path d="M0,14 Q${w/2},-4 ${w},14 L${w},0 L0,0 Z" fill="#FED7AA"/></svg>`,
+    'weight-light': `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="margin-bottom:6px;"><rect width="${w}" height="${h}" rx="3" fill="#FEF9C3" stroke="#CBD5E1" stroke-width="1"/><circle cx="${w/2}" cy="${h/2}" r="8" fill="#F59E0B" opacity="0.7"/></svg>`,
+    'weight-medium': `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="margin-bottom:6px;"><rect width="${w}" height="${h}" rx="3" fill="#FEF9C3" stroke="#CBD5E1" stroke-width="1"/><circle cx="12" cy="${h/2}" r="6" fill="#F59E0B" opacity="0.7"/><circle cx="26" cy="${h/2-6}" r="5" fill="#EC4899" opacity="0.6"/><circle cx="26" cy="${h/2+8}" r="4" fill="#4ADE80" opacity="0.6"/></svg>`,
+    'weight-dense': `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="margin-bottom:6px;"><rect width="${w}" height="${h}" rx="3" fill="#FEF9C3" stroke="#CBD5E1" stroke-width="1"/><circle cx="10" cy="15" r="5" fill="#F59E0B" opacity="0.7"/><circle cx="28" cy="12" r="4" fill="#EC4899" opacity="0.6"/><circle cx="19" cy="27" r="6" fill="#4ADE80" opacity="0.6"/><circle cx="8" cy="40" r="4" fill="#38BDF8" opacity="0.6"/><circle cx="30" cy="38" r="5" fill="#FB923C" opacity="0.6"/><circle cx="19" cy="${h-8}" r="3" fill="#C084FC" opacity="0.5"/></svg>`,
+    'overlay-full': `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="margin-bottom:6px;"><rect width="${w}" height="${h}" rx="3" fill="#93C5FD"/><rect width="${w}" height="${h}" rx="3" fill="rgba(0,0,0,0.45)"/></svg>`,
+    'overlay-top': `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="margin-bottom:6px;"><rect width="${w}" height="${h}" rx="3" fill="#93C5FD"/><defs><linearGradient id="gt" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="rgba(0,0,0,0.6)"/><stop offset="100%" stop-color="rgba(0,0,0,0.05)"/></linearGradient></defs><rect width="${w}" height="${h}" rx="3" fill="url(#gt)"/></svg>`,
+    'overlay-bottom': `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="margin-bottom:6px;"><rect width="${w}" height="${h}" rx="3" fill="#93C5FD"/><defs><linearGradient id="gb" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="rgba(0,0,0,0.05)"/><stop offset="100%" stop-color="rgba(0,0,0,0.6)"/></linearGradient></defs><rect width="${w}" height="${h}" rx="3" fill="url(#gb)"/></svg>`,
+    'overlay-vignette': `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="margin-bottom:6px;"><rect width="${w}" height="${h}" rx="3" fill="#93C5FD"/><defs><radialGradient id="gv"><stop offset="30%" stop-color="rgba(0,0,0,0.02)"/><stop offset="100%" stop-color="rgba(0,0,0,0.55)"/></radialGradient></defs><rect width="${w}" height="${h}" rx="3" fill="url(#gv)"/></svg>`,
+    'overlay-caption': `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="margin-bottom:6px;"><rect width="${w}" height="${h}" rx="3" fill="#93C5FD" stroke="#CBD5E1" stroke-width="1"/><rect y="${h-12}" width="${w}" height="12" rx="3" fill="rgba(0,0,0,0.5)"/></svg>`,
+  };
+  return d[type] || '';
+}
+
+function finishDiagram(id) {
+  const w = 52, h = 40;
+  const d = {
+    'FN-1': `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="margin-bottom:6px;"><rect width="${w}" height="${h}" rx="4" fill="#FF8C1A"/></svg>`,
+    'FN-2': `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="margin-bottom:6px;"><defs><radialGradient id="fg"><stop offset="0%" stop-color="#FFD700"/><stop offset="100%" stop-color="#FF6B00"/></radialGradient></defs><rect width="${w}" height="${h}" rx="4" fill="url(#fg)"/></svg>`,
+    'FN-3': `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="margin-bottom:6px;"><rect width="${w}" height="${h}" rx="4" fill="#FF8C1A"/>${[...Array(8)].map((_,i)=>`<circle cx="${6+i*6}" cy="${8+((i*7)%24)}" r="1.5" fill="#FFF" opacity="0.8"/>`).join('')}</svg>`,
+    'FN-4': `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="margin-bottom:6px;"><defs><linearGradient id="ff" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#FFD700"/><stop offset="30%" stop-color="#DAA520"/><stop offset="60%" stop-color="#FFD700"/><stop offset="100%" stop-color="#B8860B"/></linearGradient></defs><rect width="${w}" height="${h}" rx="4" fill="url(#ff)"/></svg>`,
+    'FN-5': `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="margin-bottom:6px;"><rect width="${w}" height="${h}" rx="4" fill="#8B4513" opacity="0.7"/>${[...Array(5)].map((_,i)=>`<circle cx="${8+i*10}" cy="${12+((i*9)%20)}" r="${3+i%2}" fill="#FFD700" opacity="0.35"/>`).join('')}</svg>`,
+  };
+  return d[id] || '';
+}
+
+function illusRenderDiagram(id) {
+  const w = 52, h = 44;
+  const d = {
+    'IR-1': `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="margin-bottom:6px;">
+      <rect width="${w}" height="${h}" rx="4" fill="#FFF8E7" stroke="#DAA520" stroke-width="1.5"/>
+      <circle cx="${w/2}" cy="${h/2}" r="10" fill="none" stroke="#FFD700" stroke-width="2"/>
+      <circle cx="${w/2}" cy="${h/2}" r="6" fill="#FFD700" opacity="0.3"/>
+      <circle cx="${w/2}" cy="${h/2}" r="3" fill="#8B0000"/>
+      <line x1="8" y1="8" x2="14" y2="14" stroke="#DAA520" stroke-width="1" opacity="0.5"/>
+      <line x1="${w-8}" y1="8" x2="${w-14}" y2="14" stroke="#DAA520" stroke-width="1" opacity="0.5"/>
+      <line x1="8" y1="${h-8}" x2="14" y2="${h-14}" stroke="#DAA520" stroke-width="1" opacity="0.5"/>
+      <line x1="${w-8}" y1="${h-8}" x2="${w-14}" y2="${h-14}" stroke="#DAA520" stroke-width="1" opacity="0.5"/>
+    </svg>`,
+    'IR-2': `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="margin-bottom:6px;">
+      <rect width="${w}" height="${h}" rx="4" fill="#FEF9C3"/>
+      <circle cx="16" cy="${h/2}" r="9" fill="#DC2626" stroke="#1E293B" stroke-width="2"/>
+      <circle cx="32" cy="${h/2-5}" r="7" fill="#F59E0B" stroke="#1E293B" stroke-width="2"/>
+      <circle cx="30" cy="${h/2+8}" r="5" fill="#16A34A" stroke="#1E293B" stroke-width="2"/>
+    </svg>`,
+    'IR-3': `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="margin-bottom:6px;">
+      <defs><linearGradient id="g3d" x1="0" y1="0" x2="0.7" y2="1"><stop offset="0%" stop-color="#FFF"/><stop offset="50%" stop-color="#FFD700"/><stop offset="100%" stop-color="#B8860B"/></linearGradient></defs>
+      <rect width="${w}" height="${h}" rx="4" fill="#F0F0F0"/>
+      <circle cx="${w/2}" cy="${h/2}" r="12" fill="url(#g3d)" stroke="#DAA520" stroke-width="1"/>
+      <ellipse cx="${w/2-3}" cy="${h/2-3}" rx="4" ry="3" fill="#FFF" opacity="0.5"/>
+    </svg>`,
+  };
+  return d[id] || '';
+}
+
+function motifIcon(id) {
+  const icons = {
+    'MT-1': '\uD83C\uDF3F', 'MT-2': '\u2638\uFE0F', 'MT-3': '\uD83C\uDF3B', 'MT-4': '\uD83C\uDF38',
+    'MT-5': '\uD83E\uDD9A', 'MT-6': '\uD83E\uDEAF', 'MT-7': '\uD83D\uDD36', 'MT-8': '\uD83D\uDED5',
+    'MT-9': '\u270B', 'MT-10': '\uD83C\uDF43',
+  };
+  return icons[id] || '\u2728';
+}
+
+function customPresetDiagram(id) {
+  const w = 120, h = 16;
+  const levels = { Basic: 1, Medium: 3, Complex: 5 };
+  const n = levels[id] || 3;
+  let dots = '';
+  for (let i = 0; i < 5; i++) {
+    const fill = i < n ? '#FFD700' : '#E2E8F0';
+    dots += `<circle cx="${12 + i*24}" cy="${h/2}" r="5" fill="${fill}" stroke="#DAA520" stroke-width="1"/>`;
+  }
+  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="margin:6px 0;">${dots}</svg>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// RENDERING
+// ═══════════════════════════════════════════════════════════
+
+function renderProgress() {
+  const steps = getSteps();
+  const el = document.getElementById('progressSteps');
+  let html = '';
+  steps.forEach((id, i) => {
+    const label = STEP_LABELS[id];
+    const stepNum = i + 1;
+    const isDone = STATE.step > stepNum;
+    const isActive = STATE.step === stepNum;
+    const cls = isDone ? 'done' : isActive ? 'active' : '';
+    html += `<div class="prog-step ${cls}">
+      <div class="num"><span>${stepNum}</span></div>
+      <span class="label">${label}</span>
+    </div>`;
+    if (i < steps.length - 1) {
+      html += `<div class="prog-connector ${isDone ? 'done' : ''}"></div>`;
+    }
+  });
+  el.innerHTML = html;
+}
+
+function renderStep1() {
+  return `
+    <div class="step-header">
+      <div class="step-eyebrow">Step 1 · Template Selection</div>
+      <div class="step-title">Choose Template Style</div>
+      <div class="step-desc">Each template produces a different composition. A1/A2 generate illustrations; B1 generates photographs.</div>
+    </div>
+    <div style="background: #F0F9FF; border: 1px solid #BFDBFE; color: var(--primary); font-size: 13px; font-weight: 600; padding: 10px 16px; border-radius: 10px; margin-bottom: 20px; display: inline-flex; align-items: center; gap: 6px;"><span>🔒</span> Category: Good Morning</div>
+    <div class="options-grid cols-3">
+      ${ARCHETYPES.map(a => `
+        <div class="opt-card ${STATE.archetype === a.id ? 'selected' : ''}" onclick="select('archetype','${a.id}')">
+          <div class="opt-icon">${a.icon}</div>
+          <div class="opt-code">${a.codeName}</div>
+          <div class="opt-name">${a.name}</div>
+          <div class="opt-desc">${a.desc}</div>
+        </div>
+      `).join('')}
+    </div>`;
+}
+
+function renderStep2() {
+  const arch = getArchetype();
+  const options = STEP2_OPTIONS[arch.step2Key];
+  const cols = Math.min(options.length, 5);
+  return `
+    <div class="step-header">
+      <div class="step-eyebrow">Step 2 · ${arch.codeName}</div>
+      <div class="step-title">${arch.step2Label}</div>
+      <div class="step-desc">This choice is specific to ${arch.name}. It determines the primary structural element.</div>
+    </div>
+    <div class="options-grid cols-${cols}">
+      ${options.map(o => `
+        <div class="opt-card ${STATE.step2 === o.id ? 'selected' : ''}" onclick="select('step2','${o.id}')">
+          ${step2Diagram(o.diagramType)}
+          <div class="opt-code">${o.id}</div>
+          <div class="opt-name">${o.name}</div>
+          <div class="opt-desc">${o.desc}</div>
+        </div>
+      `).join('')}
+    </div>`;
+}
+
+function renderStep3() {
+  return `
+    <div class="step-header">
+      <div class="step-eyebrow">Step 3 · Layout Placement</div>
+      <div class="step-title">Choose Layout</div>
+      <div class="step-desc">Where do text and visuals sit on the canvas?</div>
+    </div>
+    <div class="options-grid cols-3">
+      ${LAYOUTS.map(l => {
+        const compat = LAYOUT_COMPAT[STATE.archetype]?.[STATE.step2]?.[l.id] || 'ok';
+        const compatClass = compat === 'best' ? 'recommended' : compat === 'caution' ? 'caution' : compat === 'ok' ? 'compatible' : '';
+        return `
+        <div class="opt-card ${STATE.layout === l.id ? 'selected' : ''} ${compatClass}" onclick="select('layout','${l.id}')">
+          ${layoutDiagram(l.id)}
+          <div class="opt-code">${l.id}</div>
+          <div class="opt-name">${l.name}</div>
+          <div class="opt-desc">${l.desc}</div>
+        </div>`;
+      }).join('')}
+    </div>`;
+}
+
+function renderStep4() {
+  return `
+    <div class="step-header">
+      <div class="step-eyebrow">Step 4 · Track Selection</div>
+      <div class="step-title">Choose Design Track</div>
+      <div class="step-desc">Each track is a complete visual philosophy. Palettes, fonts, and illustrations lock into the track's aesthetic.</div>
+    </div>
+    <div class="options-grid cols-2">
+      ${TRACKS.map(t => `
+        <div class="opt-card ${STATE.track === t.id ? 'selected' : ''}" onclick="select('track','${t.id}')">
+          <div class="opt-icon">${t.icon}</div>
+          <div class="opt-code">${t.id}</div>
+          <div class="opt-name">${t.name}</div>
+          <div class="opt-desc">${t.desc}</div>
+          <div class="opt-desc" style="margin-top: 8px; font-size: 11px; font-weight: 600; color: var(--accent);">${t.tagline}</div>
+        </div>
+      `).join('')}
+    </div>`;
+}
+
+function renderStep5() {
+  const validPalettes = STATE.track === 'A'
+    ? PALETTES_BASE.filter(p => p.tracks[STATE.track])
+    : PALETTES_BASE.filter(p => p.tracks[STATE.track]);
+
+  return `
+    <div class="step-header">
+      <div class="step-eyebrow">Step 5 · Colour Palette</div>
+      <div class="step-title">Choose Colour Palette</div>
+      <div class="step-desc">Track ${STATE.track} has ${validPalettes.length} colour families to choose from.</div>
+    </div>
+    <div class="options-grid cols-3">
+      ${validPalettes.map(p => {
+        const tv = p.tracks[STATE.track];
+        return `
+        <div class="opt-card palette-card ${STATE.palette === p.id ? 'selected' : ''}" onclick="select('palette','${p.id}')">
+          <div class="palette-swatch-row">
+            <div class="swatch" style="background: ${tv.bg};"></div>
+            <div class="swatch" style="background: ${tv.accent};"></div>
+            <div class="swatch" style="background: ${tv.secondary};"></div>
+          </div>
+          <div class="palette-name">${p.name}</div>
+          <div class="palette-id">${p.id}</div>
+          <div class="palette-vibe">${tv.natural}</div>
+        </div>`;
+      }).join('')}
+    </div>`;
+}
+
+function renderStep6() {
+  if (STATE.track !== 'A') {
+    // Font step (was step 6, now continues)
+    return renderStepFont();
+  }
+  // Track A: Finish step
+  return `
+    <div class="step-header">
+      <div class="step-eyebrow">Step 6 · Track A Finish</div>
+      <div class="step-title">Background Treatment</div>
+      <div class="step-desc">How should the background surface be rendered? Same colour, dramatically different feel.</div>
+    </div>
+    <div class="options-grid cols-5">
+      ${FINISH_OPTIONS.map(f => `
+        <div class="opt-card ${STATE.finish === f.id ? 'selected' : ''}" onclick="select('finish','${f.id}')">
+          ${finishDiagram(f.id)}
+          <div class="opt-code">${f.id}</div>
+          <div class="opt-name">${f.name}</div>
+          <div class="opt-desc">${f.desc}</div>
+        </div>
+      `).join('')}
+    </div>`;
+}
+
+function renderStepFont() {
+  return `
+    <div class="step-header">
+      <div class="step-eyebrow">Step ${STATE.track === 'A' ? 7 : 6} · Font Family</div>
+      <div class="step-title">Choose Font Pairing</div>
+      <div class="step-desc">Heading + body font. Locked to track ${STATE.track}.</div>
+    </div>
+    <div class="options-grid cols-2">
+      ${FONTS_BASE.map(f => {
+        const tv = f.tracks[STATE.track];
+        return `
+        <div class="opt-card ${STATE.font === f.id ? 'selected' : ''}" onclick="select('font','${f.id}')">
+          <div style="font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--primary);">${f.sample}</div>
+          <div class="opt-code">${f.id}</div>
+          <div class="opt-name">${f.name}</div>
+          <div class="opt-desc">${tv.desc}</div>
+        </div>`;
+      }).join('')}
+    </div>`;
+}
+
+function renderStep7() {
+  if (STATE.track === 'A') {
+    return renderStepVisual();
+  } else {
+    return renderStepVisual();
+  }
+}
+
+function renderStepVisual() {
+  const stepNum = STATE.track === 'A' ? 8 : 7;
+  const isA = STATE.track === 'A';
+
+  let html = `
+    <div class="step-header">
+      <div class="step-eyebrow">Step ${stepNum} · Visual Elements</div>
+      <div class="step-title">Illustration & Frame Setup</div>
+      <div class="step-desc">Pick illustration, decoration, size, and rendering styles.</div>
+    </div>`;
+
+  if (isA) {
+    html += `
+      <div class="sub-section">
+        <div class="sub-section-header">
+          <div class="sub-section-num">1</div>
+          <div class="sub-section-title">Illustration Rendering</div>
+          <div class="sub-section-tag">Track A Only</div>
+        </div>
+        <div class="options-grid cols-3">
+          ${ILLUS_RENDER_OPTIONS.map(ir => `
+            <div class="opt-card ${STATE.illusRender === ir.id ? 'selected' : ''}" onclick="select('illusRender','${ir.id}')">
+              ${illusRenderDiagram(ir.id)}
+              <div class="opt-code">${ir.id}</div>
+              <div class="opt-name">${ir.name}</div>
+              <div class="opt-desc">${ir.desc}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>`;
+  }
+
+  html += `
+    <div class="sub-section">
+      <div class="sub-section-header">
+        <div class="sub-section-num">${isA ? 2 : 1}</div>
+        <div class="sub-section-title">Illustration Selection</div>
+      </div>
+      <div class="options-grid cols-3">
+        ${ILLUS_CATS.map(cat => `
+          <div class="opt-card ${STATE.illusCategory === cat.id ? 'selected' : ''}" onclick="selectCat('${cat.id}')">
+            <div style="font-size: 24px; margin-bottom: 8px;">${cat.icon}</div>
+            <div class="opt-code">${cat.id}</div>
+            <div class="opt-name">${cat.name}</div>
+            <div class="opt-desc">${cat.count} items</div>
+          </div>
+        `).join('')}
+      </div>`;
+
+  if (STATE.illusCategory) {
+    const cat = ILLUS_CATS.find(c => c.id === STATE.illusCategory);
+    html += `
+      <div style="margin-top: 16px; padding-top: 16px; border-top: 2px solid var(--border);">
+        <div style="font-size: 13px; font-weight: 700; color: var(--muted); margin-bottom: 12px;">Items in ${cat.name}:</div>
+        <div class="options-grid cols-2">
+          ${cat.items.map(item => `
+            <div class="opt-card ${STATE.illusItem === item.id ? 'selected' : ''}" onclick="select('illusItem','${item.id}')">
+              <div class="opt-code">${item.id}</div>
+              <div class="opt-name">${item.name}</div>
+              <div class="opt-desc">${item.desc}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>`;
+  }
+
+  html += `</div>`;
+
+  if (STATE.archetype === 'A1') {
+    html += `
+      <div class="sub-section">
+        <div class="sub-section-header">
+          <div class="sub-section-num">${isA ? 3 : 2}</div>
+          <div class="sub-section-title">Frame Decoration Level</div>
+        </div>
+        <div class="options-grid cols-3">
+          ${FRAME_DECO_OPTS.map(f => `
+            <div class="opt-card ${STATE.frameDecoration === f.id ? 'selected' : ''}" onclick="select('frameDecoration','${f.id}')">
+              <div class="opt-code">${f.id}</div>
+              <div class="opt-name">${f.name}</div>
+              <div class="opt-desc">${f.desc}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>`;
+
+    if (isA && STATE.frameDecoration) {
+      html += `
+        <div class="sub-section">
+          <div class="sub-section-header">
+            <div class="sub-section-num">4</div>
+            <div class="sub-section-title">Motif Set</div>
+            <div class="sub-section-tag">Track A Only</div>
+          </div>
+          <div class="options-grid cols-5">
+            ${MOTIF_OPTIONS.map(m => `
+              <div class="opt-card ${STATE.motifSet === m.id ? 'selected' : ''}" style="padding: 12px; text-align:center;" onclick="select('motifSet','${m.id}')">
+                <div style="font-size:24px;margin-bottom:4px;">${motifIcon(m.id)}</div>
+                <div class="opt-code" style="font-size: 9px;">${m.id}</div>
+                <div class="opt-name" style="font-size: 12px;">${m.name}</div>
+                <div class="opt-desc" style="font-size: 10px; margin-top: 4px;">${m.desc}</div>
+                <div style="font-size:9px;color:#64748B;margin-top:3px;">Best: ${m.bestWith}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>`;
+    }
+  }
+
+  if (STATE.illusItem && STATE.illusItem !== 'NONE') {
+    html += `
+      <div class="sub-section">
+        <div class="sub-section-header">
+          <div class="sub-section-num">${isA && STATE.archetype === 'A1' && STATE.frameDecoration ? 5 : isA ? 4 : 3}</div>
+          <div class="sub-section-title">Illustration Size</div>
+        </div>
+        <div class="options-grid cols-3">
+          ${ILLUS_SIZE_OPTS.map(s => `
+            <div class="opt-card ${STATE.illusSize === s.id ? 'selected' : ''}" onclick="select('illusSize','${s.id}')">
+              <div class="opt-code">${s.id}</div>
+              <div class="opt-name">${s.name}</div>
+              <div class="opt-desc">${s.desc}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>`;
+  }
+
+  return html;
+}
+
+function renderStep8() {
+  if (STATE.track === 'A') {
+    return `
+      <div class="step-header">
+        <div class="step-eyebrow">Step 9 · Customization Intensity</div>
+        <div class="step-title">Design Intensity Preset</div>
+        <div class="step-desc">Master control for Track A. How maximal do you want it? All visual intensity knobs are auto-tuned per preset.</div>
+      </div>
+      <div class="options-grid cols-3">
+        ${CUSTOM_PRESETS.map(cp => `
+          <div class="opt-card ${STATE.customPreset === cp.id ? 'selected' : ''}" onclick="select('customPreset','${cp.id}')">
+            ${customPresetDiagram(cp.id)}
+            <div class="opt-code">${cp.id}</div>
+            <div class="opt-name">${cp.name}</div>
+            <div class="opt-desc">${cp.desc}</div>
+            <div style="margin-top:8px;font-size:10px;color:#64748B;line-height:1.5;">
+              ${cp.id === 'Basic' ? '<b>Gold:</b> Accent only · <b>Sparkle:</b> Off · <b>Finish:</b> Matte · <b>Motifs:</b> Corners only' : ''}
+              ${cp.id === 'Medium' ? '<b>Gold:</b> Prominent · <b>Sparkle:</b> Subtle · <b>Finish:</b> Satin · <b>Motifs:</b> Corners + midpoints' : ''}
+              ${cp.id === 'Complex' ? '<b>Gold:</b> Dominant · <b>Sparkle:</b> Heavy · <b>Finish:</b> Full foil · <b>Motifs:</b> Throughout' : ''}
+            </div>
+          </div>
+        `).join('')}
+      </div>`;
+  } else {
+    return renderStepText();
+  }
+}
+
+function renderStepText() {
+  const stepNum = STATE.track === 'A' ? 10 : 8;
+  return `
+    <div class="step-header">
+      <div class="step-eyebrow">Step ${stepNum} · Text Content</div>
+      <div class="step-title">Add Your Text</div>
+      <div class="step-desc">Greeting message. This will appear as an overlay on the generated poster.</div>
+    </div>
+    <div class="text-input-wrap">
+      <textarea id="textInput" placeholder="E.g., Good Morning, शुभ प्रभात, or custom message..." onchange="STATE.textInput = this.value; render();">${STATE.textInput}</textarea>
+      <div style="margin-top: 12px; display: flex; gap: 8px;">
+        <button style="padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border); background: #fff; color: var(--text); font-size: 12px; font-weight: 600; cursor: pointer;" onclick="STATE.textLang = 'English'; render();" class="${STATE.textLang === 'English' ? 'active' : ''}" style="background: ${STATE.textLang === 'English' ? '#EFF6FF' : '#fff'};">EN</button>
+        <button style="padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border); background: #fff; color: var(--text); font-size: 12px; font-weight: 600; cursor: pointer;" onclick="STATE.textLang = 'Hindi'; render();" class="${STATE.textLang === 'Hindi' ? 'active' : ''}" style="background: ${STATE.textLang === 'Hindi' ? '#EFF6FF' : '#fff'};">HI</button>
+      </div>
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// PROMPT GENERATION
+// ═══════════════════════════════════════════════════════════
+
+function getFinishPrompt() {
+  if (STATE.track !== 'A' || !STATE.finish) return '';
+  const f = FINISH_OPTIONS.find(x => x.id === STATE.finish);
+  return f ? f.promptPhrase : '';
+}
+function getIllusRenderPrompt() {
+  if (STATE.track !== 'A' || !STATE.illusRender) return '';
+  const r = ILLUS_RENDER_OPTIONS.find(x => x.id === STATE.illusRender);
+  return r ? r.promptPhrase : '';
+}
+function getMotifPrompt() {
+  if (STATE.track !== 'A' || !STATE.motifSet) return '';
+  const m = MOTIF_OPTIONS.find(x => x.id === STATE.motifSet);
+  return m ? m.promptPhrase : '';
+}
+function getCustomPresetPrompt() {
+  if (STATE.track !== 'A' || !STATE.customPreset) return '';
+  const c = CUSTOM_PRESETS.find(x => x.id === STATE.customPreset);
+  return c ? c.promptPhrase : '';
+}
+function getFrameDeco() { return FRAME_DECO_OPTS.find(f => f.id === STATE.frameDecoration); }
+function getIllusSize() { return ILLUS_SIZE_OPTS.find(s => s.id === STATE.illusSize); }
+
+function getTextSpaceInstruction(layout, textInput, archetype) {
+  const len = textInput.trim().split(/\s+/).filter(Boolean).length;
+  const size = len === 0 ? 'clean empty' : len <= 5 ? 'small clear' : len <= 15 ? 'clear' : 'generous clear';
+  if (archetype === 'B1') return '';
+  const posMap = {
+    L1: `${size} space in the upper 30% of the image for text overlay`,
+    L2: `${size} central area with softened tones for text overlay`,
+    L3: `${size} space on the left half for text overlay, visual anchored right`,
+    L4: `${size} space on the right half for text overlay, visual anchored left`,
+    L5: `${size} space in the lower 25% for text overlay`,
+    L6: `completely empty central zone for text overlay, small illustration at bottom corner only`,
+  };
+  return posMap[layout] || 'clear space for text overlay';
+}
+
+function getColourRoles() {
+  // Returns colour role assignment for Track A palettes
+  const base = PALETTES_BASE.find(p => p.id === STATE.palette);
+  if (!base || STATE.track !== 'A') return null;
+  return base.tracks.A?.roles || null;
+}
+
+function buildColourDirective() {
+  // Builds explicit colour zone assignment for the prompt
+  const roles = getColourRoles();
+  if (!roles) {
+    // Non-Track-A: use simple natural colour description
+    const pal = getPalette();
+    return pal ? pal.natural : 'warm morning tones';
+  }
+  // Track A: explicit zone-by-zone colour assignment
+  return `${roles.canvas}. Frame and border motifs rendered in ${roles.frame}, clearly distinct from background. Illustration subject rendered in ${roles.illus} with ${roles.illusAccent} — the illustration must NOT be ${roles.banColour}, it must contrast sharply against the background. White (#FFFFFF) sparkle particle highlights`;
+}
+
+function buildSubjectLine() {
+  const { archetype, step2, layout, frameDecoration } = STATE;
+  const illusItem = getIllusItem();
+  const illusSize = getIllusSize();
+  const isTrackA = STATE.track === 'A';
+  const renderStyle = isTrackA ? getIllusRenderPrompt() : (TRACKS.find(t=>t.id===STATE.track)?.illusStyle || '');
+  const motifPhrase = isTrackA ? getMotifPrompt() : '';
+  const finishPhrase = isTrackA ? getFinishPrompt() : '';
+  const customPhrase = isTrackA ? getCustomPresetPrompt() : '';
+  const trackData = getTrack();
+  const colourDirective = buildColourDirective();
+
+  const overlayDescs = {
+    O1: 'moody cinematic atmosphere', O2: 'bright top-lit morning atmosphere',
+    O3: 'warm golden morning atmosphere', O4: 'centrally lit diffused morning light',
+    O5: 'warm bright morning atmosphere with rich depth',
+  };
+
+  if (archetype === 'A1') {
+    const frameShapes = { F1:'rectangular border frame running along all four edges of the canvas', F2:'horizontal decorative band frame at the top and bottom edges', F3:'single decorative band along the bottom edge', F4:'ornamental decorative accents at all four corners of the canvas', F5:'curved arch canopy framing the top of the canvas with decorative side patches' };
+    const decoStyle = getFrameDeco();
+    const decoPhrase = decoStyle ? decoStyle.promptPhrase : 'clean border';
+    const frameDesc = `${frameShapes[step2] || 'decorative border frame'}, ${decoPhrase}`;
+    const item = illusItem ? illusItem.name.toLowerCase() : null;
+    const sizePhrase = illusSize ? `, ${illusSize.promptPhrase}` : '';
+    const renderPhrase = renderStyle ? `, rendered in ${renderStyle}` : '';
+    const motifPart = motifPhrase ? `, ${motifPhrase}` : '';
+    const finishPart = finishPhrase ? `, ${finishPhrase}` : '';
+    const customPart = customPhrase ? `, ${customPhrase}` : '';
+
+    if (!item) return `${frameDesc}${motifPart}, ${colourDirective}${finishPart}, no illustration, clean open canvas for text${customPart}`;
+    if (layout === 'L6') return `${frameDesc}${motifPart}, ${colourDirective}${finishPart}, single isolated ${item} illustration placed only at the bottom-right corner${renderPhrase}${sizePhrase}, central 60 percent of canvas completely empty and plain for text${customPart}`;
+    return `${frameDesc}${motifPart}, ${colourDirective}${finishPart}, ${item} illustration placed inside the frame in the designated illustration zone${renderPhrase}${sizePhrase}${customPart}`;
+  }
+
+  if (archetype === 'A2') {
+    const item = illusItem ? illusItem.name : 'morning scene';
+    const sizePhrase = illusSize ? illusSize.promptPhrase : 'balanced scale';
+    const renderPhrase = renderStyle ? `rendered in ${renderStyle}` : 'flat 2D illustration';
+    const finishPart = finishPhrase ? `, background treatment: ${finishPhrase}` : '';
+    const customPart = customPhrase ? `, ${customPhrase}` : '';
+    const illusZone = { L1:'placed in the lower 65 percent of the canvas, upper 35 percent left as clean empty space for text overlay', L2:'placed filling the full canvas as a rich illustration background', L3:'placed on the right two-thirds of the canvas, left one-third left as clean empty space for text', L4:'placed on the left two-thirds of the canvas, right one-third left as clean empty space for text', L5:'placed in the upper 65 percent of the canvas, lower 35 percent left as clean empty space for text', L6:'placed only in the bottom corner as a small accent, central zone fully clear for text' };
+    const zone = illusZone[layout] || 'placed in the designated illustration zone';
+    const density = { Light:`${item} as the single primary illustration, no other elements, generous blank space`, Medium:`${item} as the primary element with 2 to 3 complementary small morning motifs such as sunbeams dewdrops or small flowers arranged naturally around it`, Dense:`${item} as the central element surrounded by 5 to 6 varied morning elements such as flowers sunbeams birds leaves and morning dew arranged in a rich festive composition` };
+    return `${density[step2] || density.Medium}, ${renderPhrase}, ${zone}, ${sizePhrase}, ${colourDirective}${finishPart}${customPart}`;
+  }
+
+  if (archetype === 'B1') {
+    const item = illusItem ? illusItem.name : 'golden morning scene';
+    const mood = overlayDescs[step2] || 'warm golden morning light';
+    const photoTreatment = trackData?.photoTreatment || '';
+    const subjectFocus = { L1:`${item} in the lower-centre of the frame with open morning sky or bright background above`, L2:`${item} centred in the frame, surrounded by natural Indian morning setting`, L3:`${item} on the right side of the frame with natural Indian morning setting to the left`, L4:`${item} on the left side of the frame with natural Indian morning setting to the right`, L5:`${item} in the upper-centre of the frame with natural Indian morning setting below`, L6:`${item} centred prominently in the frame, natural morning setting around it` };
+    const focus = subjectFocus[layout] || `${item} as the photographic subject in an Indian morning setting`;
+    return `${focus}, ${mood}, ${photoTreatment}, warm golden morning light, India morning atmosphere, single continuous full-bleed photograph, one unified scene filling the entire 9:16 canvas`;
+  }
+  return illusItem ? illusItem.name : 'morning scene';
+}
+
+function buildStyleLine() {
+  const { archetype, step2, frameDecoration, track } = STATE;
+  const trackData = TRACKS.find(t => t.id === track);
+  const bgStyle = trackData?.bgStyle || '';
+  const ref = trackData?.illusRef || '';
+  if (archetype === 'A1') return `Indian morning aesthetic, ${bgStyle} background, reference: ${ref}`;
+  if (archetype === 'A2') return `2D artwork not photographic, ${bgStyle} background, Indian morning aesthetic, reference: ${ref}`;
+  if (archetype === 'B1') return 'photorealistic photography, DSLR quality, natural lighting, sharp focus, no CGI, no illustration, no graphic design elements, pure photography';
+  return 'flat illustration style';
+}
+
+function buildNegativeTerms() {
+  const { archetype, frameDecoration, layout } = STATE;
+  const base = 'text letters words numbers typography watermarks logos blurry low-quality';
+  const roles = getColourRoles();
+  const banColour = roles ? `${roles.banColour} illustration ${roles.banColour} subject monochrome single-colour illustration` : '';
+
+  if (archetype === 'B1') return `collage composite split panel two photos stacked dual image ${base} illustration graphic design overlay decorative border frame ornament vector art flat design`;
+  if (archetype === 'A2') return `${base} ${banColour} photographic background photo landscape realistic 3D render multiple conflicting styles`;
+  if (archetype === 'A1') {
+    let neg = `${base} ${banColour} photographic background landscape scene photo background imagery`;
+    if (frameDecoration === 'Plain') neg += ' ornate decoration excessive ornamentation motifs on frame';
+    if (layout === 'L6') neg += ' illustration in center element in center background scene';
+    return neg;
+  }
+  return base;
+}
+
+function buildMJPrompt() {
+  const subject = buildSubjectLine();
+  const style = buildStyleLine();
+  const textSpace = getTextSpaceInstruction(STATE.layout, STATE.textInput, STATE.archetype);
+  const negative = buildNegativeTerms();
+  const isPhoto = STATE.archetype === 'B1';
+  // Colour directive is already embedded in subject line for Track A
+  // For non-Track-A, add natural colour description
+  const roles = getColourRoles();
+  const extraColour = (!roles && !isPhoto) ? `, ${getPalette()?.natural || 'warm morning tones'}` : '';
+  const textPart = textSpace ? `, ${textSpace}` : '';
+  const flag = isPhoto ? '--style raw' : '';
+  return `${subject}${extraColour}, ${style}${textPart}, ornate festive Indian greeting poster, high detail 8K, 9:16 portrait format --ar 9:16 --s 400 --no ${negative} ${flag}`.replace(/\s+/g,' ').trim();
+}
+
+function buildLeonardoPrompt() {
+  const subject = buildSubjectLine();
+  const style = buildStyleLine();
+  const textSpace = getTextSpaceInstruction(STATE.layout, STATE.textInput, STATE.archetype);
+  const negative = buildNegativeTerms();
+  const roles = getColourRoles();
+  const extraColour = (!roles && STATE.archetype !== 'B1') ? ` ${getPalette()?.natural || 'warm morning tones'}.` : '';
+  const textPart = textSpace ? ` ${textSpace}.` : '';
+  const prompt = `${subject}. ${style}.${extraColour}${textPart} Ornate festive Indian greeting poster, high detail. Portrait 9:16 format.`.replace(/\s+/g,' ').trim();
+  const neg = negative.replace(/\s+/g, ', ');
+  return { prompt, negative: neg };
+}
+
+function buildFireflyPrompt() {
+  const subject = buildSubjectLine();
+  const style = buildStyleLine();
+  const textSpace = getTextSpaceInstruction(STATE.layout, STATE.textInput, STATE.archetype);
+  const negative = buildNegativeTerms();
+  const roles = getColourRoles();
+  const extraColour = (!roles && STATE.archetype !== 'B1') ? ` ${getPalette()?.natural || 'warm morning tones'}.` : '';
+  const textPart = textSpace ? ` ${textSpace}.` : '';
+  return `${subject}. ${style}.${extraColour}${textPart} Ornate festive Indian greeting poster. Portrait 9:16 format for mobile. Do not include any ${negative.replace(/\s+/g, ', ')} anywhere in the image.`.replace(/\s+/g,' ').trim();
+}
+
+function copyPrompt(id, btn) {
+  const text = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '\u2713 Copied!'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy Prompt'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+function renderOutput() {
+  const mj = buildMJPrompt();
+  const ff = buildFireflyPrompt();
+  const leo = buildLeonardoPrompt();
+  const arch = getArchetype();
+  const pal = getPalette();
+  const lay = getLayout();
+  const fon = getFont();
+  const trk = getTrack();
+  const item = getIllusItem();
+  const isTrackA = STATE.track === 'A';
+  const textNote = STATE.textInput.trim();
+
+  let html = `<div class="output-header"><h2>\u2728 Your Prompts are Ready</h2>
+    <p>Track ${trk?.id} (${trk?.name}). Copy the prompt for your preferred AI image tool.</p>
+    <div class="summary-table">
+      <div class="sum-cell"><div class="sum-label">Template</div><div class="sum-value">${arch?.id || '-'} ${arch?.name || ''}</div></div>
+      <div class="sum-cell"><div class="sum-label">Track</div><div class="sum-value">${trk?.id || '-'} ${trk?.name || ''}</div></div>
+      <div class="sum-cell"><div class="sum-label">Layout</div><div class="sum-value">${lay?.id || '-'} ${lay?.name || ''}</div></div>
+      <div class="sum-cell"><div class="sum-label">Palette</div><div class="sum-value">${pal?.name || '-'}</div></div>
+      ${isTrackA ? `<div class="sum-cell"><div class="sum-label">Finish</div><div class="sum-value">${FINISH_OPTIONS.find(f=>f.id===STATE.finish)?.name || '-'}</div></div>` : ''}
+      <div class="sum-cell"><div class="sum-label">Font</div><div class="sum-value">${fon?.heading || '-'}</div></div>
+      <div class="sum-cell"><div class="sum-label">Visual</div><div class="sum-value">${item?.name || (STATE.illusItem==='NONE'?'None':'-')}</div></div>
+      ${isTrackA ? `<div class="sum-cell"><div class="sum-label">Rendering</div><div class="sum-value">${ILLUS_RENDER_OPTIONS.find(r=>r.id===STATE.illusRender)?.name || '-'}</div></div>` : ''}
+      ${isTrackA ? `<div class="sum-cell"><div class="sum-label">Intensity</div><div class="sum-value">${CUSTOM_PRESETS.find(c=>c.id===STATE.customPreset)?.name?.split(' — ')[0] || '-'}</div></div>` : ''}
+    </div></div>`;
+
+  if (textNote) {
+    const posMap = { L1:'Upper third', L2:'Centred overlay', L3:'Left half', L4:'Right half', L5:'Lower strip', L6:'Central zone' };
+    html += `<div class="text-overlay-box"><h4>\uD83D\uDCDD Text to Overlay Manually</h4>
+      <div class="text-overlay-content">${textNote}</div>
+      <div class="text-overlay-meta">
+        <span class="text-meta-chip">Lang: ${STATE.textLang}</span>
+        <span class="text-meta-chip">Position: ${posMap[STATE.layout] || '-'}</span>
+        <span class="text-meta-chip">Font: ${fon?.heading || '-'}</span>
+        <span class="text-meta-chip">Text colour: ${pal?.text || '-'}</span>
+      </div></div>`;
+  }
+
+  // Midjourney prompt block
+  html += `<div class="prompt-block"><div class="prompt-header"><div class="prompt-platform">
+    <div class="platform-dot" style="background:#000;"></div><div><div class="platform-name">Midjourney</div>
+    <div class="platform-sub">Use with /imagine</div></div></div>
+    <button class="btn-copy" onclick="copyPrompt('mjP',this)">Copy Prompt</button></div>
+    <div class="prompt-body"><div class="prompt-text" id="mjP">${mj}</div>
+    <div class="prompt-note"><strong>Tip:</strong> <code>/imagine</code> then paste. Add <code>--v 6</code> for best quality.</div></div></div>`;
+
+  // Leonardo prompt block
+  if (isTrackA) {
+    html += `<div class="prompt-block"><div class="prompt-header"><div class="prompt-platform">
+      <div class="platform-dot" style="background:#8B5CF6;"></div><div><div class="platform-name">Leonardo.ai</div>
+      <div class="platform-sub">Alchemy ON, PhotoReal OFF</div></div></div>
+      <button class="btn-copy" onclick="copyPrompt('leoP',this)">Copy Prompt</button></div>
+      <div class="prompt-body"><div class="prompt-text" id="leoP">${leo.prompt}</div>
+      <div class="prompt-note"><strong>Negative prompt:</strong> ${leo.negative}</div></div></div>`;
+  }
+
+  // Firefly prompt block
+  html += `<div class="prompt-block"><div class="prompt-header"><div class="prompt-platform">
+    <div class="platform-dot" style="background:#E8613C;"></div><div><div class="platform-name">Adobe Firefly</div>
+    <div class="platform-sub">Content type: ${STATE.archetype==='B1'?'Photo':'Art'}</div></div></div>
+    <button class="btn-copy" onclick="copyPrompt('ffP',this)">Copy Prompt</button></div>
+    <div class="prompt-body"><div class="prompt-text" id="ffP">${ff}</div>
+    <div class="prompt-note"><strong>Tip:</strong> Set output to <strong>Portrait (4:7)</strong>.</div></div></div>`;
+
+  // Negative terms box
+  html += `<div class="negative-box"><h4>\uD83D\uDEAB Negative Terms</h4><div class="negative-text">${buildNegativeTerms()}</div></div>`;
+
+  html += `<button class="reset-btn" onclick="resetTool()">\u21A9 Start Over</button>`;
+  return html;
+}
+
+function resetTool() {
+  Object.assign(STATE, { step:1, archetype:null, step2:null, layout:null, track:null, palette:null, font:null, illusCategory:null, illusItem:null, frameDecoration:null, illusSize:null, finish:null, illusRender:null, motifSet:null, customPreset:null, textInput:'', textLang:'Hindi' });
+  render(); window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ═══════════════════════════════════════════════════════════
+// MAIN RENDER
+// ═══════════════════════════════════════════════════════════
+
+function render() {
+  renderProgress();
+
+  const steps = getSteps();
+  const currentStepIndex = Math.min(STATE.step - 1, steps.length - 1);
+  const currentStepId = steps[currentStepIndex];
+
+  let content = '';
+
+  switch (currentStepId) {
+    case 'template': content = renderStep1(); break;
+    case 'style': content = renderStep2(); break;
+    case 'layout': content = renderStep3(); break;
+    case 'track': content = renderStep4(); break;
+    case 'colour': content = renderStep5(); break;
+    case 'finish': content = renderStep6(); break;
+    case 'font': content = renderStepFont(); break;
+    case 'visual': content = renderStep7(); break;
+    case 'intensity': content = renderStep8(); break;
+    case 'text': content = renderStepText(); break;
+  }
+
+  const isLastStep = currentStepIndex === steps.length - 1;
+
+  content += `
+    <div class="nav-row">
+      <button class="btn btn-secondary" onclick="prevStep()" ${STATE.step===1?'style="visibility:hidden"':''}>← Back</button>
+      ${isLastStep
+        ? `<button class="btn btn-generate" onclick="generateOutput()">\u2728 Generate Prompts</button>`
+        : `<button class="btn btn-primary" onclick="nextStep()" ${!canProceed()?'disabled':''}>Continue →</button>`
+      }
+    </div>
+    <div id="outputSection" class="output-wrap"></div>`;
+
+  document.getElementById('app').innerHTML = content;
+
+  const ta = document.getElementById('textInput');
+  if (ta) ta.value = STATE.textInput;
+}
+
+function nextStep() {
+  if (!canProceed()) return;
+  const steps = getSteps();
+  STATE.step = Math.min(STATE.step + 1, steps.length);
+  window.scrollTo({top:0,behavior:'smooth'});
+  render();
+}
+function prevStep() {
+  STATE.step = Math.max(STATE.step - 1, 1);
+  window.scrollTo({top:0,behavior:'smooth'});
+  render();
+}
+function generateOutput() {
+  render();
+  const el = document.getElementById('outputSection');
+  el.className = 'output-wrap visible';
+  el.innerHTML = renderOutput();
+  el.scrollIntoView({behavior:'smooth'});
+}
+
+function selectCat(catId) {
+  STATE.illusCategory = catId;
+  if (!catId) STATE.illusItem = null;
+  render();
+}
+
+// Initialize on load
+window.addEventListener('load', () => {
+  render();
+  document.getElementById('textInput')?.addEventListener('input', (e) => {
+    STATE.textInput = e.target.value;
+  });
+});
+</script>
+</body>
+</html>
