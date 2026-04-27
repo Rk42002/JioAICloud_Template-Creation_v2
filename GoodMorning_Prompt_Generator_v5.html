@@ -1176,12 +1176,14 @@ function buildPrompt(platform) {
     const d = gatherB1PromptData();
     if (platform === 'Midjourney') return buildB1MJPrompt(d);
     if (platform === 'Leonardo.AI') return buildB1LeonardoPrompt(d);
-    return buildB1FireflyPrompt(d);
+    if (platform === 'Adobe Firefly') return buildB1FireflyPrompt(d);
+    return buildB1GeminiPrompt(d);
   }
   const d = gatherPromptData();
   if (platform === 'Midjourney') return buildMJPrompt(d);
   if (platform === 'Leonardo.AI') return buildLeonardoPrompt(d);
-  return buildFireflyPrompt(d);
+  if (platform === 'Adobe Firefly') return buildFireflyPrompt(d);
+  return buildGeminiPrompt(d);
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -1296,6 +1298,28 @@ function buildB1LeonardoPrompt(d) {
 }
 
 function buildB1FireflyPrompt(d) {
+  // Firefly: concise positive-only prompt, ≤1000 chars. No negatives (Firefly ignores them). Content Type = Photo set in UI.
+  const parts = [];
+  parts.push(`Photorealistic ${d.photoTrack.name} Good Morning poster, 9:16 vertical, full-bleed photograph.`);
+  parts.push(`${d.scenePh}.`);
+  if (d.mood) {
+    let moodShort = d.mood.promptPhrase;
+    if (moodShort.length > 100) moodShort = moodShort.substring(0, 100).replace(/,\s*[^,]*$/, '');
+    parts.push(moodShort + '.');
+  }
+  let aesthetic = d.photoTrack.promptPhrase;
+  if (aesthetic.length > 120) aesthetic = aesthetic.substring(0, 120).replace(/,\s*[^,]*$/, '');
+  parts.push(aesthetic + '.');
+  if (d.intensity) {
+    let cam = d.intensity.promptPhrase;
+    if (cam.length > 100) cam = cam.substring(0, 100).replace(/,\s*[^,]*$/, '');
+    parts.push(cam + '.');
+  }
+  parts.push(`${d.textZonePh}, ${d.overlayPh}, darker area for white text readability.`);
+  return parts.join(' ');
+}
+
+function buildB1GeminiPrompt(d) {
   const lines = [];
 
   lines.push(`A photorealistic ${d.photoTrack.name} style photograph for a Good Morning greeting poster in vertical 9:16 format. The image is a full-bleed photograph that fills the entire canvas — no frames, no borders, no illustration elements.`);
@@ -1433,7 +1457,39 @@ function buildLeonardoNegatives(d) {
 }
 
 function buildFireflyPrompt(d) {
-  // Firefly: structured descriptive sentences — each section maps to a wizard step
+  // Firefly: concise positive-only prompt, ≤1000 chars. No negative prompts. Content Type = Art set in UI.
+  const parts = [];
+  parts.push(`${d.track.name} Good Morning poster, 9:16 vertical.`);
+  parts.push(`Background: ${d.bgPh}${d.finish ? ', ' + d.finish.promptPhrase : ''}.`);
+  if (d.framePh) {
+    let frameShort = d.framePh;
+    if (frameShort.length > 60) frameShort = frameShort.substring(0, 60).replace(/\s+\S*$/, '');
+    parts.push(`Frame: ${frameShort}, decorative only.`);
+  }
+  if (d.overlayPh) parts.push(`${d.overlayPh}.`);
+  if (d.densityPh) parts.push(`${d.densityPh}.`);
+  parts.push(`${d.textZonePh}, illustration ${d.illusPositionPh}.`);
+  if (d.illusItem) {
+    let renderShort = d.renderPh;
+    if (renderShort.length > 80) renderShort = renderShort.substring(0, 80).replace(/,\s*[^,]*$/, '');
+    parts.push(`${d.illusItem.name}: ${d.illusItem.desc}. ${renderShort}, ${d.illusColPh}. ${d.sizePh}.`);
+  }
+  if (d.motifPh) {
+    const motifShort = d.motifPh.length > 60 ? d.motifPh.substring(0, 60).replace(/,\s*[^,]*$/, '') : d.motifPh;
+    parts.push(`Motif: ${motifShort}, edges only.`);
+  }
+  let intShort = d.intensityPh;
+  if (intShort.length > 80) intShort = intShort.substring(0, 80).replace(/,\s*[^,]*$/, '');
+  parts.push(`Intensity: ${intShort}.`);
+  let styleShort = d.stylePh;
+  if (styleShort.length > 80) styleShort = styleShort.substring(0, 80).replace(/,\s*[^,]*$/, '');
+  parts.push(styleShort + '.');
+  if (d.track.id === 'A') parts.push('Sparkle particles.');
+  return parts.join(' ');
+}
+
+function buildGeminiPrompt(d) {
+  // Gemini: verbose structured descriptive sentences — each section maps to a wizard step
   const lines = [];
 
   // Header
@@ -1495,6 +1551,7 @@ function generatePrompts() {
     { name: 'Midjourney', dotColor: '#0891B2' },
     { name: 'Leonardo.AI', dotColor: '#F59E0B' },
     { name: 'Adobe Firefly', dotColor: '#EC4899' },
+    { name: 'Google Gemini', dotColor: '#4285F4' },
   ];
 
   // Pre-generate all prompts and store globally
@@ -1660,7 +1717,7 @@ function exportEvalRow(btn) {
   // Part A columns: Run ID, Timestamp, Evaluator, Archetype, Overlay/Style, Layout, Track,
   //   Palette, Bg Finish, Illustration, Render Style, Frame Deco, Motif,
   //   Scene Main, Scene Supporting, Mood, Intensity, Font,
-  //   Platform (user fills), Full Prompt MJ, Full Prompt Leonardo, Full Prompt Firefly
+  //   Platform (user fills), Full Prompt MJ, Full Prompt Leonardo, Full Prompt Firefly, Full Prompt Gemini
   const cols = [
     runId, timestamp, '', archetype, overlay, layout, track,
     palette, bgFinish, illustration, renderStyle, frameDeco, motif,
@@ -1669,6 +1726,7 @@ function exportEvalRow(btn) {
     (GENERATED_PROMPTS[0] || '').replace(/\t/g, ' ').replace(/\n/g, ' '),
     (GENERATED_PROMPTS[1] || '').replace(/\t/g, ' ').replace(/\n/g, ' '),
     (GENERATED_PROMPTS[2] || '').replace(/\t/g, ' ').replace(/\n/g, ' '),
+    (GENERATED_PROMPTS[3] || '').replace(/\t/g, ' ').replace(/\n/g, ' '),
   ];
 
   const tsv = cols.join('\t');
