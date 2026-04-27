@@ -1577,6 +1577,13 @@ function generatePrompts() {
         ${auditHTML}
       </div>
     </details>
+    <div style="margin-top:16px;padding:14px;background:rgba(22,163,74,0.1);border:1px solid rgba(22,163,74,0.3);border-radius:10px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+      <div>
+        <div style="font-size:13px;font-weight:700;color:#4ADE80;">QA Evaluation Export</div>
+        <div style="font-size:11px;color:#94A3B8;margin-top:2px;">Copies all choices as a tab-separated row — paste directly into the Eval Excel</div>
+      </div>
+      <button onclick="exportEvalRow(this)" style="padding:10px 20px;background:linear-gradient(135deg,#16A34A,#059669);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;letter-spacing:0.3px;">📋 Export Eval Row</button>
+    </div>
   </div>`;
 
   platforms.forEach((p, i) => {
@@ -1607,6 +1614,85 @@ function generatePrompts() {
     outputWrap.classList.add('visible');
     outputWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
+}
+
+function exportEvalRow(btn) {
+  const isB1 = STATE.archetype === 'B1';
+  const runId = 'RUN-' + Date.now().toString(36).toUpperCase();
+  const timestamp = new Date().toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'short' });
+  const archetype = STATE.archetype || '';
+  const step2Opt = getStep2Option();
+  const overlay = step2Opt ? step2Opt.name : '';
+  const layout = getLayout() ? getLayout().name : '';
+  const trackObj = getTrack();
+  const track = trackObj ? trackObj.name : '';
+
+  let palette = '', bgFinish = '', illustration = '', renderStyle = '', frameDeco = '', motif = '';
+  let sceneMain = '', sceneSupporting = '', mood = '', intensity = '';
+
+  if (isB1) {
+    const d = gatherB1PromptData();
+    sceneMain = d.sceneItems.length >= 1 ? d.sceneItems[0].name : '';
+    sceneSupporting = d.sceneItems.slice(1).map(i => i.name).join(', ');
+    const moodOpt = STATE.mood ? B1_MOOD_OPTIONS.find(m => m.id === STATE.mood) : null;
+    mood = moodOpt ? moodOpt.name : '';
+    const intOpt = STATE.customPreset ? B1_INTENSITY_PRESETS.find(p => p.id === STATE.customPreset) : null;
+    intensity = intOpt ? intOpt.name : '';
+  } else {
+    const pal = getPalette();
+    palette = pal ? pal.name : '';
+    const finishOpt = STATE.finish ? getFinishOptions().find(f => f.id === STATE.finish) : null;
+    bgFinish = finishOpt ? finishOpt.name : '';
+    const illusItem = getIllusItem();
+    illustration = illusItem ? illusItem.name : (STATE.illusItem === 'NONE' ? 'None' : '');
+    const illusRenderOpt = STATE.illusRender ? getIllusRenderOptions().find(r => r.id === STATE.illusRender) : null;
+    renderStyle = illusRenderOpt ? illusRenderOpt.name : '';
+    frameDeco = STATE.frameDecoration || '';
+    const motifOpt = STATE.motifSet ? getMotifOptions().find(m => m.id === STATE.motifSet) : null;
+    motif = motifOpt ? motifOpt.name : '';
+    const presetOpt = STATE.customPreset ? getCustomPresets().find(p => p.id === STATE.customPreset) : null;
+    intensity = presetOpt ? presetOpt.name : '';
+  }
+
+  const fontOpt = getFont();
+  const font = fontOpt ? fontOpt.name : '';
+
+  // Build tab-separated row matching Excel columns
+  // Part A columns: Run ID, Timestamp, Evaluator, Archetype, Overlay/Style, Layout, Track,
+  //   Palette, Bg Finish, Illustration, Render Style, Frame Deco, Motif,
+  //   Scene Main, Scene Supporting, Mood, Intensity, Font,
+  //   Platform (user fills), Full Prompt MJ, Full Prompt Leonardo, Full Prompt Firefly
+  const cols = [
+    runId, timestamp, '', archetype, overlay, layout, track,
+    palette, bgFinish, illustration, renderStyle, frameDeco, motif,
+    sceneMain, sceneSupporting, mood, intensity, font,
+    '', // Platform — user fills which one they ran
+    (GENERATED_PROMPTS[0] || '').replace(/\t/g, ' ').replace(/\n/g, ' '),
+    (GENERATED_PROMPTS[1] || '').replace(/\t/g, ' ').replace(/\n/g, ' '),
+    (GENERATED_PROMPTS[2] || '').replace(/\t/g, ' ').replace(/\n/g, ' '),
+  ];
+
+  const tsv = cols.join('\t');
+  navigator.clipboard.writeText(tsv).then(() => {
+    btn.textContent = '✓ Eval Row Copied!';
+    btn.style.background = '#16A34A';
+    setTimeout(() => {
+      btn.textContent = '📋 Export Eval Row';
+      btn.style.background = '';
+    }, 3000);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = tsv;
+    ta.style.position = 'fixed';
+    ta.style.left = '-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.textContent = '✓ Eval Row Copied!';
+    btn.style.background = '#16A34A';
+    setTimeout(() => { btn.textContent = '📋 Export Eval Row'; btn.style.background = ''; }, 3000);
+  });
 }
 
 function copyPromptByIndex(btn, index) {
