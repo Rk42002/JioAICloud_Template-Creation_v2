@@ -1282,30 +1282,16 @@ function buildB1MJPrompt(d) {
 
 function buildB1LeonardoPrompt(d) {
   const lines = [];
-
-  lines.push(`Create a photorealistic ${d.photoTrack.name} style photograph for a Good Morning poster in 9:16 vertical format (1080x1920px). The image must be a full-bleed photograph — no frames, no borders, no illustration elements.`);
-
-  // Scene (main subject + supporting elements)
-  lines.push(`\nScene: ${d.scenePh}.`);
-
-  // Mood (merged lighting + colour)
-  if (d.mood) lines.push(`\nMood: ${d.mood.promptPhrase}.`);
-
-  // Photography Aesthetic
-  lines.push(`\nPhotography Aesthetic (Track ${d.track.id}): ${d.photoTrack.promptPhrase}.`);
-
-  // Camera / Intensity
-  if (d.intensity) lines.push(`\nCamera & Framing: ${d.intensity.promptPhrase}.`);
-
-  // Layout + Overlay
-  lines.push(`\nText Zone: ${d.textZonePh}. The overlay treatment is: ${d.overlayPh}. Leave this zone slightly darker/muted so white text is readable on top.`);
-
-  // Font hint
-  if (d.font) lines.push(`\nText style: White "${d.font.heading}" heading with "${d.font.body}" body text overlaid on the darkened zone.`);
-
-  // Negatives
-  lines.push(`\nNegative prompt: ${d.negs.join(', ')}`);
-
+  lines.push(`Photorealistic ${d.photoTrack.name} photograph, Good Morning poster, 9:16 vertical (1080x1920). Full-bleed photo, no frames, no borders, no illustration.`);
+  lines.push(`Scene: ${d.scenePh}.`);
+  if (d.mood) lines.push(`Mood: ${d.mood.promptPhrase}.`);
+  lines.push(`Aesthetic: ${d.photoTrack.promptPhrase}.`);
+  if (d.intensity) lines.push(`Camera: ${d.intensity.promptPhrase}.`);
+  lines.push(`Text zone: ${d.textZonePh}. Overlay: ${d.overlayPh}. Keep this area darker for white text readability.`);
+  if (d.font) lines.push(`Font: white "${d.font.heading}" heading, "${d.font.body}" body.`);
+  // Compact negatives — keep most critical
+  const coreNegs = ['illustration', 'cartoon', 'painting', 'vector', 'frame', 'border', 'pattern', 'text', 'watermark', 'blurry', 'low quality', 'CGI'];
+  lines.push(`Negative: ${coreNegs.join(', ')}`);
   return lines.join('\n');
 }
 
@@ -1385,52 +1371,65 @@ function buildMJPrompt(d) {
 }
 
 function buildLeonardoPrompt(d) {
-  // Leonardo: structured sections with labels — each maps to a wizard step
+  // Leonardo: compact structured prompt — must stay under 1400 chars
   const lines = [];
+  lines.push(`${d.track.name} Good Morning poster, 9:16 vertical.`);
+  lines.push(`BG: ${d.bgPh}${d.finish ? ', ' + d.finish.promptPhrase : ''}.`);
 
-  // Header
-  lines.push(`Create a Track ${d.track.id}: ${d.track.name} style Good Morning poster in 9:16 vertical format (1080x1350px).`);
-
-  // [Step 5: Colour & Finish]
-  lines.push(`\nBackground & Finish: ${d.bgPh}${d.finish ? ', ' + d.finish.promptPhrase : ''}.`);
-
-  // [Step 1 + 2: Template + Style]
   if (d.framePh) {
-    lines.push(`\nFrame (${d.step2Opt.name}): ${d.framePh}. The frame is a border element that must not overlap the illustration. The frame maintains its own consistent decorative style regardless of how the illustration is rendered.`);
+    let frameShort = d.framePh;
+    if (frameShort.length > 80) frameShort = frameShort.substring(0, 80).replace(/\s+\S*$/, '');
+    lines.push(`Frame: ${frameShort}. No overlap with illustration.`);
   }
-  if (d.overlayPh) lines.push(`\nOverlay (${d.step2Opt.name}): ${d.overlayPh}.`);
-  if (d.densityPh) lines.push(`\nIllustration density (${d.step2Opt.name}): ${d.densityPh}.`);
+  if (d.overlayPh) lines.push(`Overlay: ${d.overlayPh}.`);
+  if (d.densityPh) lines.push(`Density: ${d.densityPh}.`);
 
-  // [Step 3: Layout]
-  lines.push(`\nLayout (${d.layout.name}): ${d.textZonePh}. Illustration ${d.illusPositionPh}.`);
+  lines.push(`Layout: ${d.textZonePh}. Illustration ${d.illusPositionPh}.`);
 
-  // [Step 6: Visual — Illustration + Render + Size + Motif + Guards]
   if (d.illusItem) {
-    lines.push(`\nIllustration: ${d.illusItem.name} — ${d.illusItem.desc}.`);
-    lines.push(`Render style (illustration only): ${d.renderPh}. Coloured in ${d.illusColPh}. The rendering style applies only to the illustration, not to the border or background.`);
-    lines.push(`Size: ${d.sizePh}.`);
-    if (d.ornamentalGuard) lines.push(`Spatial rule: ${d.ornamentalGuard}.`);
-    else if (d.motifBoundary) lines.push(`Spatial rule: ${d.motifBoundary}.`);
+    // Compact render phrase for Leonardo — truncate verbose ornamental descriptions
+    let renderShort = d.renderPh;
+    if (renderShort.length > 120) renderShort = renderShort.substring(0, 120).replace(/,\s*[^,]*$/, '');
+    lines.push(`Subject: ${d.illusItem.name}, ${d.illusItem.desc}`);
+    lines.push(`Render: ${renderShort}, ${d.illusColPh}. ${d.sizePh}.`);
+    // Compact guard — just the essential instruction
+    if (d.ornamentalGuard) lines.push(`${d.illusItem.name} visible, not obscured by decoration.`);
+    else if (d.motifBoundary) lines.push(`Motif edges only, away from illustration.`);
   }
   if (d.motifPh) {
-    lines.push(`\nMotif: ${d.motifPh}${d.motifBoundary ? ' — motif stays in border/edge zones only, not near the illustration' : ''}.`);
+    // Shorten motif — just name and placement
+    const motifShort = d.motifPh.length > 80 ? d.motifPh.substring(0, 80).replace(/,\s*[^,]*$/, '') : d.motifPh;
+    lines.push(`Motif: ${motifShort}${d.motifBoundary ? ', edges only' : ''}.`);
   }
 
-  // [Step 7: Intensity]
-  lines.push(`\nDecoration intensity: ${d.intensityPh}.`);
+  let intShort = d.intensityPh;
+  if (intShort.length > 100) intShort = intShort.substring(0, 100).replace(/,\s*[^,]*$/, '');
+  lines.push(`Intensity: ${intShort}.`);
+  lines.push(`Text: "${d.font.heading}" / "${d.font.body}", ${d.textColPh}, flat.`);
 
-  // [Step 8: Font & Text]
-  lines.push(`\nText style: "${d.font.heading}" heading, "${d.font.body}" body, ${d.textColPh} colour, flat treatment only.`);
+  // Compact style phrase
+  let styleShort = d.stylePh;
+  if (styleShort.length > 100) styleShort = styleShort.substring(0, 100).replace(/,\s*[^,]*$/, '');
+  lines.push(`Style: ${styleShort}.${d.track.id === 'A' ? ' Sparkle particles.' : ''}`);
 
-  // [Track style]
-  lines.push(`\nStyle: ${d.stylePh}.`);
-  if (d.track.id === 'A') lines.push(`White sparkle particles scattered across the composition.`);
-
-  // Negative
-  const negs = buildNegatives();
-  lines.push(`\nNegative prompt: ${negs.join(', ')}`);
+  const coreNegs = buildLeonardoNegatives(d);
+  lines.push(`Negative: ${coreNegs.join(', ')}`);
 
   return lines.join('\n');
+}
+
+function buildLeonardoNegatives(d) {
+  const track = STATE.track;
+  const negs = ['text', 'letters', 'watermarks', 'logos', 'blurry', 'low quality'];
+  if (track === 'A') negs.push('photorealistic', 'minimalism', 'grayscale');
+  if (track === 'B') negs.push('maximalist', 'gold foil', 'sparkle', 'metallic');
+  if (track === 'C') negs.push('ornate', 'gold foil', 'busy', 'vivid', 'gradient');
+  if (track === 'D') negs.push('photorealism', 'ornate', 'gold', 'muted');
+  if (track === 'E') negs.push('harsh', 'neon', 'metallic', 'glitter', 'bold outlines');
+  const palette = getPalette();
+  if (palette?.roles?.banColour) negs.push(`${palette.roles.banColour} illustration`);
+  if (d.illusItem && d.motifPh) negs.push('motif overlapping illustration');
+  return negs;
 }
 
 function buildFireflyPrompt(d) {
