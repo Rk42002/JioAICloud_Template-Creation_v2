@@ -1106,19 +1106,19 @@ function gatherPromptData() {
   let textZonePh = '';
   let illusPositionPh = '';
   if (layout.id === 'L1') {
-    textZonePh = 'clean empty space in the upper 25 percent reserved for text overlay with no decorative elements in the text zone';
+    textZonePh = 'text overlay zone in the upper 25 percent of the canvas with no decorative elements in this area';
     illusPositionPh = 'positioned in the lower portion of the canvas below the text area';
   } else if (layout.id === 'L2') {
-    textZonePh = 'text overlay centred on the canvas with semi-transparent breathing space behind text for legibility';
+    textZonePh = 'text overlay centred on the canvas with semi-transparent breathing space behind it';
     illusPositionPh = 'positioned centrally on the canvas behind the text overlay';
   } else if (layout.id === 'L3') {
-    textZonePh = 'left half clean for text overlay right half anchors the visual';
+    textZonePh = 'left half reserved for text overlay, right half anchors the visual';
     illusPositionPh = 'positioned on the right half of the canvas anchoring the visual weight';
   } else if (layout.id === 'L4') {
-    textZonePh = 'right half clean for text overlay left half anchors the visual';
+    textZonePh = 'right half reserved for text overlay, left half anchors the visual';
     illusPositionPh = 'positioned on the left half of the canvas anchoring the visual weight';
   } else if (layout.id === 'L5') {
-    textZonePh = 'clean empty space in the lower 25 percent reserved for text overlay with no decoration in the text zone';
+    textZonePh = 'text overlay zone in the lower 25 percent of the canvas with no decorative elements in this area';
     illusPositionPh = 'positioned in the upper portion of the canvas above the text area';
   } else if (layout.id === 'L6') {
     textZonePh = 'text occupies the central 60 percent of the canvas as the dominant element';
@@ -1230,14 +1230,14 @@ function gatherB1PromptData() {
   // Layout text zone
   let textZonePh = '';
   if (layout.id === 'L1') textZonePh = 'text overlay zone at the top of the image';
-  else if (layout.id === 'L2') textZonePh = 'text overlay centred on the image';
-  else if (layout.id === 'L3') textZonePh = 'text overlay on the left half of the image';
-  else if (layout.id === 'L4') textZonePh = 'text overlay on the right half of the image';
+  else if (layout.id === 'L2') textZonePh = 'text overlay zone centred on the image';
+  else if (layout.id === 'L3') textZonePh = 'text overlay zone on the left half of the image';
+  else if (layout.id === 'L4') textZonePh = 'text overlay zone on the right half of the image';
   else if (layout.id === 'L5') textZonePh = 'text overlay zone at the bottom of the image';
-  else if (layout.id === 'L6') textZonePh = 'text overlay centred occupying the central area of the image';
+  else if (layout.id === 'L6') textZonePh = 'text overlay zone centred occupying the central area';
 
   // B1 negatives
-  let negs = ['illustration', 'cartoon', 'painting', 'drawing', 'sketch', 'vector', 'clipart', 'frame', 'border', 'decorative pattern', 'motif', 'ornamental', 'text', 'letters', 'words', 'watermarks', 'logos', 'blurry', 'low quality', 'artificial', 'CGI', 'rendered'];
+  let negs = ['text', 'letters', 'words', 'numbers', 'typography', 'illustration', 'cartoon', 'painting', 'drawing', 'sketch', 'vector', 'clipart', 'frame', 'border', 'decorative pattern', 'motif', 'ornamental', 'watermarks', 'logos', 'blurry', 'low quality', 'artificial', 'CGI', 'rendered'];
   if (STATE.track === 'A') negs.push('muted', 'desaturated', 'flat');
   if (STATE.track === 'B') negs.push('oversaturated', 'HDR', 'neon', 'vivid');
   if (STATE.track === 'C') negs.push('colorful', 'saturated', 'busy', 'cluttered');
@@ -1271,9 +1271,6 @@ function buildB1MJPrompt(d) {
   // Overlay
   if (d.overlayPh) parts.push(d.overlayPh);
 
-  // Font hint
-  if (d.font) parts.push(`space for ${d.font.heading} style white text overlay`);
-
   // Format
   parts.push('9:16 portrait format, professional photography, high resolution');
 
@@ -1290,7 +1287,6 @@ function buildB1LeonardoPrompt(d) {
   lines.push(`Aesthetic: ${d.photoTrack.promptPhrase}.`);
   if (d.intensity) lines.push(`Camera: ${d.intensity.promptPhrase}.`);
   lines.push(`Text zone: ${d.textZonePh}. Overlay: ${d.overlayPh}. Keep this area darker for white text readability.`);
-  if (d.font) lines.push(`Font: white "${d.font.heading}" heading, "${d.font.body}" body.`);
   // Compact negatives — keep most critical
   const coreNegs = ['illustration', 'cartoon', 'painting', 'vector', 'frame', 'border', 'pattern', 'text', 'watermark', 'blurry', 'low quality', 'CGI'];
   lines.push(`Negative: ${coreNegs.join(', ')}`);
@@ -1339,9 +1335,6 @@ function buildB1GeminiPrompt(d) {
   // Layout + Overlay
   lines.push(`\nComposition: The image has a ${d.overlayPh}. The ${d.textZonePh} — this area should be slightly darker or muted to ensure white text overlay is readable.`);
 
-  // Font
-  if (d.font) lines.push(`\nText overlay: White ${d.font.heading} heading with ${d.font.body} body text.`);
-
   // Do not include
   lines.push(`\nDo not include: ${d.negs.join(', ')}.`);
 
@@ -1379,9 +1372,6 @@ function buildMJPrompt(d) {
 
   // [Step 7: Intensity]
   parts.push(d.intensityPh);
-
-  // [Step 8: Font + Text]
-  if (d.font) parts.push(`${d.font.heading} style heading text in ${d.textColPh}`);
 
   // [Track style + sparkle + format]
   parts.push(d.stylePh);
@@ -1429,7 +1419,6 @@ function buildLeonardoPrompt(d) {
   let intShort = d.intensityPh;
   if (intShort.length > 100) intShort = intShort.substring(0, 100).replace(/,\s*[^,]*$/, '');
   lines.push(`Intensity: ${intShort}.`);
-  lines.push(`Text: "${d.font.heading}" / "${d.font.body}", ${d.textColPh}, flat.`);
 
   // Compact style phrase
   let styleShort = d.stylePh;
@@ -1444,7 +1433,7 @@ function buildLeonardoPrompt(d) {
 
 function buildLeonardoNegatives(d) {
   const track = STATE.track;
-  const negs = ['text', 'letters', 'watermarks', 'logos', 'blurry', 'low quality'];
+  const negs = ['text', 'letters', 'words', 'numbers', 'typography', 'watermarks', 'logos', 'blurry', 'low quality'];
   if (track === 'A') negs.push('photorealistic', 'minimalism', 'grayscale');
   if (track === 'B') negs.push('maximalist', 'gold foil', 'sparkle', 'metallic');
   if (track === 'C') negs.push('ornate', 'gold foil', 'busy', 'vivid', 'gradient');
@@ -1523,9 +1512,6 @@ function buildGeminiPrompt(d) {
 
   // [Step 7: Intensity]
   lines.push(`\nDecoration intensity: ${d.intensityPh}.`);
-
-  // [Step 8: Font & Text]
-  if (d.font) lines.push(`\nText style: ${d.font.heading} heading with ${d.font.body} body text, coloured in ${d.textColPh}.`);
 
   // [Track style]
   lines.push(`\nStyle reference: ${d.stylePh}.`);
