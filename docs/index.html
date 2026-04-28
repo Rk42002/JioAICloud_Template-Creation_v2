@@ -1317,49 +1317,33 @@ function buildB1LeonardoPrompt(d) {
 }
 
 function buildB1FireflyWithTextPrompt(d) {
-  // Firefly WITH TEXT for B1: concise positive-only, ≤1000 chars. Content Type = Photo set in UI.
+  // Firefly WITH TEXT for B1: hard cap ≤950 chars.
   const parts = [];
   parts.push(`Photorealistic ${d.photoTrack.name} Good Morning poster, 9:16 vertical, full-bleed photograph.`);
-  parts.push(`${d.scenePh}.`);
-  if (d.mood) {
-    let moodShort = d.mood.promptPhrase;
-    if (moodShort.length > 100) moodShort = moodShort.substring(0, 100).replace(/,\s*[^,]*$/, '');
-    parts.push(moodShort + '.');
-  }
-  let aesthetic = d.photoTrack.promptPhrase;
-  if (aesthetic.length > 120) aesthetic = aesthetic.substring(0, 120).replace(/,\s*[^,]*$/, '');
-  parts.push(aesthetic + '.');
-  if (d.intensity) {
-    let cam = d.intensity.promptPhrase;
-    if (cam.length > 100) cam = cam.substring(0, 100).replace(/,\s*[^,]*$/, '');
-    parts.push(cam + '.');
-  }
-  parts.push(`${d.textZonePh}, ${d.overlayPh}, darker area for text readability.`);
-  parts.push(`Include simple clean "Good Morning" text in white, well-placed in the text zone, legible against the photograph.`);
-  return parts.join(' ');
+  parts.push(`${trunc(d.scenePh, 120)}.`);
+  if (d.mood) parts.push(`${trunc(d.mood.promptPhrase, 80)}.`);
+  parts.push(`${trunc(d.photoTrack.promptPhrase, 80)}.`);
+  if (d.intensity) parts.push(`${trunc(d.intensity.promptPhrase, 80)}.`);
+  parts.push(`${trunc(d.textZonePh, 60)}, ${trunc(d.overlayPh, 40)}, darker for readability.`);
+  parts.push(`"Good Morning" text in white, in the text zone, legible.`);
+  let result = parts.join(' ');
+  if (result.length > 950) result = result.substring(0, 950).replace(/\s+\S*$/, '');
+  return result;
 }
 
 function buildB1FireflyNoTextPrompt(d) {
-  // Firefly NO TEXT for B1: concise positive-only, ≤1000 chars. No text in image.
+  // Firefly NO TEXT for B1: hard cap ≤950 chars.
   const parts = [];
-  parts.push(`Photorealistic ${d.photoTrack.name} photograph, 9:16 vertical, full-bleed, purely visual with absolutely no text, no letters, no words anywhere.`);
-  parts.push(`${d.scenePh}.`);
-  if (d.mood) {
-    let moodShort = d.mood.promptPhrase;
-    if (moodShort.length > 100) moodShort = moodShort.substring(0, 100).replace(/,\s*[^,]*$/, '');
-    parts.push(moodShort + '.');
-  }
-  let aesthetic = d.photoTrack.promptPhrase;
-  if (aesthetic.length > 120) aesthetic = aesthetic.substring(0, 120).replace(/,\s*[^,]*$/, '');
-  parts.push(aesthetic + '.');
-  if (d.intensity) {
-    let cam = d.intensity.promptPhrase;
-    if (cam.length > 100) cam = cam.substring(0, 100).replace(/,\s*[^,]*$/, '');
-    parts.push(cam + '.');
-  }
-  parts.push(`${d.textZonePh} kept slightly darker or muted for manual text overlay later, ${d.overlayPh}.`);
-  parts.push(`No text, no letters, no words, no typography anywhere in the image.`);
-  return parts.join(' ');
+  parts.push(`Photorealistic ${d.photoTrack.name} photograph, 9:16 vertical, full-bleed, no text, no letters, no words.`);
+  parts.push(`${trunc(d.scenePh, 120)}.`);
+  if (d.mood) parts.push(`${trunc(d.mood.promptPhrase, 80)}.`);
+  parts.push(`${trunc(d.photoTrack.promptPhrase, 80)}.`);
+  if (d.intensity) parts.push(`${trunc(d.intensity.promptPhrase, 80)}.`);
+  parts.push(`${trunc(d.textZonePh, 60)} darker for manual text later, ${trunc(d.overlayPh, 40)}.`);
+  parts.push(`Purely visual, no text, no letters, no typography.`);
+  let result = parts.join(' ');
+  if (result.length > 950) result = result.substring(0, 950).replace(/\s+\S*$/, '');
+  return result;
 }
 
 function buildB1GeminiPrompt(d) {
@@ -1497,69 +1481,67 @@ function buildLeonardoNegatives(d) {
   return negs;
 }
 
+// Helper: strip hex codes like (#FF8C1A) from strings to save chars
+function stripHex(s) { return s.replace(/\s*\(#[A-Fa-f0-9]{3,8}\)/g, ''); }
+// Helper: truncate to max chars at last comma
+function trunc(s, max) { if (s.length <= max) return s; return s.substring(0, max).replace(/,\s*[^,]*$/, ''); }
+
 function buildFireflyWithTextPrompt(d) {
-  // Firefly WITH TEXT: concise positive-only prompt, ≤1000 chars. Includes "Good Morning" text instruction.
+  // Firefly WITH TEXT: hard cap ≤950 chars. Includes "Good Morning" text.
   const parts = [];
   parts.push(`${d.track.name} Good Morning poster, 9:16 vertical.`);
-  parts.push(`Background: ${d.bgPh}${d.finish ? ', ' + d.finish.promptPhrase : ''}.`);
-  if (d.framePh) {
-    let frameShort = d.framePh;
-    if (frameShort.length > 60) frameShort = frameShort.substring(0, 60).replace(/\s+\S*$/, '');
-    parts.push(`Frame: ${frameShort}, decorative only.`);
-  }
-  if (d.overlayPh) parts.push(`${d.overlayPh}.`);
-  if (d.densityPh) parts.push(`${d.densityPh}.`);
-  parts.push(`${d.textZonePh}, illustration ${d.illusPositionPh}.`);
+  // BG: strip hex, truncate finish
+  let bg = stripHex(d.bgPh);
+  if (d.finish) { let fin = d.finish.promptPhrase; if (fin.length > 40) fin = trunc(fin, 40); bg += ', ' + fin; }
+  parts.push(`BG: ${bg}.`);
+  if (d.framePh) parts.push(`Frame: ${trunc(d.framePh, 50)}.`);
+  if (d.overlayPh) parts.push(`${trunc(d.overlayPh, 40)}.`);
+  if (d.densityPh) parts.push(`${trunc(d.densityPh, 40)}.`);
+  // Layout: compact
+  const zone = d.textZonePh.includes('upper') ? 'upper' : d.textZonePh.includes('lower') ? 'lower' : d.textZonePh.includes('left') ? 'left' : d.textZonePh.includes('right') ? 'right' : 'centre';
+  parts.push(`Text zone: ${zone} 25%. Illustration: ${zone === 'upper' ? 'lower' : zone === 'lower' ? 'upper' : 'opposite'} area.`);
   if (d.illusItem) {
-    let renderShort = d.renderPh;
-    if (renderShort.length > 80) renderShort = renderShort.substring(0, 80).replace(/,\s*[^,]*$/, '');
-    parts.push(`${d.illusItem.name}: ${d.illusItem.desc}. ${renderShort}, ${d.illusColPh}. ${d.sizePh}.`);
+    let render = trunc(stripHex(d.renderPh), 60);
+    let col = stripHex(d.illusColPh);
+    parts.push(`${d.illusItem.name}: ${d.illusItem.desc}. ${render}, ${col}. ${d.sizePh}.`);
   }
-  if (d.motifPh) {
-    parts.push(d.motifPhFirefly);
-  }
-  let intShort = d.intensityPh;
-  if (intShort.length > 80) intShort = intShort.substring(0, 80).replace(/,\s*[^,]*$/, '');
-  parts.push(`Intensity: ${intShort}.`);
-  let styleShort = d.stylePh;
-  if (styleShort.length > 80) styleShort = styleShort.substring(0, 80).replace(/,\s*[^,]*$/, '');
-  parts.push(styleShort + '.');
+  if (d.motifPh) parts.push(d.motifPhFirefly);
+  parts.push(`${trunc(d.intensityPh, 60)}.`);
+  parts.push(`${trunc(d.stylePh, 60)}.`);
   if (d.track.id === 'A') parts.push('Sparkle particles.');
-  // Text instruction: simple, clean "Good Morning" text
-  parts.push(`Include simple clean "Good Morning" text in a readable decorative font, well-placed in the text zone area, legible and not overlapping the illustration.`);
-  return parts.join(' ');
+  parts.push(`Clean "Good Morning" text in decorative font in the text zone, legible, not overlapping illustration.`);
+  let result = parts.join(' ');
+  if (result.length > 950) result = result.substring(0, 950).replace(/\s+\S*$/, '');
+  return result;
 }
 
 function buildFireflyNoTextPrompt(d) {
-  // Firefly NO TEXT: concise positive-only prompt, ≤1000 chars. Explicitly forbids any text/lettering.
+  // Firefly NO TEXT: hard cap ≤950 chars. No text in image.
   const parts = [];
-  parts.push(`${d.track.name} Good Morning poster, 9:16 vertical, purely visual with absolutely no text, no letters, no words, no numbers anywhere.`);
-  parts.push(`Background: ${d.bgPh}${d.finish ? ', ' + d.finish.promptPhrase : ''}.`);
-  if (d.framePh) {
-    let frameShort = d.framePh;
-    if (frameShort.length > 60) frameShort = frameShort.substring(0, 60).replace(/\s+\S*$/, '');
-    parts.push(`Frame: ${frameShort}, decorative only.`);
-  }
-  if (d.overlayPh) parts.push(`${d.overlayPh}.`);
-  if (d.densityPh) parts.push(`${d.densityPh}.`);
-  parts.push(`Clean empty space in the ${d.textZonePh.includes('upper') ? 'upper' : d.textZonePh.includes('lower') ? 'lower' : d.textZonePh.includes('left') ? 'left' : d.textZonePh.includes('right') ? 'right' : 'centre'} area reserved for manual text overlay later, illustration ${d.illusPositionPh}.`);
+  parts.push(`${d.track.name} Good Morning poster, 9:16 vertical, no text, no letters, no words anywhere.`);
+  // BG: strip hex, truncate finish
+  let bg = stripHex(d.bgPh);
+  if (d.finish) { let fin = d.finish.promptPhrase; if (fin.length > 40) fin = trunc(fin, 40); bg += ', ' + fin; }
+  parts.push(`BG: ${bg}.`);
+  if (d.framePh) parts.push(`Frame: ${trunc(d.framePh, 50)}.`);
+  if (d.overlayPh) parts.push(`${trunc(d.overlayPh, 40)}.`);
+  if (d.densityPh) parts.push(`${trunc(d.densityPh, 40)}.`);
+  // Layout: compact
+  const zone = d.textZonePh.includes('upper') ? 'upper' : d.textZonePh.includes('lower') ? 'lower' : d.textZonePh.includes('left') ? 'left' : d.textZonePh.includes('right') ? 'right' : 'centre';
+  parts.push(`Empty ${zone} area for manual text later. Illustration: ${zone === 'upper' ? 'lower' : zone === 'lower' ? 'upper' : 'opposite'} area.`);
   if (d.illusItem) {
-    let renderShort = d.renderPh;
-    if (renderShort.length > 80) renderShort = renderShort.substring(0, 80).replace(/,\s*[^,]*$/, '');
-    parts.push(`${d.illusItem.name}: ${d.illusItem.desc}. ${renderShort}, ${d.illusColPh}. ${d.sizePh}.`);
+    let render = trunc(stripHex(d.renderPh), 60);
+    let col = stripHex(d.illusColPh);
+    parts.push(`${d.illusItem.name}: ${d.illusItem.desc}. ${render}, ${col}. ${d.sizePh}.`);
   }
-  if (d.motifPh) {
-    parts.push(d.motifPhFirefly);
-  }
-  let intShort = d.intensityPh;
-  if (intShort.length > 80) intShort = intShort.substring(0, 80).replace(/,\s*[^,]*$/, '');
-  parts.push(`Intensity: ${intShort}.`);
-  let styleShort = d.stylePh;
-  if (styleShort.length > 80) styleShort = styleShort.substring(0, 80).replace(/,\s*[^,]*$/, '');
-  parts.push(styleShort + '.');
+  if (d.motifPh) parts.push(d.motifPhFirefly);
+  parts.push(`${trunc(d.intensityPh, 60)}.`);
+  parts.push(`${trunc(d.stylePh, 60)}.`);
   if (d.track.id === 'A') parts.push('Sparkle particles.');
-  parts.push(`No text, no letters, no words, no typography anywhere in the image.`);
-  return parts.join(' ');
+  parts.push(`Purely visual, no text, no letters, no typography.`);
+  let result = parts.join(' ');
+  if (result.length > 950) result = result.substring(0, 950).replace(/\s+\S*$/, '');
+  return result;
 }
 
 function buildGeminiPrompt(d) {
