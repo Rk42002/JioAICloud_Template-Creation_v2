@@ -779,7 +779,10 @@ function renderStep3() {
     ? 'Where should text sit on the photograph? Badges show compatibility with your overlay choice.'
     : 'How should text and visuals be positioned on the canvas?';
 
-  return `<div class="step-header"><div class="step-eyebrow">Step 3 · Layout</div><div class="step-title">Text & Visual Arrangement</div><div class="step-desc">${stepDesc}</div></div><div class="options-grid cols-3">${LAYOUTS.map(l => {
+  // Hide L2 (Text Overlay) for A1 and A2 — only available for B1
+  const filteredLayouts = (STATE.archetype === 'A1' || STATE.archetype === 'A2') ? LAYOUTS.filter(l => l.id !== 'L2') : LAYOUTS;
+
+  return `<div class="step-header"><div class="step-eyebrow">Step 3 · Layout</div><div class="step-title">Text & Visual Arrangement</div><div class="step-desc">${stepDesc}</div></div><div class="options-grid cols-3">${filteredLayouts.map(l => {
     const badge = compat ? compat[l.id] : null;
     const badgeCls = badge === 'best' ? 'recommended' : badge === 'ok' ? 'compatible' : badge === 'caution' ? 'caution' : '';
     return `<div class="opt-card ${STATE.layout === l.id ? 'selected' : ''} ${badgeCls}" onclick="select('layout','${l.id}')"><div>${layoutDiagram(l.id)}</div><div class="opt-name">${l.name}</div><div class="opt-desc">${l.desc}</div></div>`;
@@ -1023,6 +1026,11 @@ function buildNegatives() {
     negs.push('illustration hidden behind decoration', 'illustration merged with ornamental pattern');
   } else if (STATE.illusItem && STATE.illusItem !== 'NONE' && STATE.motifSet) {
     negs.push('illustration hidden behind decoration', 'motif overlapping illustration');
+    if (STATE.archetype === 'A1') {
+      negs.push('motif near illustration', 'motif beside illustration', 'motif around illustration');
+    } else if (STATE.archetype === 'A2') {
+      negs.push('motif on border edges', 'motif on frame');
+    }
   }
 
   // Prevent illustration render style from bleeding into border/frame
@@ -1128,10 +1136,19 @@ function gatherPromptData() {
   let illusColPh = roles.illus || 'contrasting colours';
   let textColPh = roles.textCol || 'high-contrast text colour';
 
-  // Motif phrase (only if not Plain frame)
+  // Motif phrase — archetype-aware placement
   let motifPh = '';
+  let motifPhFirefly = ''; // compact version for Firefly prompts
   if (motif && !(arch.id === 'A1' && STATE.frameDecoration === 'Plain')) {
-    motifPh = motif.promptPhrase;
+    if (arch.id === 'A1') {
+      // A1: motif is STRICTLY on the border frame only — never near or around the illustration
+      motifPh = `${motif.promptPhrase} placed ONLY on the decorative border frame edges, the motif must NOT appear near, around, or beside the illustration — keep the illustration zone completely free of motif elements`;
+      motifPhFirefly = `Motif: ${motif.name} on border frame edges only, completely separated from illustration.`;
+    } else {
+      // A2: motif fills around the illustration or across the overall graphic — NOT on border edges
+      motifPh = `${motif.promptPhrase} scattered around and near the illustration as decorative accents filling the composition, the motif appears around the illustration and across the graphic area, NOT placed on border edges`;
+      motifPhFirefly = `Motif: ${motif.name} scattered around the illustration as decorative accents, not on borders.`;
+    }
   }
 
   // Rendering phrase with colour reinforcement for IR-2
@@ -1146,10 +1163,16 @@ function gatherPromptData() {
     ornamentalGuard = `the ${illusItem.name} must remain clearly visible as the central subject distinct from surrounding ornamentation, decorative elements frame the illustration but do not overlap or obscure it`;
   }
 
-  // Motif boundary enforcement (ALL render styles: keeps motif patterns in border zone, not near illustration)
+  // Motif boundary enforcement — archetype-specific
   let motifBoundary = '';
   if (motifPh && illusItem) {
-    motifBoundary = `${motif.name} motif pattern stays only in the border frame edges not near the illustration`;
+    if (arch.id === 'A1') {
+      // A1: motif stays strictly on border frame, away from illustration
+      motifBoundary = `${motif.name} motif pattern stays ONLY on the border frame edges — it must not appear near, beside, or around the ${illusItem.name} illustration`;
+    } else {
+      // A2: motif floats around illustration but doesn't overlap it
+      motifBoundary = `${motif.name} motif accents appear around the composition near the ${illusItem.name} but do not overlap or obscure it`;
+    }
     if (ornamentalGuard) {
       ornamentalGuard += `, ${motifBoundary}`;
     }
@@ -1166,7 +1189,7 @@ function gatherPromptData() {
   // Preset intensity phrase
   let intensityPh = preset ? preset.promptPhrase : 'balanced composition';
 
-  return { arch, step2Opt, layout, track, palette, font, finish, illusRender, motif, preset, illusItem, illusSize, roles, sizePh, framePh, overlayPh, densityPh, textZonePh, illusPositionPh, bgPh, illusColPh, textColPh, motifPh, renderPh, ornamentalGuard, motifBoundary, stylePh, intensityPh };
+  return { arch, step2Opt, layout, track, palette, font, finish, illusRender, motif, preset, illusItem, illusSize, roles, sizePh, framePh, overlayPh, densityPh, textZonePh, illusPositionPh, bgPh, illusColPh, textColPh, motifPh, motifPhFirefly, renderPh, ornamentalGuard, motifBoundary, stylePh, intensityPh };
 }
 
 function buildPrompt(platform) {
@@ -1174,13 +1197,15 @@ function buildPrompt(platform) {
     const d = gatherB1PromptData();
     if (platform === 'Midjourney') return buildB1MJPrompt(d);
     if (platform === 'Leonardo.AI') return buildB1LeonardoPrompt(d);
-    if (platform === 'Adobe Firefly') return buildB1FireflyPrompt(d);
+    if (platform === 'Firefly (With Text)') return buildB1FireflyWithTextPrompt(d);
+    if (platform === 'Firefly (No Text)') return buildB1FireflyNoTextPrompt(d);
     return buildB1GeminiPrompt(d);
   }
   const d = gatherPromptData();
   if (platform === 'Midjourney') return buildMJPrompt(d);
   if (platform === 'Leonardo.AI') return buildLeonardoPrompt(d);
-  if (platform === 'Adobe Firefly') return buildFireflyPrompt(d);
+  if (platform === 'Firefly (With Text)') return buildFireflyWithTextPrompt(d);
+  if (platform === 'Firefly (No Text)') return buildFireflyNoTextPrompt(d);
   return buildGeminiPrompt(d);
 }
 
@@ -1291,8 +1316,8 @@ function buildB1LeonardoPrompt(d) {
   return lines.join('\n');
 }
 
-function buildB1FireflyPrompt(d) {
-  // Firefly: concise positive-only prompt, ≤1000 chars. No negatives (Firefly ignores them). Content Type = Photo set in UI.
+function buildB1FireflyWithTextPrompt(d) {
+  // Firefly WITH TEXT for B1: concise positive-only, ≤1000 chars. Content Type = Photo set in UI.
   const parts = [];
   parts.push(`Photorealistic ${d.photoTrack.name} Good Morning poster, 9:16 vertical, full-bleed photograph.`);
   parts.push(`${d.scenePh}.`);
@@ -1309,7 +1334,31 @@ function buildB1FireflyPrompt(d) {
     if (cam.length > 100) cam = cam.substring(0, 100).replace(/,\s*[^,]*$/, '');
     parts.push(cam + '.');
   }
-  parts.push(`${d.textZonePh}, ${d.overlayPh}, darker area for white text readability.`);
+  parts.push(`${d.textZonePh}, ${d.overlayPh}, darker area for text readability.`);
+  parts.push(`Include simple clean "Good Morning" text in white, well-placed in the text zone, legible against the photograph.`);
+  return parts.join(' ');
+}
+
+function buildB1FireflyNoTextPrompt(d) {
+  // Firefly NO TEXT for B1: concise positive-only, ≤1000 chars. No text in image.
+  const parts = [];
+  parts.push(`Photorealistic ${d.photoTrack.name} photograph, 9:16 vertical, full-bleed, purely visual with absolutely no text, no letters, no words anywhere.`);
+  parts.push(`${d.scenePh}.`);
+  if (d.mood) {
+    let moodShort = d.mood.promptPhrase;
+    if (moodShort.length > 100) moodShort = moodShort.substring(0, 100).replace(/,\s*[^,]*$/, '');
+    parts.push(moodShort + '.');
+  }
+  let aesthetic = d.photoTrack.promptPhrase;
+  if (aesthetic.length > 120) aesthetic = aesthetic.substring(0, 120).replace(/,\s*[^,]*$/, '');
+  parts.push(aesthetic + '.');
+  if (d.intensity) {
+    let cam = d.intensity.promptPhrase;
+    if (cam.length > 100) cam = cam.substring(0, 100).replace(/,\s*[^,]*$/, '');
+    parts.push(cam + '.');
+  }
+  parts.push(`${d.textZonePh} kept slightly darker or muted for manual text overlay later, ${d.overlayPh}.`);
+  parts.push(`No text, no letters, no words, no typography anywhere in the image.`);
   return parts.join(' ');
 }
 
@@ -1365,8 +1414,7 @@ function buildMJPrompt(d) {
     if (d.ornamentalGuard) parts.push(d.ornamentalGuard);
     else if (d.motifBoundary) parts.push(d.motifBoundary);
   }
-  if (d.motifPh && d.arch.id === 'A1') parts.push(`${d.motifPh} as border decoration`);
-  if (d.motifPh && d.arch.id !== 'A1') parts.push(d.motifPh);
+  if (d.motifPh) parts.push(d.motifPh);
 
   // [Step 7: Intensity]
   parts.push(d.intensityPh);
@@ -1404,14 +1452,16 @@ function buildLeonardoPrompt(d) {
     if (renderShort.length > 120) renderShort = renderShort.substring(0, 120).replace(/,\s*[^,]*$/, '');
     lines.push(`Subject: ${d.illusItem.name}, ${d.illusItem.desc}`);
     lines.push(`Render: ${renderShort}, ${d.illusColPh}. ${d.sizePh}.`);
-    // Compact guard — just the essential instruction
+    // Compact guard — archetype-aware
     if (d.ornamentalGuard) lines.push(`${d.illusItem.name} visible, not obscured by decoration.`);
-    else if (d.motifBoundary) lines.push(`Motif edges only, away from illustration.`);
+    else if (d.motifBoundary) lines.push(d.arch.id === 'A1' ? `Motif on border frame only, NOT near ${d.illusItem.name}.` : `Motif around composition, not overlapping ${d.illusItem.name}.`);
   }
   if (d.motifPh) {
-    // Shorten motif — just name and placement
-    const motifShort = d.motifPh.length > 80 ? d.motifPh.substring(0, 80).replace(/,\s*[^,]*$/, '') : d.motifPh;
-    lines.push(`Motif: ${motifShort}${d.motifBoundary ? ', edges only' : ''}.`);
+    if (d.arch.id === 'A1') {
+      lines.push(`Motif: ${d.motif.name} on border frame edges ONLY, not near illustration.`);
+    } else {
+      lines.push(`Motif: ${d.motif.name} scattered around illustration as accents, not on borders.`);
+    }
   }
 
   let intShort = d.intensityPh;
@@ -1439,12 +1489,16 @@ function buildLeonardoNegatives(d) {
   if (track === 'E') negs.push('harsh', 'neon', 'metallic', 'glitter', 'bold outlines');
   const palette = getPalette();
   if (palette?.roles?.banColour) negs.push(`${palette.roles.banColour} illustration`);
-  if (d.illusItem && d.motifPh) negs.push('motif overlapping illustration');
+  if (d.illusItem && d.motifPh) {
+    negs.push('motif overlapping illustration');
+    if (d.arch.id === 'A1') negs.push('motif near illustration', 'motif beside illustration');
+    if (d.arch.id === 'A2') negs.push('motif on border', 'motif on frame edges');
+  }
   return negs;
 }
 
-function buildFireflyPrompt(d) {
-  // Firefly: concise positive-only prompt, ≤1000 chars. No negative prompts. Content Type = Art set in UI.
+function buildFireflyWithTextPrompt(d) {
+  // Firefly WITH TEXT: concise positive-only prompt, ≤1000 chars. Includes "Good Morning" text instruction.
   const parts = [];
   parts.push(`${d.track.name} Good Morning poster, 9:16 vertical.`);
   parts.push(`Background: ${d.bgPh}${d.finish ? ', ' + d.finish.promptPhrase : ''}.`);
@@ -1462,8 +1516,7 @@ function buildFireflyPrompt(d) {
     parts.push(`${d.illusItem.name}: ${d.illusItem.desc}. ${renderShort}, ${d.illusColPh}. ${d.sizePh}.`);
   }
   if (d.motifPh) {
-    const motifShort = d.motifPh.length > 60 ? d.motifPh.substring(0, 60).replace(/,\s*[^,]*$/, '') : d.motifPh;
-    parts.push(`Motif: ${motifShort}, edges only.`);
+    parts.push(d.motifPhFirefly);
   }
   let intShort = d.intensityPh;
   if (intShort.length > 80) intShort = intShort.substring(0, 80).replace(/,\s*[^,]*$/, '');
@@ -1472,6 +1525,40 @@ function buildFireflyPrompt(d) {
   if (styleShort.length > 80) styleShort = styleShort.substring(0, 80).replace(/,\s*[^,]*$/, '');
   parts.push(styleShort + '.');
   if (d.track.id === 'A') parts.push('Sparkle particles.');
+  // Text instruction: simple, clean "Good Morning" text
+  parts.push(`Include simple clean "Good Morning" text in a readable decorative font, well-placed in the text zone area, legible and not overlapping the illustration.`);
+  return parts.join(' ');
+}
+
+function buildFireflyNoTextPrompt(d) {
+  // Firefly NO TEXT: concise positive-only prompt, ≤1000 chars. Explicitly forbids any text/lettering.
+  const parts = [];
+  parts.push(`${d.track.name} Good Morning poster, 9:16 vertical, purely visual with absolutely no text, no letters, no words, no numbers anywhere.`);
+  parts.push(`Background: ${d.bgPh}${d.finish ? ', ' + d.finish.promptPhrase : ''}.`);
+  if (d.framePh) {
+    let frameShort = d.framePh;
+    if (frameShort.length > 60) frameShort = frameShort.substring(0, 60).replace(/\s+\S*$/, '');
+    parts.push(`Frame: ${frameShort}, decorative only.`);
+  }
+  if (d.overlayPh) parts.push(`${d.overlayPh}.`);
+  if (d.densityPh) parts.push(`${d.densityPh}.`);
+  parts.push(`Clean empty space in the ${d.textZonePh.includes('upper') ? 'upper' : d.textZonePh.includes('lower') ? 'lower' : d.textZonePh.includes('left') ? 'left' : d.textZonePh.includes('right') ? 'right' : 'centre'} area reserved for manual text overlay later, illustration ${d.illusPositionPh}.`);
+  if (d.illusItem) {
+    let renderShort = d.renderPh;
+    if (renderShort.length > 80) renderShort = renderShort.substring(0, 80).replace(/,\s*[^,]*$/, '');
+    parts.push(`${d.illusItem.name}: ${d.illusItem.desc}. ${renderShort}, ${d.illusColPh}. ${d.sizePh}.`);
+  }
+  if (d.motifPh) {
+    parts.push(d.motifPhFirefly);
+  }
+  let intShort = d.intensityPh;
+  if (intShort.length > 80) intShort = intShort.substring(0, 80).replace(/,\s*[^,]*$/, '');
+  parts.push(`Intensity: ${intShort}.`);
+  let styleShort = d.stylePh;
+  if (styleShort.length > 80) styleShort = styleShort.substring(0, 80).replace(/,\s*[^,]*$/, '');
+  parts.push(styleShort + '.');
+  if (d.track.id === 'A') parts.push('Sparkle particles.');
+  parts.push(`No text, no letters, no words, no typography anywhere in the image.`);
   return parts.join(' ');
 }
 
@@ -1506,7 +1593,13 @@ function buildGeminiPrompt(d) {
     if (d.ornamentalGuard) lines.push(`Visibility: The illustration must be clearly visible — ${d.ornamentalGuard}.`);
     else if (d.motifBoundary) lines.push(`Visibility: The ${d.illusItem.name} must be clearly visible — ${d.motifBoundary}.`);
   }
-  if (d.motifPh) lines.push(`\nMotif: ${d.motifPh} appears along the borders${d.motifBoundary ? ', not near the illustration' : ''}.`);
+  if (d.motifPh) {
+    if (d.arch.id === 'A1') {
+      lines.push(`\nMotif: ${d.motifPh}. The motif must appear ONLY on the border frame edges and must NOT appear near, beside, or around the illustration.`);
+    } else {
+      lines.push(`\nMotif: ${d.motifPh}. The motif accents are scattered around and near the illustration, filling the composition — they do NOT appear on the border edges.`);
+    }
+  }
 
   // [Step 7: Intensity]
   lines.push(`\nDecoration intensity: ${d.intensityPh}.`);
@@ -1534,7 +1627,8 @@ function generatePrompts() {
   const platforms = [
     { name: 'Midjourney', dotColor: '#0891B2' },
     { name: 'Leonardo.AI', dotColor: '#F59E0B' },
-    { name: 'Adobe Firefly', dotColor: '#EC4899' },
+    { name: 'Firefly (With Text)', dotColor: '#EC4899' },
+    { name: 'Firefly (No Text)', dotColor: '#D946EF' },
     { name: 'Google Gemini', dotColor: '#4285F4' },
   ];
 
@@ -1694,7 +1788,7 @@ function exportEvalRow(btn) {
   // Part A columns: Run ID, Timestamp, Evaluator, Archetype, Overlay/Style, Layout, Track,
   //   Palette, Bg Finish, Illustration, Render Style, Frame Deco, Motif,
   //   Scene Main, Scene Supporting, Mood, Intensity, Font,
-  //   Platform (user fills), Full Prompt MJ, Full Prompt Leonardo, Full Prompt Firefly, Full Prompt Gemini
+  //   Platform (user fills), Full Prompt MJ, Full Prompt Leonardo, Full Prompt Firefly (With Text), Full Prompt Firefly (No Text), Full Prompt Gemini
   const cols = [
     runId, timestamp, '', archetype, overlay, layout, track,
     palette, bgFinish, illustration, renderStyle, frameDeco, motif,
@@ -1704,6 +1798,7 @@ function exportEvalRow(btn) {
     (GENERATED_PROMPTS[1] || '').replace(/\t/g, ' ').replace(/\n/g, ' '),
     (GENERATED_PROMPTS[2] || '').replace(/\t/g, ' ').replace(/\n/g, ' '),
     (GENERATED_PROMPTS[3] || '').replace(/\t/g, ' ').replace(/\n/g, ' '),
+    (GENERATED_PROMPTS[4] || '').replace(/\t/g, ' ').replace(/\n/g, ' '),
   ];
 
   const tsv = cols.join('\t');
