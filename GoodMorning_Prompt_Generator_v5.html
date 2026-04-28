@@ -562,9 +562,9 @@ const STATE = {
 
 function getSteps() {
   if (STATE.archetype === 'B1') {
-    return ['template', 'style', 'layout', 'track', 'scene_elements', 'mood', 'intensity', 'font_text'];
+    return ['template', 'style', 'layout', 'track', 'scene_elements', 'mood', 'intensity'];
   }
-  return ['template', 'style', 'layout', 'track', 'colour_finish', 'visual', 'intensity', 'font_text'];
+  return ['template', 'style', 'layout', 'track', 'colour_finish', 'visual', 'intensity'];
 }
 
 const STEP_LABELS = {
@@ -575,7 +575,7 @@ const STEP_LABELS = {
   colour_finish: 'Colour & Finish',
   visual: 'Visual',
   intensity: 'Intensity',
-  font_text: 'Font & Text',
+  // font_text step removed — font/text not included in AI prompts
   // B1 Photo Background specific steps
   scene_elements: 'Scene Elements',
   mood: 'Mood',
@@ -650,7 +650,7 @@ function canProceed() {
       return !!STATE.illusSize;
     }
     case 'intensity': return !!STATE.customPreset;
-    case 'font_text': return !!STATE.font;
+    // font_text step removed
     // B1 Photo Background specific steps
     case 'scene_elements': return STATE.sceneElements.length >= 1 && STATE.sceneElements.length <= 3;
     case 'mood': return !!STATE.mood;
@@ -975,7 +975,7 @@ function render() {
     case 'colour_finish': content = renderStepColourFinish(); break;
     case 'visual': content = renderStep8(); break;
     case 'intensity': content = isB1 ? renderB1Intensity() : renderStep9(); break;
-    case 'font_text': content = renderStepFontText(); break;
+    // font_text step removed
     // B1 Photo Background specific steps
     case 'scene_elements': content = renderB1SceneElements(); break;
     case 'mood': content = renderB1Mood(); break;
@@ -993,15 +993,13 @@ function render() {
 function buildSubjectLine() {
   const track = getTrack();
   const palette = getPalette();
-  const font = getFont();
   const layout = getLayout();
 
   const trackName = track.name;
   const paletteName = palette.name;
   const layoutName = layout.name;
-  const fontName = font.name;
 
-  return `Good Morning Poster — ${trackName} · ${paletteName} · ${layoutName} · ${fontName}`;
+  return `Good Morning Poster — ${trackName} · ${paletteName} · ${layoutName}`;
 }
 
 function buildNegatives() {
@@ -1551,7 +1549,6 @@ function generatePrompts() {
 
   if (isB1) {
     const d = gatherB1PromptData();
-    const fontOpt = getFont();
     const moodOpt = STATE.mood ? B1_MOOD_OPTIONS.find(m => m.id === STATE.mood) : null;
     const intensityOpt = STATE.customPreset ? B1_INTENSITY_PRESETS.find(p => p.id === STATE.customPreset) : null;
     const photoTrack = B1_PHOTO_TRACKS[STATE.track];
@@ -1568,8 +1565,6 @@ function generatePrompts() {
       { step: '5b', label: 'Supporting', value: supportEls, section: 'Scene: background elements' },
       { step: '6', label: 'Mood', value: moodOpt ? moodOpt.name : '—', section: 'Mood (light + colour)' },
       { step: '7', label: 'Intensity', value: intensityOpt ? intensityOpt.name : '—', section: 'Camera & Framing' },
-      { step: '8a', label: 'Font', value: fontOpt ? fontOpt.name : '—', section: 'Text style' },
-      { step: '8b', label: 'Text Colour', value: 'White (overlay)', section: 'Text style' },
     ];
   } else {
     const d = gatherPromptData();
@@ -1578,7 +1573,6 @@ function generatePrompts() {
     const motifOpt = STATE.motifSet ? getMotifOptions().find(m => m.id === STATE.motifSet) : null;
     const finishOpt = STATE.finish ? getFinishOptions().find(f => f.id === STATE.finish) : null;
     const presetOpt = STATE.customPreset ? getCustomPresets().find(p => p.id === STATE.customPreset) : null;
-    const fontOpt = getFont();
     const sizeOpt = getIllusSizeLabel();
 
     auditRows = [
@@ -1594,8 +1588,6 @@ function generatePrompts() {
       { step: '6d', label: 'Frame Deco', value: STATE.frameDecoration || '—', section: 'Frame (…)' },
       { step: '6e', label: 'Motif', value: motifOpt ? motifOpt.name : '—', section: 'Motif:' },
       { step: '7', label: 'Intensity', value: presetOpt ? presetOpt.name : '—', section: 'Decoration intensity:' },
-      { step: '8a', label: 'Font', value: fontOpt ? fontOpt.name : '—', section: 'Text style:' },
-      { step: '8b', label: 'Text Colour', value: d.textColPh || '—', section: 'Text style:' },
     ];
   }
 
@@ -1696,8 +1688,7 @@ function exportEvalRow(btn) {
     intensity = presetOpt ? presetOpt.name : '';
   }
 
-  const fontOpt = getFont();
-  const font = fontOpt ? fontOpt.name : '';
+  const font = ''; // font step removed from wizard
 
   // Build tab-separated row matching Excel columns
   // Part A columns: Run ID, Timestamp, Evaluator, Archetype, Overlay/Style, Layout, Track,
