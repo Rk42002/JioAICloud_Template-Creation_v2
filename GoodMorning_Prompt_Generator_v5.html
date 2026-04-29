@@ -2057,7 +2057,7 @@ function generatePrompts() {
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;">
         <div>
           <div style="font-size:13px;font-weight:700;color:#4ADE80;">QA Evaluation Export</div>
-          <div style="font-size:11px;color:#94A3B8;margin-top:2px;">Step 1: Export row → paste into Eval Excel. Step 2: Copy Gemini prompt → paste + upload image in Gemini.</div>
+          <div style="font-size:11px;color:#94A3B8;margin-top:2px;">Paste the exported row into cell <strong style="color:#CBD5E1;">A4</strong> on sheet <strong style="color:#CBD5E1;">Eval Data</strong> (36 columns align A→AJ). Column <strong style="color:#CBD5E1;">Y</strong> = AI Eval Prompt — copy that cell into Claude / Gemini / ChatGPT with the generated image.</div>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
           <button onclick="exportEvalRow(this)" style="padding:10px 18px;background:linear-gradient(135deg,#16A34A,#059669);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;letter-spacing:0.3px;">📋 Export Eval Row</button>
@@ -2485,33 +2485,40 @@ function exportEvalRow(btn) {
     a2Accents = STATE.archetype === 'A2' ? (STATE.a2SubElements.length + ' accent(s)') : '';
   }
 
-  const aiEvalPrompt = buildAIEvalPrompt(); // compact model-agnostic eval prompt for the Excel column
+  const aiEvalPrompt = buildAIEvalPrompt(); // compact model-agnostic eval prompt for Excel col Y (25)
 
-  // Build tab-separated row — columns match Eval Excel v2 layout:
-  // [Identification] Unique Code | Timestamp | Evaluator | Platform Tested
-  // [Structure]      Archetype | Frame/Overlay Step2 | Layout | Overlay Strength (B1) | Illus Weight (A2)
-  // [Track & Style]  Track | Colour Palette | BG Finish | Render Style
-  // [Illustration]   Illustration/Scene Main | Illus Size (A1) | Frame Deco (A1/A2) | Motif | A2 Accents/Scene Supporting | Mood (B1)
-  // [Intensity]      Intensity Preset
-  // [Prompts]        Firefly+Text | Firefly-NoText | Midjourney | Leonardo | Gemini
-  // [Gemini Eval]    Gemini Eval Prompt | Gemini Response (blank) | [8 blank scoring cols]
-  const step2Label = isB1 ? (step2Opt ? step2Opt.name : '') : (step2Opt ? step2Opt.name : '');
+  // Sanitize any cell for TSV: tabs/newlines break column alignment in Excel
+  function cellForTsv(s) {
+    if (s == null || s === undefined) return '';
+    return String(s).replace(/\r\n/g, '\n').replace(/\r/g, '\n').replace(/\t/g, ' ').replace(/\n/g, ' ');
+  }
+
+  // Build tab-separated row — MUST match Prompt_Eval_Framework_v2.xlsx "Eval Data" row 2 exactly (36 cols):
+  // A–D   Unique Code | Timestamp | Evaluator | Platform Tested
+  // E–H   Archetype | Frame/Overlay Type | Layout | Overlay Strength (B1)
+  // I–L   Track | Colour Palette | Background Finish | Render Style
+  // M–R   Illustration/Scene Main | Illus Size (A1) | Frame Decoration | Motif | Accents/Supporting | Mood (B1)
+  // S     Intensity
+  // T–X   5 platform prompts
+  // Y     AI Eval Prompt (paste + image into Claude/Gemini/ChatGPT for score)
+  // Z     AI Model Response (QA pastes model output)
+  // AA–AJ 10 blank scoring / notes columns for QA
+  const step2Label = step2Opt ? step2Opt.name : '';
   const cols = [
-    runId, timestamp, '', // Unique Code | Timestamp | Evaluator
-    '', // Platform — user fills
-    archetype, step2Label, layout, overlayStrength, step2Opt ? '' : '', // Structure
-    track, palette, bgFinish, renderStyle,                               // Track & Style
-    illustration || sceneMain, illusSize, frameDeco, motif,              // Illustration
-    a2Accents || sceneSupporting, mood,                                  // Accents / Mood
-    intensity,                                                            // Intensity
-    (GENERATED_PROMPTS[0] || '').replace(/\t/g, ' ').replace(/\n/g, ' '),
-    (GENERATED_PROMPTS[1] || '').replace(/\t/g, ' ').replace(/\n/g, ' '),
-    (GENERATED_PROMPTS[2] || '').replace(/\t/g, ' ').replace(/\n/g, ' '),
-    (GENERATED_PROMPTS[3] || '').replace(/\t/g, ' ').replace(/\n/g, ' '),
-    (GENERATED_PROMPTS[4] || '').replace(/\t/g, ' ').replace(/\n/g, ' '),
-    aiEvalPrompt.replace(/\t/g, ' ').replace(/\n/g, '↵ '),     // AI Eval Prompt — paste + image into any AI model
-    '', // Gemini Response — paste from Gemini
-    '', '', '', '', '', '', '', '', '', // Scoring cols (Overall Score, element checks, etc.)
+    cellForTsv(runId), cellForTsv(timestamp), '', '', // A–D
+    cellForTsv(archetype), cellForTsv(step2Label), cellForTsv(layout), cellForTsv(overlayStrength), // E–H (4 cols only — no extra column)
+    cellForTsv(track), cellForTsv(palette), cellForTsv(bgFinish), cellForTsv(renderStyle), // I–L
+    cellForTsv(illustration || sceneMain), cellForTsv(illusSize), cellForTsv(frameDeco), cellForTsv(motif), // M–P
+    cellForTsv(a2Accents || sceneSupporting), cellForTsv(mood), // Q–R
+    cellForTsv(intensity), // S
+    cellForTsv(GENERATED_PROMPTS[0]),
+    cellForTsv(GENERATED_PROMPTS[1]),
+    cellForTsv(GENERATED_PROMPTS[2]),
+    cellForTsv(GENERATED_PROMPTS[3]),
+    cellForTsv(GENERATED_PROMPTS[4]), // T–X
+    cellForTsv(aiEvalPrompt), // Y — AI Eval Prompt
+    '', // Z — AI Model Response (QA fills after running eval)
+    '', '', '', '', '', '', '', '', '', '', // AA–AJ — 10 Part B columns
   ];
 
   const tsv = cols.join('\t');
