@@ -2053,12 +2053,20 @@ function generatePrompts() {
         ${auditHTML}
       </div>
     </details>
-    <div style="margin-top:16px;padding:14px;background:rgba(22,163,74,0.1);border:1px solid rgba(22,163,74,0.3);border-radius:10px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
-      <div>
-        <div style="font-size:13px;font-weight:700;color:#4ADE80;">QA Evaluation Export</div>
-        <div style="font-size:11px;color:#94A3B8;margin-top:2px;">Copies all choices as a tab-separated row — paste directly into the Eval Excel</div>
+    <div style="margin-top:16px;padding:14px;background:rgba(22,163,74,0.1);border:1px solid rgba(22,163,74,0.3);border-radius:10px;">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+        <div>
+          <div style="font-size:13px;font-weight:700;color:#4ADE80;">QA Evaluation Export</div>
+          <div style="font-size:11px;color:#94A3B8;margin-top:2px;">Step 1: Export row → paste into Eval Excel. Step 2: Copy Gemini prompt → paste + upload image in Gemini.</div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button onclick="exportEvalRow(this)" style="padding:10px 18px;background:linear-gradient(135deg,#16A34A,#059669);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;letter-spacing:0.3px;">📋 Export Eval Row</button>
+          <button onclick="copyGeminiEvalPrompt(this)" style="padding:10px 18px;background:linear-gradient(135deg,#7C3AED,#6D28D9);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;letter-spacing:0.3px;">🤖 Copy Gemini Eval Prompt</button>
+        </div>
       </div>
-      <button onclick="exportEvalRow(this)" style="padding:10px 20px;background:linear-gradient(135deg,#16A34A,#059669);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;letter-spacing:0.3px;">📋 Export Eval Row</button>
+        <div style="margin-top:8px;padding:8px 10px;background:rgba(124,58,237,0.12);border-radius:6px;font-size:11px;color:#C4B5FD;line-height:1.5;">
+        <strong style="color:#A78BFA;">Unique Code:</strong> <span style="font-family:monospace;letter-spacing:0.5px;color:#E9D5FF;">${generateUniqueCode()}</span>
+      </div>
     </div>
   </div>`;
 
@@ -2092,9 +2100,352 @@ function generatePrompts() {
   }
 }
 
+// ─── Unique Code Generator ──────────────────────────────────────────────────
+function generateUniqueCode() {
+  const now = new Date();
+  const dd = String(now.getDate()).padStart(2, '0');
+  const mm = String(now.getMonth() + 1).padStart(2, '0');
+  const arch = STATE.archetype || '??';
+
+  const PRESET_ABBR = {
+    Basic: 'Ba', Medium: 'Me', Complex: 'Co',
+    Minimal: 'Mn', Balanced: 'Bl', Expressive: 'Ex',
+    Ultra: 'Ul', Warm: 'Wm', Simple: 'Si', Fun: 'Fn', Maximum: 'Mx', Rich: 'Ri',
+  };
+
+  function illusAbbr(name) {
+    if (!name) return '??';
+    return name.split(' ').map(w => w[0]).join('').toUpperCase().substring(0, 4);
+  }
+
+  // Deterministic 3-char hash of the full set of IDs.
+  // Different combos always produce different hashes; same combo always produces the same one.
+  // This prevents the rare case where two illustrations abbreviate to identical letters.
+  function comboHash(...ids) {
+    const str = ids.filter(Boolean).join('|');
+    let h = 0;
+    for (let i = 0; i < str.length; i++) h = (Math.imul(31, h) + str.charCodeAt(i)) | 0;
+    return Math.abs(h).toString(36).slice(-3).toUpperCase();
+  }
+
+  const parts = [dd + mm];
+
+  if (arch === 'A1') {
+    parts.push('A1' + (STATE.step2 || '??'));
+    parts.push(STATE.track || '?');
+    parts.push(STATE.layout || '?');
+    if (STATE.palette) parts.push(STATE.palette.replace('GM-C', 'C'));
+    const illus = getIllusItem();
+    parts.push(illusAbbr(illus ? illus.name : (STATE.illusItem === 'NONE' ? 'None' : null)));
+    if (STATE.frameDecoration) parts.push({ Plain: 'Pl', Simple: 'Si', Detailed: 'Dt' }[STATE.frameDecoration] || STATE.frameDecoration[0]);
+    if (STATE.illusSize) parts.push({ Small: 'Sm', Medium: 'Md', Large: 'Lg' }[STATE.illusSize] || STATE.illusSize[0]);
+    if (STATE.customPreset) parts.push(PRESET_ABBR[STATE.customPreset] || STATE.customPreset.substring(0, 2));
+    parts.push(comboHash(arch, STATE.step2, STATE.track, STATE.layout, STATE.palette, STATE.illusItem, STATE.illusRender, STATE.motifSet, STATE.finish, STATE.frameDecoration, STATE.illusSize, STATE.customPreset));
+
+  } else if (arch === 'A2') {
+    parts.push('A2');
+    parts.push(STATE.track || '?');
+    parts.push(STATE.layout || '?');
+    if (STATE.palette) parts.push(STATE.palette.replace('GM-C', 'C'));
+    const illus = getIllusItem();
+    parts.push(illusAbbr(illus ? illus.name : null));
+    parts.push(STATE.a2SubElements.length + 'ac');
+    if (STATE.customPreset) parts.push(PRESET_ABBR[STATE.customPreset] || STATE.customPreset.substring(0, 2));
+    parts.push(comboHash(arch, STATE.track, STATE.layout, STATE.palette, STATE.illusItem, STATE.illusRender, STATE.motifSet, STATE.finish, STATE.customPreset, ...STATE.a2SubElements));
+
+  } else if (arch === 'B1') {
+    parts.push('B1' + (STATE.step2 || '??'));
+    parts.push(STATE.track || '?');
+    parts.push(STATE.layout || '?');
+    const d = gatherB1PromptData();
+    if (d.sceneItems.length >= 1) parts.push(illusAbbr(d.sceneItems[0].name));
+    if (STATE.mood) parts.push(STATE.mood.replace('MD-', 'M'));
+    parts.push(STATE.overlayStrength === 'heavy' ? 'Hv' : 'Lt');
+    if (STATE.customPreset) parts.push(PRESET_ABBR[STATE.customPreset] || STATE.customPreset.substring(0, 2));
+    parts.push(comboHash(arch, STATE.step2, STATE.track, STATE.layout, STATE.mood, STATE.overlayStrength, STATE.customPreset, ...STATE.sceneElements));
+  }
+
+  return parts.join('-');
+}
+
+// ─── Compact AI Eval Prompt (model-agnostic, embeds generation prompt) ───────
+function buildAIEvalPrompt() {
+  const arch = STATE.archetype || '';
+  const isB1 = arch === 'B1';
+  const trackObj = getTrack();
+  const layoutObj = getLayout();
+  const code = generateUniqueCode();
+
+  // What was requested — short context for the evaluating AI
+  let contextLines = [`Run Code: ${code}`, `Archetype: ${arch}`];
+  if (trackObj) contextLines.push(`Track: ${trackObj.name}`);
+  if (layoutObj) contextLines.push(`Layout: ${layoutObj.id} — ${layoutObj.name}`);
+  if (isB1) {
+    const d = gatherB1PromptData();
+    if (d.sceneItems.length >= 1) contextLines.push(`Main Subject: ${d.sceneItems[0].name}`);
+    const moodOpt = STATE.mood ? B1_MOOD_OPTIONS.find(m => m.id === STATE.mood) : null;
+    if (moodOpt) contextLines.push(`Mood: ${moodOpt.name}`);
+  } else {
+    const illus = getIllusItem();
+    if (illus) contextLines.push(`Illustration: ${illus.name}`);
+    if (arch === 'A1') contextLines.push(`Frame: ${STATE.step2 || '—'}  |  Frame Deco: ${STATE.frameDecoration || '—'}  |  Illus Size: ${STATE.illusSize || '—'}`);
+  }
+
+  // Embed the Firefly (with text) prompt as primary — it's the most compact & human-readable
+  // QA swaps in the platform prompt from adjacent columns if they tested a different platform
+  const primaryPrompt = (GENERATED_PROMPTS[0] || '').trim();
+
+  return `I used the following prompt to generate the attached poster background image. Please evaluate how accurately the image follows these instructions.
+
+CONTEXT
+${contextLines.map(l => '• ' + l).join('\n')}
+
+GENERATION PROMPT USED (Firefly — swap with your platform prompt if different):
+───────────────────────────────────────────────────────────
+${primaryPrompt}
+───────────────────────────────────────────────────────────
+
+EVALUATE THE ATTACHED IMAGE — rate each dimension 1–5:
+1. Main subject accuracy — is the illustration / subject clearly present and correctly rendered? __/5
+2. Style & aesthetic — does it match the intended track (${trackObj ? trackObj.name : '—'})? __/5
+3. Composition & text zone — is the layout correct with a clear, uncluttered text area? __/5
+4. Colour & mood — does the palette, lighting, and mood feel right? __/5
+5. Overall quality — clean, no artifacts, production-ready? __/5
+
+Overall prompt-following score (1–5): ___
+Top issue (one sentence): ___
+Would a real Indian WhatsApp user share this as a Good Morning greeting? (Yes / Maybe / No): ___`;
+}
+
+// ─── Detailed Checklist Eval Prompt (Gemini / deeper QA) ────────────────────
+function buildGeminiEvalPrompt() {
+  const arch = STATE.archetype || '';
+  const trackObj = getTrack();
+  const layoutObj = getLayout();
+  const step2Opt = getStep2Option();
+  const uniqueCode = generateUniqueCode();
+
+  const trackDesc = {
+    A: 'Shiny Maximal — jazzy festive, ornamental, gold-heavy, loud on purpose',
+    B: 'Modern Desi — muted earthy tones, editorial restraint, contemporary Indian',
+    C: 'Minimalist Classy — maximum restraint, tonal elegance, monochromatic',
+    D: 'Artsy Playful — flat bright, sticker/doodle energy, Gen-Z cheerful',
+    E: 'Soft & Warm — gentle pastels, botanical warmth, calming morning energy',
+  };
+  const layoutDesc = {
+    L1: 'Text Top — text zone at upper portion, visual fills lower two-thirds',
+    L2: 'Text Overlay — visual fills entire canvas, text sits centred over it',
+    L3: 'Text Left — left column reserved for text, visual anchored on the right',
+    L4: 'Text Right — right column reserved for text, visual anchored on the left',
+    L5: 'Text Bottom — visual fills upper portion, text zone at bottom',
+    L6: 'Text Centre — frame holds all edges, central zone reserved for text',
+  };
+
+  let header = `You are a visual quality evaluator for an AI-generated poster background for a Good Morning greeting card.\n\nUnique Run Code: ${uniqueCode}\n\n`;
+  header += `📋 WIZARD SELECTIONS\n`;
+
+  let checks = [];
+  let selectionsText = '';
+
+  if (arch === 'A1') {
+    const illusItem = getIllusItem();
+    const illusName = illusItem ? illusItem.name : (STATE.illusItem === 'NONE' ? 'None' : '—');
+    const palObj = getPalette();
+    const palName = palObj ? palObj.name : '—';
+    const palNatural = (palObj && palObj.tracks && palObj.tracks[STATE.track]) ? palObj.tracks[STATE.track].natural : '—';
+    const finishOpt = STATE.finish ? getFinishOptions().find(f => f.id === STATE.finish) : null;
+    const renderOpt = STATE.illusRender ? getIllusRenderOptions().find(r => r.id === STATE.illusRender) : null;
+    const motifOpt = STATE.motifSet ? getMotifOptions().find(m => m.id === STATE.motifSet) : null;
+    const presetOpt = STATE.customPreset ? getCustomPresets().find(p => p.id === STATE.customPreset) : null;
+    const illusSizeLabels = { Small: 'Small Accent (<15% canvas)', Medium: 'Medium (30–40% canvas)', Large: 'Large / Hero (50%+ canvas)' };
+
+    selectionsText = `• Archetype: A1 — Text + Frame (decorative border is the defining visual)
+• Frame Type: ${step2Opt ? step2Opt.id + ' ' + step2Opt.name : '—'} — ${step2Opt ? step2Opt.desc : ''}
+• Layout: ${STATE.layout || '—'} — ${layoutDesc[STATE.layout] || ''}
+• Track: ${STATE.track || '—'} — ${trackDesc[STATE.track] || ''}
+• Colour Palette: ${palName} (${palNatural})
+• Background Finish: ${finishOpt ? finishOpt.name : '—'}
+• Illustration: ${illusName}
+• Illustration Size: ${illusSizeLabels[STATE.illusSize] || STATE.illusSize || '—'}
+• Frame Decoration: ${STATE.frameDecoration || '—'}
+• Render Style: ${renderOpt ? renderOpt.name : '—'}
+• Motif: ${motifOpt ? motifOpt.name : (STATE.frameDecoration === 'Plain' ? 'None (Plain frame)' : '—')}
+• Intensity: ${presetOpt ? presetOpt.name : '—'}`;
+
+    const frameStructureDesc = {
+      F1: 'a complete decorative border running along all 4 edges',
+      F2: 'horizontal decorative bands at the top and bottom edges only — sides must be open',
+      F3: 'a single decorative band at the bottom edge only',
+      F4: 'small decorative patches at the 4 corners only — all other edges open',
+      F5: 'a curved arch/canopy shape at the top header zone — no frame at the bottom',
+    };
+    const textZoneDesc = {
+      L1: 'upper portion (top third) is the text zone — must be visually clear',
+      L2: 'central row is the text zone — illustration fills the whole canvas behind it',
+      L3: 'left column is the text zone — must be uncluttered',
+      L4: 'right column is the text zone — must be uncluttered',
+      L5: 'lower portion (bottom third) is the text zone — must be visually clear',
+      L6: 'central zone is the text zone — frame holds all edges around it',
+    };
+    const decoDesc = {
+      Plain: 'No motifs or ornamentation — clean border lines only.',
+      Simple: 'Minimal motifs at corners or midpoints only. NOT densely ornate.',
+      Detailed: 'Full ornate frame — florals, paisleys, mandalas throughout the border.',
+    };
+
+    checks = [
+      `FRAME STRUCTURE — Does the frame appear as ${frameStructureDesc[STATE.step2] || 'the correct frame type'}?`,
+      `TEXT ZONE — Is the ${textZoneDesc[STATE.layout] || 'text zone clear and uncluttered'}?`,
+      `MAIN ILLUSTRATION — Is the "${illusName}" clearly visible, well-rendered, and positioned in the illustration zone?`,
+      `ILLUSTRATION SIZE — Does the illustration occupy approximately ${illusSizeLabels[STATE.illusSize] || STATE.illusSize || 'the expected canvas area'}?`,
+      `FRAME DECORATION — ${decoDesc[STATE.frameDecoration] || 'Is the frame decoration level correct?'} Are motifs confined to the frame/border edges only (not near the illustration)?`,
+      `TRACK AESTHETIC — Does the overall look match "${trackDesc[STATE.track] || ''}"?`,
+      `COLOUR PALETTE — Does the background feel like "${palNatural}"? Does the illustration use DIFFERENT colours from the background?`,
+      `RENDER STYLE — Does the illustration look like "${renderOpt ? renderOpt.name : ''}"? (${renderOpt ? renderOpt.desc : ''})`,
+      `NO AI-GENERATED TEXT — Is there any AI-rendered text or lettering visible in the image? (There should be none.)`,
+    ];
+
+  } else if (arch === 'A2') {
+    const illusItem = getIllusItem();
+    const illusName = illusItem ? illusItem.name : '—';
+    const palObj = getPalette();
+    const palName = palObj ? palObj.name : '—';
+    const palNatural = (palObj && palObj.tracks && palObj.tracks[STATE.track]) ? palObj.tracks[STATE.track].natural : '—';
+    const finishOpt = STATE.finish ? getFinishOptions().find(f => f.id === STATE.finish) : null;
+    const renderOpt = STATE.illusRender ? getIllusRenderOptions().find(r => r.id === STATE.illusRender) : null;
+    const motifOpt = STATE.motifSet ? getMotifOptions().find(m => m.id === STATE.motifSet) : null;
+    const presetOpt = STATE.customPreset ? getCustomPresets().find(p => p.id === STATE.customPreset) : null;
+    const densityLabel = STATE.a2SubElements.length === 0 ? 'Light (1–2 elements, generous space)' : STATE.a2SubElements.length === 1 ? 'Medium (balanced, main + 1 accent)' : 'Dense (rich scene, main + 2 accents)';
+    const accentNames = STATE.a2SubElements.map(id => {
+      const acc = Object.values(ACCENT_ITEMS || {}).find ? Object.keys(ACCENT_ITEMS || {}).map(k => ACCENT_ITEMS[k]).find(a => a && STATE.a2SubElements.includes(Object.keys(ACCENT_ITEMS).find(k => ACCENT_ITEMS[k] === a))) : null;
+      return id;
+    });
+    const accentDisplay = STATE.a2SubElements.length === 0 ? 'None' : STATE.a2SubElements.join(', ');
+
+    selectionsText = `• Archetype: A2 — Text + Illustrations (illustrations are the primary visual, no dominant frame)
+• Layout: ${STATE.layout || '—'} — ${layoutDesc[STATE.layout] || ''}
+• Track: ${STATE.track || '—'} — ${trackDesc[STATE.track] || ''}
+• Colour Palette: ${palName} (${palNatural})
+• Background Finish: ${finishOpt ? finishOpt.name : '—'}
+• Illustration: ${illusName}
+• Illustration Density: ${densityLabel} (auto-calculated from accent count: ${STATE.a2SubElements.length})
+• Accent Sub-Elements: ${accentDisplay}
+• Render Style: ${renderOpt ? renderOpt.name : '—'}
+• Motif: ${motifOpt ? motifOpt.name : '—'}
+• Intensity: ${presetOpt ? presetOpt.name : '—'}`;
+
+    const textZoneDesc2 = {
+      L1: 'upper third is the text zone — must be clear',
+      L2: 'central row is text zone — illustration fills entire canvas behind it',
+      L3: 'left column is the text zone — must be empty of illustration',
+      L4: 'right column is the text zone — must be empty of illustration',
+      L5: 'lower third is the text zone — must be clear',
+      L6: 'central zone is the text zone',
+    };
+
+    checks = [
+      `TEXT ZONE — Is the ${textZoneDesc2[STATE.layout] || 'text zone'} clearly free of illustration elements?`,
+      `MAIN ILLUSTRATION — Is the "${illusName}" clearly the dominant visual element?`,
+      `ILLUSTRATION DENSITY — Does the composition feel ${densityLabel}? (${STATE.a2SubElements.length === 0 ? 'Generous breathing space, 1–2 elements' : STATE.a2SubElements.length === 1 ? 'Balanced, one main + one accent' : 'Rich scene, main + two accents'})`,
+      `NO DOMINANT FRAME — Are there no dominant border frames enclosing the canvas? (Motifs/accents around the illustration are fine, full frame borders are not expected.)`,
+      `TRACK AESTHETIC — Does the overall look match "${trackDesc[STATE.track] || ''}"?`,
+      `COLOUR PALETTE — Does the background feel like "${palNatural}"? Does the illustration use DIFFERENT colours from the background (no colour bleed)?`,
+      `RENDER STYLE — Does the illustration look like "${renderOpt ? renderOpt.name : ''}"?`,
+      `NO AI-GENERATED TEXT — Is there any AI-rendered text or lettering visible? (There should be none.)`,
+    ];
+
+  } else if (arch === 'B1') {
+    const d = gatherB1PromptData();
+    const mainName = d.sceneItems.length >= 1 ? d.sceneItems[0].name : '—';
+    const supportingNames = d.sceneItems.slice(1).map(i => i.name).join(', ') || 'None';
+    const moodOpt = STATE.mood ? B1_MOOD_OPTIONS.find(m => m.id === STATE.mood) : null;
+    const intOpt = STATE.customPreset ? B1_INTENSITY_PRESETS.find(p => p.id === STATE.customPreset) : null;
+    const photoTrack = B1_PHOTO_TRACKS[STATE.track] || {};
+    const overlayTypeDesc = {
+      O1: 'Uniform dark overlay across entire image',
+      O2: 'Gradient — darker toward the top, brighter toward the bottom',
+      O3: 'Gradient — darker toward the bottom, brighter toward the top',
+      O4: 'Vignette — bright centre, darkened edges',
+      O5: 'Caption bar — solid darkened strip at the footer',
+    };
+
+    selectionsText = `• Archetype: B1 — Full Photo Background (photorealistic photography, not illustrated)
+• Overlay Type: ${step2Opt ? step2Opt.id + ' ' + step2Opt.name : '—'} — ${overlayTypeDesc[STATE.step2] || ''}
+• Layout: ${STATE.layout || '—'} — ${layoutDesc[STATE.layout] || ''}
+• Track: ${STATE.track || '—'} — ${photoTrack.name || ''} (${photoTrack.desc || ''})
+• Main Scene Element: ${mainName}
+• Supporting Elements: ${supportingNames}
+• Mood / Lighting: ${moodOpt ? moodOpt.name + ' — ' + moodOpt.desc : '—'}
+• Overlay Strength: ${STATE.overlayStrength === 'heavy' ? 'Heavy (opaque, strong contrast)' : 'Light (subtle, semi-transparent)'}
+• Intensity / Camera: ${intOpt ? intOpt.name + ' — ' + intOpt.desc : '—'}`;
+
+    const textZoneDescB1 = {
+      L1: 'The upper portion must appear darker/suitable for white text overlay.',
+      L2: 'The central zone must be readable for text overlay.',
+      L3: 'The left column must appear suitable for text overlay.',
+      L4: 'The right column must appear suitable for text overlay.',
+      L5: 'The lower portion must appear darker/suitable for white text overlay.',
+      L6: 'The central zone must be readable for text overlay.',
+    };
+
+    checks = [
+      `MAIN SUBJECT — Is "${mainName}" clearly visible as the main subject? Is it photorealistic (not illustrated/cartoon)?`,
+      `SUPPORTING ELEMENTS — ${supportingNames !== 'None' ? `Are the supporting elements (${supportingNames}) present as background/contextual props?` : 'No supporting elements selected — is the composition focused on the main subject alone?'}`,
+      `OVERLAY & TEXT ZONE — ${textZoneDescB1[STATE.layout] || 'Is there a clear text-readable zone?'} Overlay type: ${overlayTypeDesc[STATE.step2] || ''}. Strength: ${STATE.overlayStrength}.`,
+      `PHOTOGRAPHY STYLE — Does it look like "${photoTrack.name || ''}"? (${photoTrack.desc || ''})`,
+      `MOOD & LIGHTING — Does the lighting + colour treatment match "${moodOpt ? moodOpt.name : '—'}"? (${moodOpt ? moodOpt.desc : ''})`,
+      `CAMERA / FRAMING — Does the framing match "${intOpt ? intOpt.name : '—'}"? (${intOpt ? intOpt.desc : ''})`,
+      `PHOTO QUALITY — Does it look like a professional DSLR photograph with natural depth of field? No CGI, no illustration, no cartoon elements.`,
+      `NO AI-GENERATED TEXT — Is there any AI-rendered text or lettering visible in the image? (There should be none.)`,
+    ];
+  }
+
+  const checksText = checks.map((c, i) => `${i + 1}. ${c}`).join('\n');
+
+  const prompt = `${header}${selectionsText}
+
+✅ EVALUATION CHECKLIST
+For each item below, respond: ✅ Pass | ⚠️ Partial (briefly explain) | ❌ Fail (briefly explain)
+
+${checksText}
+
+📊 AFTER COMPLETING THE CHECKLIST, PROVIDE:
+• Dimension Scores (1–5 each):
+  – Illustration / Subject Quality: __/5
+  – Composition & Layout Clarity: __/5
+  – Track Style Match: __/5
+  – Colour Harmony: __/5
+  – Text Zone Readability: __/5
+• Would a real Indian WhatsApp user share this as a Good Morning greeting? (Yes / Maybe / No)
+• Top issue (if any, in one sentence):
+
+Upload the generated image alongside this prompt in Google Gemini / your AI model.`;
+
+  return prompt;
+}
+
+function copyGeminiEvalPrompt(btn) {
+  const prompt = buildGeminiEvalPrompt();
+  navigator.clipboard.writeText(prompt).then(() => {
+    btn.textContent = '✓ Gemini Prompt Copied!';
+    setTimeout(() => { btn.textContent = '🤖 Copy Gemini Eval Prompt'; }, 3000);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = prompt;
+    ta.style.position = 'fixed';
+    ta.style.left = '-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.textContent = '✓ Gemini Prompt Copied!';
+    setTimeout(() => { btn.textContent = '🤖 Copy Gemini Eval Prompt'; }, 3000);
+  });
+}
+
 function exportEvalRow(btn) {
   const isB1 = STATE.archetype === 'B1';
-  const runId = 'RUN-' + Date.now().toString(36).toUpperCase();
+  const runId = generateUniqueCode();
   const timestamp = new Date().toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'short' });
   const archetype = STATE.archetype || '';
   const step2Opt = getStep2Option();
@@ -2104,7 +2455,7 @@ function exportEvalRow(btn) {
   const track = trackObj ? trackObj.name : '';
 
   let palette = '', bgFinish = '', illustration = '', renderStyle = '', frameDeco = '', motif = '';
-  let sceneMain = '', sceneSupporting = '', mood = '', intensity = '';
+  let sceneMain = '', sceneSupporting = '', mood = '', intensity = '', illusSize = '', a2Accents = '', overlayStrength = '';
 
   if (isB1) {
     const d = gatherB1PromptData();
@@ -2112,6 +2463,7 @@ function exportEvalRow(btn) {
     sceneSupporting = d.sceneItems.slice(1).map(i => i.name).join(', ');
     const moodOpt = STATE.mood ? B1_MOOD_OPTIONS.find(m => m.id === STATE.mood) : null;
     mood = moodOpt ? moodOpt.name : '';
+    overlayStrength = STATE.overlayStrength === 'heavy' ? 'Heavy' : 'Light';
     const intOpt = STATE.customPreset ? B1_INTENSITY_PRESETS.find(p => p.id === STATE.customPreset) : null;
     intensity = intOpt ? intOpt.name : '';
   } else {
@@ -2119,8 +2471,8 @@ function exportEvalRow(btn) {
     palette = pal ? pal.name : '';
     const finishOpt = STATE.finish ? getFinishOptions().find(f => f.id === STATE.finish) : null;
     bgFinish = finishOpt ? finishOpt.name : '';
-    const illusItem = getIllusItem();
-    illustration = illusItem ? illusItem.name : (STATE.illusItem === 'NONE' ? 'None' : '');
+    const illusItemObj = getIllusItem();
+    illustration = illusItemObj ? illusItemObj.name : (STATE.illusItem === 'NONE' ? 'None' : '');
     const illusRenderOpt = STATE.illusRender ? getIllusRenderOptions().find(r => r.id === STATE.illusRender) : null;
     renderStyle = illusRenderOpt ? illusRenderOpt.name : '';
     frameDeco = STATE.frameDecoration || '';
@@ -2128,25 +2480,38 @@ function exportEvalRow(btn) {
     motif = motifOpt ? motifOpt.name : '';
     const presetOpt = STATE.customPreset ? getCustomPresets().find(p => p.id === STATE.customPreset) : null;
     intensity = presetOpt ? presetOpt.name : '';
+    const illusSizeOpt = STATE.illusSize ? ILLUS_SIZE_OPTS.find(o => o.id === STATE.illusSize) : null;
+    illusSize = illusSizeOpt ? illusSizeOpt.name : '';
+    a2Accents = STATE.archetype === 'A2' ? (STATE.a2SubElements.length + ' accent(s)') : '';
   }
 
-  const font = ''; // font step removed from wizard
+  const aiEvalPrompt = buildAIEvalPrompt(); // compact model-agnostic eval prompt for the Excel column
 
-  // Build tab-separated row matching Excel columns
-  // Part A columns: Run ID, Timestamp, Evaluator, Archetype, Overlay/Style, Layout, Track,
-  //   Palette, Bg Finish, Illustration, Render Style, Frame Deco, Motif,
-  //   Scene Main, Scene Supporting, Mood, Intensity, Font,
-  //   Platform (user fills), Full Prompt Firefly (With Text), Full Prompt Firefly (No Text), Full Prompt MJ, Full Prompt Leonardo, Full Prompt Gemini
+  // Build tab-separated row — columns match Eval Excel v2 layout:
+  // [Identification] Unique Code | Timestamp | Evaluator | Platform Tested
+  // [Structure]      Archetype | Frame/Overlay Step2 | Layout | Overlay Strength (B1) | Illus Weight (A2)
+  // [Track & Style]  Track | Colour Palette | BG Finish | Render Style
+  // [Illustration]   Illustration/Scene Main | Illus Size (A1) | Frame Deco (A1/A2) | Motif | A2 Accents/Scene Supporting | Mood (B1)
+  // [Intensity]      Intensity Preset
+  // [Prompts]        Firefly+Text | Firefly-NoText | Midjourney | Leonardo | Gemini
+  // [Gemini Eval]    Gemini Eval Prompt | Gemini Response (blank) | [8 blank scoring cols]
+  const step2Label = isB1 ? (step2Opt ? step2Opt.name : '') : (step2Opt ? step2Opt.name : '');
   const cols = [
-    runId, timestamp, '', archetype, overlay, layout, track,
-    palette, bgFinish, illustration, renderStyle, frameDeco, motif,
-    sceneMain, sceneSupporting, mood, intensity, font,
-    '', // Platform — user fills which one they ran
+    runId, timestamp, '', // Unique Code | Timestamp | Evaluator
+    '', // Platform — user fills
+    archetype, step2Label, layout, overlayStrength, step2Opt ? '' : '', // Structure
+    track, palette, bgFinish, renderStyle,                               // Track & Style
+    illustration || sceneMain, illusSize, frameDeco, motif,              // Illustration
+    a2Accents || sceneSupporting, mood,                                  // Accents / Mood
+    intensity,                                                            // Intensity
     (GENERATED_PROMPTS[0] || '').replace(/\t/g, ' ').replace(/\n/g, ' '),
     (GENERATED_PROMPTS[1] || '').replace(/\t/g, ' ').replace(/\n/g, ' '),
     (GENERATED_PROMPTS[2] || '').replace(/\t/g, ' ').replace(/\n/g, ' '),
     (GENERATED_PROMPTS[3] || '').replace(/\t/g, ' ').replace(/\n/g, ' '),
     (GENERATED_PROMPTS[4] || '').replace(/\t/g, ' ').replace(/\n/g, ' '),
+    aiEvalPrompt.replace(/\t/g, ' ').replace(/\n/g, '↵ '),     // AI Eval Prompt — paste + image into any AI model
+    '', // Gemini Response — paste from Gemini
+    '', '', '', '', '', '', '', '', '', // Scoring cols (Overall Score, element checks, etc.)
   ];
 
   const tsv = cols.join('\t');
