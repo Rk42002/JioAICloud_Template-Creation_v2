@@ -542,7 +542,7 @@ const STATE = {
   // B1 Photo Background specific
   sceneElements: [],   // array of 1-3 illustration item IDs (first = main, rest = subsidiary)
   mood: null,          // B1_MOOD_OPTIONS id (merged mood + colour grading)
-  overlayStrength: 'medium', // B1 overlay opacity: 'light', 'medium', 'heavy'
+  overlayStrength: 'light', // B1 overlay opacity: 'light' or 'heavy'
 };
 
 function getSteps() {
@@ -657,7 +657,7 @@ function select(key, value) {
     STATE.finish = null; STATE.illusRender = null; STATE.motifSet = null; STATE.customPreset = null;
     STATE.frameDecoration = null; STATE.illusSize = null; STATE.illusItem = null; STATE.illusCategory = null;
     // B1 specific resets
-    STATE.sceneElements = []; STATE.mood = null; STATE.overlayStrength = 'medium';
+    STATE.sceneElements = []; STATE.mood = null; STATE.overlayStrength = 'light';
   }
   if (key === 'step2') { STATE.layout = null; }
   if (key === 'track') {
@@ -672,7 +672,32 @@ function select(key, value) {
   render();
 }
 
-// B1: Multi-select scene elements (1-3 items)
+// B1: Select main scene element (resets sub-elements if main changes)
+function selectMainSceneElement(itemId) {
+  const currentMain = STATE.sceneElements.length >= 1 ? STATE.sceneElements[0] : null;
+  if (currentMain === itemId) {
+    // Deselect main → clear everything
+    STATE.sceneElements = [];
+  } else {
+    // New main → keep only this, clear old subs
+    STATE.sceneElements = [itemId];
+  }
+  render();
+}
+
+// B1: Toggle a supporting/sub element (max 2)
+function toggleSubElement(itemId) {
+  const subs = STATE.sceneElements.slice(1);
+  const idx = subs.indexOf(itemId);
+  if (idx > -1) {
+    STATE.sceneElements.splice(idx + 1, 1); // +1 because index 0 is main
+  } else if (subs.length < 2) {
+    STATE.sceneElements.push(itemId);
+  }
+  render();
+}
+
+// Legacy — kept for backward compat
 function toggleSceneElement(itemId) {
   const idx = STATE.sceneElements.indexOf(itemId);
   if (idx > -1) {
@@ -853,8 +878,7 @@ function renderB1TextPlacement() {
 
   const strengths = [
     { id: 'light', name: 'Light', desc: 'Subtle — photo shows through clearly, text still readable.', icon: '○' },
-    { id: 'medium', name: 'Medium', desc: 'Balanced — good contrast without hiding the photo.', icon: '◐' },
-    { id: 'heavy', name: 'Heavy', desc: 'Strong — maximum text readability, photo more muted.', icon: '●' },
+    { id: 'heavy', name: 'Darker', desc: 'Strong overlay — maximum text readability, photo more muted.', icon: '●' },
   ];
 
   let html = `<div class="step-header"><div class="step-eyebrow">Step ${stepNum} · Text & Overlay</div><div class="step-title">Where Does Text Go?</div><div class="step-desc">Pick where the text sits — the overlay will automatically darken that zone for readability.</div></div>`;
@@ -879,7 +903,7 @@ function renderB1TextPlacement() {
 // Helper: auto-determine B1 overlay from layout + strength
 function getB1AutoOverlay() {
   const strength = STATE.overlayStrength || 'medium';
-  const opacityWord = strength === 'light' ? 'light subtle' : strength === 'heavy' ? 'heavy opaque' : 'semi-transparent';
+  const opacityWord = strength === 'light' ? 'light subtle semi-transparent' : 'heavy opaque dark';
 
   const map = {
     'L1': `${opacityWord} gradient overlay darker at the top fading to clear at the bottom, creating a text-readable zone at top`,
@@ -999,14 +1023,104 @@ function renderStep9() {
 // B1 PHOTO BACKGROUND — Render functions
 // ═══════════════════════════════════════════════════════════════
 
+// Curated sub-elements: for each main illustration item, 2-4 related supporting elements
+const B1_SUB_ELEMENTS = {
+  // Beverages
+  'GM-I1-01': ['GM-I1-04', 'GM-I5-04', 'GM-I3-03', 'GM-I4-01'],
+  'GM-I1-02': ['GM-I1-04', 'GM-I4-01', 'GM-I3-01'],
+  'GM-I1-04': ['GM-I1-01', 'GM-I1-02', 'GM-I3-03'],
+  'GM-I1-05': ['GM-I3-05', 'GM-I5-06', 'GM-I2-01'],
+  'GM-I1-07': ['GM-I1-01', 'GM-I3-09', 'GM-I5-04'],
+  'GM-I1-08': ['GM-I3-05', 'GM-I2-05', 'GM-I6-06'],
+  // Nature & Sky
+  'GM-I2-01': ['GM-I6-01', 'GM-I2-04', 'GM-I5-05'],
+  'GM-I2-02': ['GM-I6-02', 'GM-I2-01', 'GM-I6-06'],
+  'GM-I2-04': ['GM-I6-05', 'GM-I2-01', 'GM-I6-01'],
+  'GM-I2-05': ['GM-I6-01', 'GM-I5-02', 'GM-I2-01'],
+  'GM-I2-06': ['GM-I6-01', 'GM-I2-01', 'GM-I5-01'],
+  'GM-I2-08': ['GM-I2-01', 'GM-I6-01', 'GM-I3-05'],
+  // Flowers & Botanicals
+  'GM-I3-01': ['GM-I4-01', 'GM-I4-08', 'GM-I3-04'],
+  'GM-I3-02': ['GM-I3-08', 'GM-I4-01', 'GM-I6-06'],
+  'GM-I3-03': ['GM-I1-01', 'GM-I4-04', 'GM-I3-01'],
+  'GM-I3-04': ['GM-I3-01', 'GM-I4-05', 'GM-I6-06'],
+  'GM-I3-05': ['GM-I6-06', 'GM-I2-01', 'GM-I5-06'],
+  'GM-I3-06': ['GM-I3-03', 'GM-I3-02', 'GM-I4-04'],
+  'GM-I3-07': ['GM-I3-08', 'GM-I6-06', 'GM-I3-03'],
+  'GM-I3-08': ['GM-I3-02', 'GM-I3-07', 'GM-I4-01'],
+  'GM-I3-09': ['GM-I6-02', 'GM-I3-07', 'GM-I6-06'],
+  // Spiritual & Devotional
+  'GM-I4-01': ['GM-I4-04', 'GM-I3-01', 'GM-I4-05'],
+  'GM-I4-03': ['GM-I4-01', 'GM-I4-04', 'GM-I3-02'],
+  'GM-I4-04': ['GM-I4-01', 'GM-I3-03', 'GM-I4-05'],
+  'GM-I4-05': ['GM-I4-01', 'GM-I4-04', 'GM-I3-01'],
+  'GM-I4-06': ['GM-I4-01', 'GM-I4-04', 'GM-I4-07'],
+  'GM-I4-07': ['GM-I4-06', 'GM-I4-01', 'GM-I3-02'],
+  'GM-I4-08': ['GM-I3-01', 'GM-I4-01', 'GM-I3-08'],
+  'GM-I4-09': ['GM-I3-02', 'GM-I4-01', 'GM-I6-03'],
+  // Lifestyle & People
+  'GM-I5-01': ['GM-I2-01', 'GM-I5-02', 'GM-I6-01'],
+  'GM-I5-02': ['GM-I2-01', 'GM-I5-01', 'GM-I4-04'],
+  'GM-I5-03': ['GM-I1-01', 'GM-I5-06', 'GM-I6-02'],
+  'GM-I5-04': ['GM-I1-01', 'GM-I5-03', 'GM-I3-03'],
+  'GM-I5-05': ['GM-I2-02', 'GM-I6-01', 'GM-I3-05'],
+  'GM-I5-06': ['GM-I5-03', 'GM-I3-05', 'GM-I1-01'],
+  // Birds & Wildlife
+  'GM-I6-01': ['GM-I2-01', 'GM-I2-05', 'GM-I2-06'],
+  'GM-I6-02': ['GM-I3-09', 'GM-I3-07', 'GM-I2-02'],
+  'GM-I6-03': ['GM-I4-09', 'GM-I3-02', 'GM-I2-01'],
+  'GM-I6-04': ['GM-I2-02', 'GM-I3-05', 'GM-I6-06'],
+  'GM-I6-05': ['GM-I2-04', 'GM-I2-01', 'GM-I6-01'],
+  'GM-I6-06': ['GM-I3-05', 'GM-I3-07', 'GM-I3-02'],
+};
+
 function renderB1SceneElements() {
-  const selCount = STATE.sceneElements.length;
-  const mainEl = selCount >= 1 ? STATE.sceneElements[0] : null;
+  const mainEl = STATE.sceneElements.length >= 1 ? STATE.sceneElements[0] : null;
+  const subEls = STATE.sceneElements.slice(1);
+  const stepNum = getSteps().indexOf('scene_elements') + 1;
 
-  let html = `<div class="step-header"><div class="step-eyebrow">Step 5 · Scene Elements</div><div class="step-title">Choose 1–3 Scene Elements</div><div class="step-desc">Pick the elements that will compose into one photorealistic scene. The <strong>first item you select becomes the main subject</strong> (foreground, focal point). Any additional picks become supporting elements in the background.</div></div>`;
+  let html = `<div class="step-header"><div class="step-eyebrow">Step ${stepNum} · Scene Elements</div><div class="step-title">Build Your Scene</div><div class="step-desc">Pick a <strong>main subject</strong> for the photo, then optionally add 1–2 related supporting elements.</div></div>`;
 
-  // Status bar
-  html += `<div style="background:${selCount >= 1 ? 'var(--success-light)' : '#FEF9C3'};border:1px solid ${selCount >= 1 ? '#86EFAC' : '#FCD34D'};padding:10px 16px;border-radius:10px;margin-bottom:14px;font-size:13px;color:${selCount >= 1 ? '#166534' : '#92400E'};display:flex;align-items:center;gap:8px;"><strong>${selCount}/3 selected</strong> · ${selCount === 0 ? 'Pick at least 1' : selCount < 3 ? 'You can add more' : 'Maximum reached'}</div>`;
+  // ── Sub-section 1: Main Element ──
+  html += `<div class="sub-section"><div class="sub-section-header"><div class="sub-section-num">1</div><div class="sub-section-title">Main Subject</div><div class="sub-section-tag">${mainEl ? '✓ Selected' : 'Pick one'}</div></div>`;
+  ILLUS_CATS.forEach(cat => {
+    html += `<div style="margin-bottom:12px;"><div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px;">${cat.icon} ${cat.name}</div><div class="options-grid cols-4">${cat.items.map(i => {
+      const isMain = mainEl === i.id;
+      const isSub = subEls.includes(i.id);
+      const photoDesc = B1_PHOTO_DESC[i.id] || i.desc;
+      return `<div class="opt-card ${isMain ? 'selected' : ''}" onclick="selectMainSceneElement('${i.id}')" style="${isSub ? 'opacity:0.4;pointer-events:none;' : ''}">${isMain ? '<div style="font-size:10px;font-weight:700;color:var(--primary);margin-bottom:4px;">⭐ Main</div>' : ''}<div class="opt-name">${i.name}</div><div class="opt-desc">${photoDesc}</div></div>`;
+    }).join('')}</div></div>`;
+  });
+  html += `</div>`;
+
+  // ── Sub-section 2: Supporting Elements (curated, shown after main is picked) ──
+  if (mainEl) {
+    const availableSubs = B1_SUB_ELEMENTS[mainEl] || [];
+    const subItems = availableSubs.map(subId => {
+      for (const cat of ILLUS_CATS) { const item = cat.items.find(i => i.id === subId); if (item) return item; }
+      return null;
+    }).filter(Boolean);
+
+    html += `<div class="sub-section" style="margin-top:24px;"><div class="sub-section-header"><div class="sub-section-num">2</div><div class="sub-section-title">Supporting Elements <span style="font-weight:400;color:var(--muted);">(optional, up to 2)</span></div><div class="sub-section-tag">${subEls.length}/2</div></div>`;
+    if (subItems.length > 0) {
+      html += `<div class="options-grid cols-4">${subItems.map(i => {
+        const isSel = subEls.includes(i.id);
+        const isMaxed = subEls.length >= 2 && !isSel;
+        const photoDesc = B1_PHOTO_DESC[i.id] || i.desc;
+        return `<div class="opt-card ${isSel ? 'selected' : ''}" onclick="${isMaxed ? '' : `toggleSubElement('${i.id}')`}" style="${isMaxed ? 'cursor:not-allowed;opacity:0.4;' : ''}"><div class="opt-name">${i.name}</div><div class="opt-desc">${photoDesc}</div></div>`;
+      }).join('')}</div>`;
+    }
+    html += `</div>`;
+  }
+
+  // Scene composition summary
+  if (STATE.sceneElements.length >= 1) {
+    const selItems = STATE.sceneElements.map((id, idx) => {
+      for (const cat of ILLUS_CATS) { const item = cat.items.find(i => i.id === id); if (item) return { ...item, role: idx === 0 ? 'Main' : 'Supporting' }; }
+      return null;
+    }).filter(Boolean);
+    html += `<div style="margin-top:18px;padding:12px 16px;background:#F0F9FF;border:1px solid #BFDBFE;border-radius:10px;"><div style="font-size:12px;font-weight:700;color:var(--primary);margin-bottom:6px;">Scene Composition</div><div style="display:flex;flex-wrap:wrap;gap:8px;">${selItems.map((item, idx) => `<div style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;background:${idx===0 ? 'var(--primary)' : '#E2E8F0'};color:${idx===0 ? '#fff' : '#334155'};font-size:12px;font-weight:600;"><span>${idx===0 ? '⭐' : '○'}</span>${item.name}</div>`).join('')}</div></div>`;
+  }
 
   // Show current selection order (main vs subsidiary)
   if (selCount >= 1) {
