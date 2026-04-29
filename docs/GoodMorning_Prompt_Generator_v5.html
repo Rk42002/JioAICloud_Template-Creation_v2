@@ -543,11 +543,15 @@ const STATE = {
   sceneElements: [],   // array of 1-3 illustration item IDs (first = main, rest = subsidiary)
   mood: null,          // B1_MOOD_OPTIONS id (merged mood + colour grading)
   overlayStrength: 'light', // B1 overlay opacity: 'light' or 'heavy'
+  a2SubElements: [],        // A2: accent items (0-2 IDs from ACCENT_ITEMS)
 };
 
 function getSteps() {
   if (STATE.archetype === 'B1') {
     return ['template', 'b1_text_placement', 'track', 'scene_elements', 'mood', 'intensity'];
+  }
+  if (STATE.archetype === 'A2') {
+    return ['template', 'layout', 'track', 'colour_finish', 'visual', 'intensity'];
   }
   return ['template', 'style', 'layout', 'track', 'colour_finish', 'visual', 'intensity'];
 }
@@ -657,9 +661,10 @@ function select(key, value) {
     STATE.finish = null; STATE.illusRender = null; STATE.motifSet = null; STATE.customPreset = null;
     STATE.frameDecoration = null; STATE.illusSize = null; STATE.illusItem = null; STATE.illusCategory = null;
     // B1 specific resets
-    STATE.sceneElements = []; STATE.mood = null; STATE.overlayStrength = 'light';
+    STATE.sceneElements = []; STATE.mood = null; STATE.overlayStrength = 'light'; STATE.a2SubElements = [];
   }
   if (key === 'step2') { STATE.layout = null; }
+  if (key === 'illusItem') { STATE.a2SubElements = []; }  // Reset sub-illustrations when main changes
   if (key === 'track') {
     STATE.palette = null; STATE.font = null;
     STATE.finish = null; STATE.illusRender = null; STATE.motifSet = null; STATE.customPreset = null;
@@ -693,6 +698,17 @@ function toggleSubElement(itemId) {
     STATE.sceneElements.splice(idx + 1, 1); // +1 because index 0 is main
   } else if (subs.length < 2) {
     STATE.sceneElements.push(itemId);
+  }
+  render();
+}
+
+// A2: Toggle sub-illustration accent (max 2)
+function toggleA2SubElement(itemId) {
+  const idx = STATE.a2SubElements.indexOf(itemId);
+  if (idx > -1) {
+    STATE.a2SubElements.splice(idx, 1);
+  } else if (STATE.a2SubElements.length < 2) {
+    STATE.a2SubElements.push(itemId);
   }
   render();
 }
@@ -991,6 +1007,23 @@ function renderStep8() {
   }
 
   if (STATE.illusItem && STATE.illusItem !== 'NONE') {
+    // A2 Sub-illustrations: curated accent items (rendered in same illustration style)
+    if (STATE.archetype === 'A2') {
+      const a2Subs = A2_SUB_ELEMENTS[STATE.illusItem] || [];
+      const subItems = a2Subs.map(subId => { const acc = ACCENT_ITEMS[subId]; return acc ? { id: subId, ...acc } : null; }).filter(Boolean);
+      if (subItems.length > 0) {
+        const a2SubEls = STATE.a2SubElements || [];
+        const densityLabel = a2SubEls.length === 0 ? 'Light (main only)' : a2SubEls.length === 1 ? 'Medium' : 'Dense';
+        html += `<div class="sub-section"><div class="sub-section-header"><div class="sub-section-num">${n++}</div><div class="sub-section-title">Scene Accents <span style="font-weight:400;color:var(--muted);">(optional, up to 2)</span></div><div class="sub-section-tag">${a2SubEls.length}/2 · ${densityLabel}</div></div>`;
+        html += `<div style="font-size:12px;color:var(--muted);margin-bottom:10px;">Small decorative elements rendered in the same illustration style. Density auto-adjusts: ${densityLabel}.</div>`;
+        html += `<div class="options-grid cols-4">${subItems.map(i => {
+          const isSel = a2SubEls.includes(i.id);
+          const isMaxed = a2SubEls.length >= 2 && !isSel;
+          return `<div class="opt-card ${isSel ? 'selected' : ''}" onclick="${isMaxed ? '' : `toggleA2SubElement('${i.id}')`}" style="${isMaxed ? 'cursor:not-allowed;opacity:0.4;' : ''}"><div class="opt-name">${i.name}</div><div class="opt-desc">${i.illusDesc}</div></div>`;
+        }).join('')}</div></div>`;
+      }
+    }
+
     // 3. Illustration Scale (all archetypes)
     html += `<div class="sub-section"><div class="sub-section-header"><div class="sub-section-num">${n++}</div><div class="sub-section-title">Illustration Scale</div><div class="sub-section-tag">How much space should it take?</div></div><div class="options-grid cols-3">${ILLUS_SIZE_OPTS.map(o => `<div class="opt-card ${STATE.illusSize === o.id ? 'selected' : ''}" onclick="select('illusSize','${o.id}')"><div class="opt-name">${o.name}</div><div class="opt-desc">${o.desc}</div></div>`).join('')}</div></div>`;
 
@@ -1027,42 +1060,47 @@ function renderStep9() {
 // B1 ACCENT PROPS — small background/side items for photo scenes
 // These are NOT hero illustrations — they're subtle scene-setting props
 // ═══════════════════════════════════════════════════════════════
-const B1_ACCENT_ITEMS = {
+const ACCENT_ITEMS = {
   // Kitchen / table props
-  'ACC-01': { name: 'Biscuits on a Plate', photoDesc: 'a small plate of Parle-G style biscuits in the background' },
-  'ACC-02': { name: 'Folded Newspaper', photoDesc: 'a folded morning newspaper lying nearby' },
-  'ACC-03': { name: 'Spice Scatter', photoDesc: 'a few scattered whole spices — cardamom pods, a cinnamon stick — on the surface' },
-  'ACC-04': { name: 'Sugar Bowl', photoDesc: 'a small brass sugar bowl with a tiny spoon beside the cup' },
-  'ACC-05': { name: 'Steel Tray (Thali)', photoDesc: 'a round steel tray underneath the cup catching soft reflections' },
-  'ACC-06': { name: 'Rustic Cloth Napkin', photoDesc: 'a folded cotton napkin or gamcha cloth under the cup' },
+  'ACC-01': { name: 'Biscuits on a Plate', photoDesc: 'a small plate of Parle-G style biscuits in the background', illusDesc: 'a small illustrated plate of biscuits nearby' },
+  'ACC-02': { name: 'Folded Newspaper', photoDesc: 'a folded morning newspaper lying nearby', illusDesc: 'a small illustrated folded newspaper beside the scene' },
+  'ACC-03': { name: 'Spice Scatter', photoDesc: 'a few scattered whole spices — cardamom pods, a cinnamon stick — on the surface', illusDesc: 'a few tiny illustrated spices — cardamom, cinnamon stick — scattered near the base' },
+  'ACC-04': { name: 'Sugar Bowl', photoDesc: 'a small brass sugar bowl with a tiny spoon beside the cup', illusDesc: 'a tiny illustrated brass sugar bowl with a spoon' },
+  'ACC-05': { name: 'Steel Tray (Thali)', photoDesc: 'a round steel tray underneath the cup catching soft reflections', illusDesc: 'a small illustrated round tray beneath the cup' },
+  'ACC-06': { name: 'Rustic Cloth Napkin', photoDesc: 'a folded cotton napkin or gamcha cloth under the cup', illusDesc: 'a small illustrated cloth napkin underneath' },
   // Nature / outdoor accents
-  'ACC-07': { name: 'Morning Dew Drops', photoDesc: 'glistening dew drops on nearby grass blades' },
-  'ACC-08': { name: 'Fallen Petals', photoDesc: 'a few scattered flower petals on the ground' },
-  'ACC-09': { name: 'Wispy Fog', photoDesc: 'thin wisps of morning fog drifting in the mid-ground' },
-  'ACC-10': { name: 'Distant Birds', photoDesc: 'a few small birds silhouetted in the distant sky' },
-  'ACC-11': { name: 'Wet Leaves', photoDesc: 'rain-washed leaves with water droplets catching light' },
-  'ACC-12': { name: 'Cobblestone / Path', photoDesc: 'a textured stone or brick path in the foreground' },
+  'ACC-07': { name: 'Morning Dew Drops', photoDesc: 'glistening dew drops on nearby grass blades', illusDesc: 'tiny illustrated dewdrops on grass blades' },
+  'ACC-08': { name: 'Fallen Petals', photoDesc: 'a few scattered flower petals on the ground', illusDesc: 'a few small illustrated flower petals scattered nearby' },
+  'ACC-09': { name: 'Wispy Fog', photoDesc: 'thin wisps of morning fog drifting in the mid-ground', illusDesc: 'soft illustrated wisps of morning mist' },
+  'ACC-10': { name: 'Distant Birds', photoDesc: 'a few small birds silhouetted in the distant sky', illusDesc: 'two or three tiny illustrated birds in the sky' },
+  'ACC-11': { name: 'Wet Leaves', photoDesc: 'rain-washed leaves with water droplets catching light', illusDesc: 'a few illustrated wet leaves with dewdrops' },
+  'ACC-12': { name: 'Cobblestone / Path', photoDesc: 'a textured stone or brick path in the foreground', illusDesc: 'an illustrated cobblestone path texture in the foreground' },
   // Devotional / puja accents
-  'ACC-13': { name: 'Kumkum Tilak Mark', photoDesc: 'a small kumkum mark or sindoor dot on a brass plate' },
-  'ACC-14': { name: 'Loose Flower Petals', photoDesc: 'a handful of loose marigold petals around the base' },
-  'ACC-15': { name: 'Brass Bell (small)', photoDesc: 'a tiny brass puja bell lying beside the arrangement' },
-  'ACC-16': { name: 'Match Sticks', photoDesc: 'a matchbox with a burnt matchstick nearby' },
-  'ACC-17': { name: 'Rice Grains', photoDesc: 'a few scattered uncooked rice grains on the surface' },
+  'ACC-13': { name: 'Kumkum Tilak Mark', photoDesc: 'a small kumkum mark or sindoor dot on a brass plate', illusDesc: 'a tiny illustrated kumkum mark on a small plate' },
+  'ACC-14': { name: 'Loose Flower Petals', photoDesc: 'a handful of loose marigold petals around the base', illusDesc: 'scattered illustrated marigold petals around the base' },
+  'ACC-15': { name: 'Brass Bell (small)', photoDesc: 'a tiny brass puja bell lying beside the arrangement', illusDesc: 'a small illustrated brass puja bell nearby' },
+  'ACC-16': { name: 'Match Sticks', photoDesc: 'a matchbox with a burnt matchstick nearby', illusDesc: 'a tiny illustrated matchbox with a burnt match' },
+  'ACC-17': { name: 'Rice Grains', photoDesc: 'a few scattered uncooked rice grains on the surface', illusDesc: 'a few illustrated rice grains scattered on the surface' },
   // Lifestyle / cozy accents
-  'ACC-18': { name: 'Reading Glasses', photoDesc: 'a pair of reading glasses resting near the book' },
-  'ACC-19': { name: 'Potted Plant (small)', photoDesc: 'a small potted succulent or money plant in the background' },
-  'ACC-20': { name: 'Woven Basket', photoDesc: 'a small woven cane basket in the background' },
-  'ACC-21': { name: 'Curtain with Light', photoDesc: 'a sheer curtain with soft morning sunlight filtering through' },
-  'ACC-22': { name: 'Yoga Mat Edge', photoDesc: 'the rolled edge of a yoga mat visible in the corner' },
+  'ACC-18': { name: 'Reading Glasses', photoDesc: 'a pair of reading glasses resting near the book', illusDesc: 'small illustrated reading glasses beside the book' },
+  'ACC-19': { name: 'Potted Plant (small)', photoDesc: 'a small potted succulent or money plant in the background', illusDesc: 'a tiny illustrated potted plant in the corner' },
+  'ACC-20': { name: 'Woven Basket', photoDesc: 'a small woven cane basket in the background', illusDesc: 'a small illustrated woven basket nearby' },
+  'ACC-21': { name: 'Curtain with Light', photoDesc: 'a sheer curtain with soft morning sunlight filtering through', illusDesc: 'illustrated soft curtain with morning light streaming through' },
+  'ACC-22': { name: 'Yoga Mat Edge', photoDesc: 'the rolled edge of a yoga mat visible in the corner', illusDesc: 'the illustrated edge of a rolled yoga mat in the corner' },
   // Window / architectural accents
-  'ACC-23': { name: 'Window Grille Shadow', photoDesc: 'geometric shadow patterns from a window grille on the surface' },
-  'ACC-24': { name: 'Terracotta Pot', photoDesc: 'a small terracotta pot with soil and a tiny green shoot' },
-  'ACC-25': { name: 'Hanging Wind Chime', photoDesc: 'a small wind chime catching light in the background' },
+  'ACC-23': { name: 'Window Grille Shadow', photoDesc: 'geometric shadow patterns from a window grille on the surface', illusDesc: 'illustrated geometric window shadow patterns' },
+  'ACC-24': { name: 'Terracotta Pot', photoDesc: 'a small terracotta pot with soil and a tiny green shoot', illusDesc: 'a small illustrated terracotta pot with a green sprout' },
+  'ACC-25': { name: 'Hanging Wind Chime', photoDesc: 'a small wind chime catching light in the background', illusDesc: 'a tiny illustrated wind chime in the background' },
   // Wildlife / garden accents
-  'ACC-26': { name: 'Dewy Spider Web', photoDesc: 'a delicate spider web with morning dew drops catching light' },
-  'ACC-27': { name: 'Single Butterfly', photoDesc: 'a single butterfly resting on a nearby petal' },
-  'ACC-28': { name: 'Dragonfly on Reed', photoDesc: 'a dragonfly perched on a thin reed in the background' },
+  'ACC-26': { name: 'Dewy Spider Web', photoDesc: 'a delicate spider web with morning dew drops catching light', illusDesc: 'a delicate illustrated spider web with dew' },
+  'ACC-27': { name: 'Single Butterfly', photoDesc: 'a single butterfly resting on a nearby petal', illusDesc: 'a small illustrated butterfly resting on a petal' },
+  'ACC-28': { name: 'Dragonfly on Reed', photoDesc: 'a dragonfly perched on a thin reed in the background', illusDesc: 'a tiny illustrated dragonfly on a reed' },
+  // Steam / smoke (illustration-friendly)
+  'ACC-29': { name: 'Curl of Steam', photoDesc: 'a visible curl of steam rising', illusDesc: 'a decorative illustrated curl of steam rising' },
+  'ACC-30': { name: 'Incense Smoke Wisp', photoDesc: 'a thin trail of incense smoke curling upward', illusDesc: 'a thin illustrated incense smoke trail curling upward' },
 };
+// Backward compat alias
+const B1_ACCENT_ITEMS = ACCENT_ITEMS;
 
 // Curated sub-elements per main item — only small, scene-appropriate accent props
 const B1_SUB_ELEMENTS = {
@@ -1113,6 +1151,57 @@ const B1_SUB_ELEMENTS = {
   'GM-I6-04': ['ACC-11', 'ACC-07', 'ACC-27'],             // Parrot → wet leaves, dew, butterfly
   'GM-I6-05': ['ACC-09', 'ACC-07', 'ACC-28'],             // Sarus crane → fog wisps, dew, dragonfly
   'GM-I6-06': ['ACC-08', 'ACC-07', 'ACC-11'],             // Butterflies → fallen petals, dew, wet leaves
+};
+
+// A2 sub-elements: accent props for illustrated scenes (same ACCENT_ITEMS, illustrated descriptions)
+const A2_SUB_ELEMENTS = {
+  // ── Beverages ──
+  'GM-I1-01': ['ACC-29', 'ACC-01', 'ACC-03', 'ACC-06'],  // Chai → steam curl, biscuits, spices, napkin
+  'GM-I1-02': ['ACC-29', 'ACC-01', 'ACC-05', 'ACC-03'],  // Kulhad → steam curl, biscuits, tray, spices
+  'GM-I1-04': ['ACC-03', 'ACC-29', 'ACC-05'],             // Masala Chai → spices, steam, tray
+  'GM-I1-05': ['ACC-08', 'ACC-19', 'ACC-27'],             // OJ → petals, plant, butterfly
+  'GM-I1-07': ['ACC-29', 'ACC-01', 'ACC-06'],             // Teapot → steam, biscuits, napkin
+  'GM-I1-08': ['ACC-27', 'ACC-08', 'ACC-11'],             // Coconut → butterfly, petals, leaves
+  // ── Nature & Sky ──
+  'GM-I2-01': ['ACC-10', 'ACC-09', 'ACC-08'],             // Sunrise hills → birds, fog, petals
+  'GM-I2-02': ['ACC-27', 'ACC-07', 'ACC-10'],             // Sun rays forest → butterfly, dew, birds
+  'GM-I2-04': ['ACC-09', 'ACC-28', 'ACC-10'],             // River mist → fog, dragonfly, birds
+  'GM-I2-05': ['ACC-10', 'ACC-09', 'ACC-08'],             // Ocean sunrise → birds, fog, petals
+  'GM-I2-06': ['ACC-10', 'ACC-09', 'ACC-07'],             // Mountain peak → birds, fog, dew
+  'GM-I2-08': ['ACC-11', 'ACC-10', 'ACC-27'],             // Rainbow → leaves, birds, butterfly
+  // ── Flowers & Botanicals ──
+  'GM-I3-01': ['ACC-14', 'ACC-30', 'ACC-15'],             // Marigold → loose petals, incense smoke, bell
+  'GM-I3-02': ['ACC-08', 'ACC-28', 'ACC-07'],             // Lotus → fallen petals, dragonfly, dew
+  'GM-I3-03': ['ACC-08', 'ACC-27', 'ACC-07'],             // Jasmine → petals, butterfly, dew
+  'GM-I3-04': ['ACC-27', 'ACC-08', 'ACC-07'],             // Hibiscus → butterfly, petals, dew
+  'GM-I3-05': ['ACC-27', 'ACC-10', 'ACC-07'],             // Sunflower → butterfly, birds, dew
+  'GM-I3-06': ['ACC-08', 'ACC-27', 'ACC-07'],             // Frangipani → petals, butterfly, dew
+  'GM-I3-07': ['ACC-07', 'ACC-27', 'ACC-08'],             // Rose bud → dew, butterfly, petals
+  'GM-I3-08': ['ACC-28', 'ACC-27', 'ACC-07'],             // Petals on water → dragonfly, butterfly, dew
+  'GM-I3-09': ['ACC-27', 'ACC-08', 'ACC-10'],             // Cherry blossom → butterfly, petals, birds
+  // ── Spiritual & Devotional ──
+  'GM-I4-01': ['ACC-14', 'ACC-30', 'ACC-17'],             // Diya → petals, incense smoke, rice grains
+  'GM-I4-03': ['ACC-14', 'ACC-30', 'ACC-13'],             // Namaste → petals, incense, kumkum
+  'GM-I4-04': ['ACC-30', 'ACC-14', 'ACC-15'],             // Agarbatti → smoke trail, petals, bell
+  'GM-I4-05': ['ACC-14', 'ACC-30', 'ACC-17'],             // Tulsi → petals, incense, rice
+  'GM-I4-06': ['ACC-14', 'ACC-30', 'ACC-13'],             // Temple bell → petals, incense, kumkum
+  'GM-I4-07': ['ACC-14', 'ACC-30', 'ACC-17'],             // Shankh → petals, incense, rice
+  'GM-I4-08': ['ACC-14', 'ACC-13', 'ACC-08'],             // Rangoli → petals, kumkum, fallen petals
+  'GM-I4-09': ['ACC-08', 'ACC-14', 'ACC-27'],             // Peacock feather → petals, petals, butterfly
+  // ── Lifestyle & People ──
+  'GM-I5-01': ['ACC-22', 'ACC-10', 'ACC-07'],             // Surya namaskar → yoga mat, birds, dew
+  'GM-I5-02': ['ACC-30', 'ACC-22', 'ACC-08'],             // Meditating → incense, yoga mat, petals
+  'GM-I5-03': ['ACC-21', 'ACC-19', 'ACC-29'],             // Open window → curtain, plant, steam
+  'GM-I5-04': ['ACC-18', 'ACC-29', 'ACC-01'],             // Book+Chai → glasses, steam, biscuits
+  'GM-I5-05': ['ACC-10', 'ACC-08', 'ACC-11'],             // Morning walk → birds, petals, leaves
+  'GM-I5-06': ['ACC-24', 'ACC-19', 'ACC-27'],             // Watering plants → terracotta, plant, butterfly
+  // ── Birds & Wildlife ──
+  'GM-I6-01': ['ACC-09', 'ACC-08', 'ACC-10'],             // Bird flock → fog, petals, more birds
+  'GM-I6-02': ['ACC-08', 'ACC-27', 'ACC-11'],             // Sparrow → petals, butterfly, leaves
+  'GM-I6-03': ['ACC-08', 'ACC-14', 'ACC-07'],             // Peacock → petals, marigold petals, dew
+  'GM-I6-04': ['ACC-11', 'ACC-27', 'ACC-08'],             // Parrot → leaves, butterfly, petals
+  'GM-I6-05': ['ACC-09', 'ACC-28', 'ACC-07'],             // Sarus crane → fog, dragonfly, dew
+  'GM-I6-06': ['ACC-08', 'ACC-07', 'ACC-11'],             // Butterflies → petals, dew, leaves
 };
 
 function renderB1SceneElements() {
@@ -1342,10 +1431,20 @@ function gatherPromptData() {
     overlayPh = step2Opt.desc.toLowerCase();
   }
 
-  // Density phrase (A2)
+  // Density phrase (A2) — auto-determined from sub-element count
   let densityPh = '';
-  if (arch.id === 'A2' && step2Opt) {
-    densityPh = step2Opt.desc.toLowerCase();
+  let a2AccentPh = '';
+  if (arch.id === 'A2') {
+    const subCount = (STATE.a2SubElements || []).length;
+    if (subCount === 0) densityPh = '1–2 key illustration elements, lots of breathing space, clean airy composition';
+    else if (subCount === 1) densityPh = '3–4 illustration elements, balanced and warm composition';
+    else densityPh = '5–6 elements, rich festive vibrant scene';
+    // Build accent description phrases
+    const accPhrases = (STATE.a2SubElements || []).map(id => {
+      const acc = ACCENT_ITEMS[id];
+      return acc ? acc.illusDesc : '';
+    }).filter(Boolean);
+    if (accPhrases.length > 0) a2AccentPh = accPhrases.join(', ');
   }
 
   // Layout text zone phrase
@@ -1429,7 +1528,7 @@ function gatherPromptData() {
   // Preset intensity phrase
   let intensityPh = preset ? preset.promptPhrase : 'balanced composition';
 
-  return { arch, step2Opt, layout, track, palette, font, finish, illusRender, motif, preset, illusItem, illusSize, roles, sizePh, framePh, overlayPh, densityPh, textZonePh, illusPositionPh, bgPh, illusColPh, textColPh, motifPh, motifPhFirefly, renderPh, ornamentalGuard, motifBoundary, stylePh, intensityPh };
+  return { arch, step2Opt, layout, track, palette, font, finish, illusRender, motif, preset, illusItem, illusSize, roles, sizePh, framePh, overlayPh, densityPh, a2AccentPh, textZonePh, illusPositionPh, bgPh, illusColPh, textColPh, motifPh, motifPhFirefly, renderPh, ornamentalGuard, motifBoundary, stylePh, intensityPh };
 }
 
 function buildPrompt(platform) {
@@ -1654,6 +1753,9 @@ function buildMJPrompt(d) {
   }
   if (d.motifPh) parts.push(d.motifPh);
 
+  // A2 accent elements
+  if (d.a2AccentPh) parts.push(`small accent details nearby: ${d.a2AccentPh}, rendered in the same illustration style as the main subject`);
+
   // [Step 7: Intensity]
   parts.push(d.intensityPh);
 
@@ -1701,6 +1803,9 @@ function buildLeonardoPrompt(d) {
       lines.push(`Motif: ${d.motif.name} scattered around illustration as accents, not on borders.`);
     }
   }
+
+  // A2 accent elements
+  if (d.a2AccentPh) lines.push(`Accents: ${d.a2AccentPh}, same illustration style.`);
 
   let intShort = d.intensityPh;
   if (intShort.length > 100) intShort = intShort.substring(0, 100).replace(/,\s*[^,]*$/, '');
@@ -1760,6 +1865,7 @@ function buildFireflyWithTextPrompt(d) {
     parts.push(`${d.illusItem.name}: ${d.illusItem.desc}. ${render}, ${col}. ${d.sizePh}.`);
   }
   if (d.motifPh) parts.push(d.motifPhFirefly);
+  if (d.a2AccentPh) parts.push(`Accents: ${trunc(d.a2AccentPh, 60)}, same style.`);
   parts.push(`${trunc(d.intensityPh, 60)}.`);
   parts.push(`${trunc(d.stylePh, 60)}.`);
   if (d.track.id === 'A') parts.push('Sparkle particles.');
@@ -1789,6 +1895,7 @@ function buildFireflyNoTextPrompt(d) {
     parts.push(`${d.illusItem.name}: ${d.illusItem.desc}. ${render}, ${col}. ${d.sizePh}.`);
   }
   if (d.motifPh) parts.push(d.motifPhFirefly);
+  if (d.a2AccentPh) parts.push(`Accents: ${trunc(d.a2AccentPh, 60)}, same style.`);
   parts.push(`${trunc(d.intensityPh, 60)}.`);
   parts.push(`${trunc(d.stylePh, 60)}.`);
   if (d.track.id === 'A') parts.push('Sparkle particles.');
@@ -1816,7 +1923,7 @@ function buildGeminiPrompt(d) {
     lines.push(`\nFrame (${d.step2Opt.name}): A ${d.framePh} encloses the composition. The frame is purely decorative and does not cover the main illustration. The frame maintains its own consistent style independent of illustration rendering.`);
   }
   if (d.overlayPh) lines.push(`\nOverlay (${d.step2Opt.name}): The photograph has ${d.overlayPh}.`);
-  if (d.densityPh) lines.push(`\nDensity (${d.step2Opt.name}): The composition has ${d.densityPh}.`);
+  if (d.densityPh) lines.push(`\nDensity: The composition has ${d.densityPh}.`);
 
   // [Step 3: Layout]
   lines.push(`\nLayout (${d.layout.name}): ${d.textZonePh}. Illustration ${d.illusPositionPh}.`);
@@ -1835,6 +1942,11 @@ function buildGeminiPrompt(d) {
     } else {
       lines.push(`\nMotif: ${d.motifPh}. The motif accents are scattered around and near the illustration, filling the composition — they do NOT appear on the border edges.`);
     }
+  }
+
+  // A2 accent elements
+  if (d.a2AccentPh) {
+    lines.push(`\nAccent details: Small supporting elements nearby the main illustration — ${d.a2AccentPh}. These accents are rendered in the exact same illustration style as the main subject and serve as subtle scene-setting props.`);
   }
 
   // [Step 7: Intensity]
