@@ -1,5 +1,5 @@
 """
-Generates Prompt_Eval_Framework_v2.xlsx
+Generates Prompt_Eval_Framework_v4.xlsx (same column layout the HTML wizard exports to).
 Three tabs: Eval Data | Instructions | Dashboard
 """
 import openpyxl
@@ -519,6 +519,6 @@ wi.sheet_properties.tabColor   = '1D4ED8'   # blue
 wd.sheet_properties.tabColor   = '7C3AED'   # purple
 
 # ── Save ─────────────────────────────────────────────────────────────────────
-output_path = '/Users/rohan.kohli/Documents/Github/9. Template Automation V2/Prompt_Eval_Framework_v2.xlsx'
+output_path = '/Users/rohan.kohli/Documents/Github/9. Template Automation V2/Prompt_Eval_Framework_v4.xlsx'
 wb.save(output_path)
 print(f'Saved: {output_path}')

@@ -2057,7 +2057,7 @@ function generatePrompts() {
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;">
         <div>
           <div style="font-size:13px;font-weight:700;color:#4ADE80;">QA Evaluation Export</div>
-          <div style="font-size:11px;color:#94A3B8;margin-top:2px;">Paste the exported row into cell <strong style="color:#CBD5E1;">A4</strong> on sheet <strong style="color:#CBD5E1;">Eval Data</strong> (36 columns align A→AJ). Column <strong style="color:#CBD5E1;">Y</strong> = AI Eval Prompt — copy that cell into Claude / Gemini / ChatGPT with the generated image.</div>
+          <div style="font-size:11px;color:#94A3B8;margin-top:2px;">Matches <strong style="color:#CBD5E1;">Prompt_Eval_Framework_v4.xlsx</strong> — click cell <strong style="color:#CBD5E1;">A4</strong> on <strong style="color:#CBD5E1;">Eval Data</strong>, paste once: the whole row fills <strong style="color:#CBD5E1;">A→AJ</strong> (36 cols). Col <strong style="color:#CBD5E1;">Y</strong> = AI Eval Prompt for Claude / Gemini / ChatGPT + image.</div>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
           <button onclick="exportEvalRow(this)" style="padding:10px 18px;background:linear-gradient(135deg,#16A34A,#059669);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;letter-spacing:0.3px;">📋 Export Eval Row</button>
@@ -2487,13 +2487,16 @@ function exportEvalRow(btn) {
 
   const aiEvalPrompt = buildAIEvalPrompt(); // compact model-agnostic eval prompt for Excel col Y (25)
 
-  // Sanitize any cell for TSV: tabs/newlines break column alignment in Excel
+  // Sanitize any cell for TSV/HTML: tabs/newlines break column alignment in Excel
   function cellForTsv(s) {
     if (s == null || s === undefined) return '';
     return String(s).replace(/\r\n/g, '\n').replace(/\r/g, '\n').replace(/\t/g, ' ').replace(/\n/g, ' ');
   }
+  function escapeHtmlCell(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
 
-  // Build tab-separated row — MUST match Prompt_Eval_Framework_v2.xlsx "Eval Data" row 2 exactly (36 cols):
+  // Build tab-separated row — MUST match Prompt_Eval_Framework_v4.xlsx "Eval Data" row 2 exactly (36 cols):
   // A–D   Unique Code | Timestamp | Evaluator | Platform Tested
   // E–H   Archetype | Frame/Overlay Type | Layout | Overlay Strength (B1)
   // I–L   Track | Colour Palette | Background Finish | Render Style
@@ -2521,15 +2524,19 @@ function exportEvalRow(btn) {
     '', '', '', '', '', '', '', '', '', '', // AA–AJ — 10 Part B columns
   ];
 
+  if (cols.length !== 36) {
+    console.error('Eval export: expected 36 columns (Prompt_Eval_Framework_v4), got', cols.length);
+  }
+
   const tsv = cols.join('\t');
-  navigator.clipboard.writeText(tsv).then(() => {
-    btn.textContent = '✓ Eval Row Copied!';
-    btn.style.background = '#16A34A';
-    setTimeout(() => {
-      btn.textContent = '📋 Export Eval Row';
-      btn.style.background = '';
-    }, 3000);
-  }).catch(() => {
+  // HTML table + plain TSV: Excel / Google Sheets paste one click into A4 and fills A→AJ (full row)
+  const htmlTable =
+    '<meta charset="utf-8"><table xmlns:o="urn:schemas-microsoft-com:office:office">' +
+    '<tbody><tr>' +
+    cols.map(function (c) { return '<td>' + escapeHtmlCell(c) + '</td>'; }).join('') +
+    '</tr></tbody></table>';
+
+  function fallbackCopyPlain() {
     const ta = document.createElement('textarea');
     ta.value = tsv;
     ta.style.position = 'fixed';
@@ -2538,10 +2545,78 @@ function exportEvalRow(btn) {
     ta.select();
     document.execCommand('copy');
     document.body.removeChild(ta);
-    btn.textContent = '✓ Eval Row Copied!';
-    btn.style.background = '#16A34A';
-    setTimeout(() => { btn.textContent = '📋 Export Eval Row'; btn.style.background = ''; }, 3000);
-  });
+  }
+
+  if (navigator.clipboard && window.ClipboardItem && typeof ClipboardItem !== 'undefined') {
+    try {
+      var plainBlob = new Blob([tsv], { type: 'text/plain;charset=utf-8' });
+      var htmlBlob = new Blob([htmlTable], { type: 'text/html;charset=utf-8' });
+      navigator.clipboard.write([
+        new ClipboardItem({
+          'text/plain': plainBlob,
+          'text/html': htmlBlob,
+        }),
+      ]).then(function () {
+        btn.textContent = '✓ Eval Row Copied!';
+        btn.style.background = '#16A34A';
+        setTimeout(function () {
+          btn.textContent = '📋 Export Eval Row';
+          btn.style.background = '';
+        }, 3000);
+      }).catch(function () {
+        navigator.clipboard.writeText(tsv).then(function () {
+          btn.textContent = '✓ Copied (plain only)';
+          btn.style.background = '#16A34A';
+          setTimeout(function () {
+            btn.textContent = '📋 Export Eval Row';
+            btn.style.background = '';
+          }, 3000);
+        }).catch(function () {
+          fallbackCopyPlain();
+          btn.textContent = '✓ Eval Row Copied!';
+          btn.style.background = '#16A34A';
+          setTimeout(function () {
+            btn.textContent = '📋 Export Eval Row';
+            btn.style.background = '';
+          }, 3000);
+        });
+      });
+    } catch (e) {
+      navigator.clipboard.writeText(tsv).then(function () {
+        btn.textContent = '✓ Eval Row Copied!';
+        btn.style.background = '#16A34A';
+        setTimeout(function () {
+          btn.textContent = '📋 Export Eval Row';
+          btn.style.background = '';
+        }, 3000);
+      }).catch(function () {
+        fallbackCopyPlain();
+        btn.textContent = '✓ Eval Row Copied!';
+        btn.style.background = '#16A34A';
+        setTimeout(function () {
+          btn.textContent = '📋 Export Eval Row';
+          btn.style.background = '';
+        }, 3000);
+      });
+    }
+  } else {
+    navigator.clipboard.writeText(tsv).then(function () {
+      btn.textContent = '✓ Eval Row Copied!';
+      btn.style.background = '#16A34A';
+      setTimeout(function () {
+        btn.textContent = '📋 Export Eval Row';
+        btn.style.background = '';
+      }, 3000);
+    }).catch(function () {
+      fallbackCopyPlain();
+      btn.textContent = '✓ Eval Row Copied!';
+      btn.style.background = '#16A34A';
+      setTimeout(function () {
+        btn.textContent = '📋 Export Eval Row';
+        btn.style.background = '';
+      }, 3000);
+    });
+  }
 }
 
 function copyPromptByIndex(btn, index) {
