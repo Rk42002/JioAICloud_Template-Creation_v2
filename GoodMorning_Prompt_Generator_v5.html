@@ -1023,55 +1023,96 @@ function renderStep9() {
 // B1 PHOTO BACKGROUND — Render functions
 // ═══════════════════════════════════════════════════════════════
 
-// Curated sub-elements: for each main illustration item, 2-4 related supporting elements
+// ═══════════════════════════════════════════════════════════════
+// B1 ACCENT PROPS — small background/side items for photo scenes
+// These are NOT hero illustrations — they're subtle scene-setting props
+// ═══════════════════════════════════════════════════════════════
+const B1_ACCENT_ITEMS = {
+  // Kitchen / table props
+  'ACC-01': { name: 'Biscuits on a Plate', photoDesc: 'a small plate of Parle-G style biscuits in the background' },
+  'ACC-02': { name: 'Folded Newspaper', photoDesc: 'a folded morning newspaper lying nearby' },
+  'ACC-03': { name: 'Spice Scatter', photoDesc: 'a few scattered whole spices — cardamom pods, a cinnamon stick — on the surface' },
+  'ACC-04': { name: 'Sugar Bowl', photoDesc: 'a small brass sugar bowl with a tiny spoon beside the cup' },
+  'ACC-05': { name: 'Steel Tray (Thali)', photoDesc: 'a round steel tray underneath the cup catching soft reflections' },
+  'ACC-06': { name: 'Rustic Cloth Napkin', photoDesc: 'a folded cotton napkin or gamcha cloth under the cup' },
+  // Nature / outdoor accents
+  'ACC-07': { name: 'Morning Dew Drops', photoDesc: 'glistening dew drops on nearby grass blades' },
+  'ACC-08': { name: 'Fallen Petals', photoDesc: 'a few scattered flower petals on the ground' },
+  'ACC-09': { name: 'Wispy Fog', photoDesc: 'thin wisps of morning fog drifting in the mid-ground' },
+  'ACC-10': { name: 'Distant Birds', photoDesc: 'a few small birds silhouetted in the distant sky' },
+  'ACC-11': { name: 'Wet Leaves', photoDesc: 'rain-washed leaves with water droplets catching light' },
+  'ACC-12': { name: 'Cobblestone / Path', photoDesc: 'a textured stone or brick path in the foreground' },
+  // Devotional / puja accents
+  'ACC-13': { name: 'Kumkum Tilak Mark', photoDesc: 'a small kumkum mark or sindoor dot on a brass plate' },
+  'ACC-14': { name: 'Loose Flower Petals', photoDesc: 'a handful of loose marigold petals around the base' },
+  'ACC-15': { name: 'Brass Bell (small)', photoDesc: 'a tiny brass puja bell lying beside the arrangement' },
+  'ACC-16': { name: 'Match Sticks', photoDesc: 'a matchbox with a burnt matchstick nearby' },
+  'ACC-17': { name: 'Rice Grains', photoDesc: 'a few scattered uncooked rice grains on the surface' },
+  // Lifestyle / cozy accents
+  'ACC-18': { name: 'Reading Glasses', photoDesc: 'a pair of reading glasses resting near the book' },
+  'ACC-19': { name: 'Potted Plant (small)', photoDesc: 'a small potted succulent or money plant in the background' },
+  'ACC-20': { name: 'Woven Basket', photoDesc: 'a small woven cane basket in the background' },
+  'ACC-21': { name: 'Curtain with Light', photoDesc: 'a sheer curtain with soft morning sunlight filtering through' },
+  'ACC-22': { name: 'Yoga Mat Edge', photoDesc: 'the rolled edge of a yoga mat visible in the corner' },
+  // Window / architectural accents
+  'ACC-23': { name: 'Window Grille Shadow', photoDesc: 'geometric shadow patterns from a window grille on the surface' },
+  'ACC-24': { name: 'Terracotta Pot', photoDesc: 'a small terracotta pot with soil and a tiny green shoot' },
+  'ACC-25': { name: 'Hanging Wind Chime', photoDesc: 'a small wind chime catching light in the background' },
+  // Wildlife / garden accents
+  'ACC-26': { name: 'Dewy Spider Web', photoDesc: 'a delicate spider web with morning dew drops catching light' },
+  'ACC-27': { name: 'Single Butterfly', photoDesc: 'a single butterfly resting on a nearby petal' },
+  'ACC-28': { name: 'Dragonfly on Reed', photoDesc: 'a dragonfly perched on a thin reed in the background' },
+};
+
+// Curated sub-elements per main item — only small, scene-appropriate accent props
 const B1_SUB_ELEMENTS = {
-  // Beverages
-  'GM-I1-01': ['GM-I1-04', 'GM-I5-04', 'GM-I3-03', 'GM-I4-01'],
-  'GM-I1-02': ['GM-I1-04', 'GM-I4-01', 'GM-I3-01'],
-  'GM-I1-04': ['GM-I1-01', 'GM-I1-02', 'GM-I3-03'],
-  'GM-I1-05': ['GM-I3-05', 'GM-I5-06', 'GM-I2-01'],
-  'GM-I1-07': ['GM-I1-01', 'GM-I3-09', 'GM-I5-04'],
-  'GM-I1-08': ['GM-I3-05', 'GM-I2-05', 'GM-I6-06'],
-  // Nature & Sky
-  'GM-I2-01': ['GM-I6-01', 'GM-I2-04', 'GM-I5-05'],
-  'GM-I2-02': ['GM-I6-02', 'GM-I2-01', 'GM-I6-06'],
-  'GM-I2-04': ['GM-I6-05', 'GM-I2-01', 'GM-I6-01'],
-  'GM-I2-05': ['GM-I6-01', 'GM-I5-02', 'GM-I2-01'],
-  'GM-I2-06': ['GM-I6-01', 'GM-I2-01', 'GM-I5-01'],
-  'GM-I2-08': ['GM-I2-01', 'GM-I6-01', 'GM-I3-05'],
-  // Flowers & Botanicals
-  'GM-I3-01': ['GM-I4-01', 'GM-I4-08', 'GM-I3-04'],
-  'GM-I3-02': ['GM-I3-08', 'GM-I4-01', 'GM-I6-06'],
-  'GM-I3-03': ['GM-I1-01', 'GM-I4-04', 'GM-I3-01'],
-  'GM-I3-04': ['GM-I3-01', 'GM-I4-05', 'GM-I6-06'],
-  'GM-I3-05': ['GM-I6-06', 'GM-I2-01', 'GM-I5-06'],
-  'GM-I3-06': ['GM-I3-03', 'GM-I3-02', 'GM-I4-04'],
-  'GM-I3-07': ['GM-I3-08', 'GM-I6-06', 'GM-I3-03'],
-  'GM-I3-08': ['GM-I3-02', 'GM-I3-07', 'GM-I4-01'],
-  'GM-I3-09': ['GM-I6-02', 'GM-I3-07', 'GM-I6-06'],
-  // Spiritual & Devotional
-  'GM-I4-01': ['GM-I4-04', 'GM-I3-01', 'GM-I4-05'],
-  'GM-I4-03': ['GM-I4-01', 'GM-I4-04', 'GM-I3-02'],
-  'GM-I4-04': ['GM-I4-01', 'GM-I3-03', 'GM-I4-05'],
-  'GM-I4-05': ['GM-I4-01', 'GM-I4-04', 'GM-I3-01'],
-  'GM-I4-06': ['GM-I4-01', 'GM-I4-04', 'GM-I4-07'],
-  'GM-I4-07': ['GM-I4-06', 'GM-I4-01', 'GM-I3-02'],
-  'GM-I4-08': ['GM-I3-01', 'GM-I4-01', 'GM-I3-08'],
-  'GM-I4-09': ['GM-I3-02', 'GM-I4-01', 'GM-I6-03'],
-  // Lifestyle & People
-  'GM-I5-01': ['GM-I2-01', 'GM-I5-02', 'GM-I6-01'],
-  'GM-I5-02': ['GM-I2-01', 'GM-I5-01', 'GM-I4-04'],
-  'GM-I5-03': ['GM-I1-01', 'GM-I5-06', 'GM-I6-02'],
-  'GM-I5-04': ['GM-I1-01', 'GM-I5-03', 'GM-I3-03'],
-  'GM-I5-05': ['GM-I2-02', 'GM-I6-01', 'GM-I3-05'],
-  'GM-I5-06': ['GM-I5-03', 'GM-I3-05', 'GM-I1-01'],
-  // Birds & Wildlife
-  'GM-I6-01': ['GM-I2-01', 'GM-I2-05', 'GM-I2-06'],
-  'GM-I6-02': ['GM-I3-09', 'GM-I3-07', 'GM-I2-02'],
-  'GM-I6-03': ['GM-I4-09', 'GM-I3-02', 'GM-I2-01'],
-  'GM-I6-04': ['GM-I2-02', 'GM-I3-05', 'GM-I6-06'],
-  'GM-I6-05': ['GM-I2-04', 'GM-I2-01', 'GM-I6-01'],
-  'GM-I6-06': ['GM-I3-05', 'GM-I3-07', 'GM-I3-02'],
+  // ── Beverages ──
+  'GM-I1-01': ['ACC-01', 'ACC-02', 'ACC-06', 'ACC-03'],  // Chai → biscuits, newspaper, napkin, spice scatter
+  'GM-I1-02': ['ACC-01', 'ACC-05', 'ACC-03', 'ACC-06'],  // Kulhad → biscuits, steel tray, spices, napkin
+  'GM-I1-04': ['ACC-03', 'ACC-05', 'ACC-01'],             // Masala Chai → spice scatter, steel tray, biscuits
+  'GM-I1-05': ['ACC-19', 'ACC-21', 'ACC-02'],             // OJ → small plant, curtain light, newspaper
+  'GM-I1-07': ['ACC-01', 'ACC-06', 'ACC-21'],             // Teapot → biscuits, cloth napkin, curtain light
+  'GM-I1-08': ['ACC-07', 'ACC-19', 'ACC-12'],             // Coconut → dew drops, small plant, path
+  // ── Nature & Sky ──
+  'GM-I2-01': ['ACC-10', 'ACC-09', 'ACC-07'],             // Sunrise hills → distant birds, fog wisps, dew
+  'GM-I2-02': ['ACC-26', 'ACC-07', 'ACC-11'],             // Sun rays forest → spider web, dew, wet leaves
+  'GM-I2-04': ['ACC-09', 'ACC-28', 'ACC-10'],             // River mist → fog wisps, dragonfly, distant birds
+  'GM-I2-05': ['ACC-10', 'ACC-12', 'ACC-09'],             // Ocean sunrise → distant birds, path, fog
+  'GM-I2-06': ['ACC-10', 'ACC-09', 'ACC-07'],             // Mountain peak → distant birds, fog, dew
+  'GM-I2-08': ['ACC-11', 'ACC-07', 'ACC-10'],             // Rainbow → wet leaves, dew, distant birds
+  // ── Flowers & Botanicals ──
+  'GM-I3-01': ['ACC-14', 'ACC-16', 'ACC-05'],             // Marigold garland → loose petals, matchsticks, steel tray
+  'GM-I3-02': ['ACC-08', 'ACC-07', 'ACC-28'],             // Lotus → fallen petals, dew drops, dragonfly
+  'GM-I3-03': ['ACC-08', 'ACC-07', 'ACC-27'],             // Jasmine → fallen petals, dew, butterfly
+  'GM-I3-04': ['ACC-07', 'ACC-27', 'ACC-08'],             // Hibiscus → dew, butterfly, fallen petals
+  'GM-I3-05': ['ACC-27', 'ACC-07', 'ACC-10'],             // Sunflower → butterfly, dew, distant birds
+  'GM-I3-06': ['ACC-08', 'ACC-07', 'ACC-27'],             // Frangipani → fallen petals, dew, butterfly
+  'GM-I3-07': ['ACC-07', 'ACC-27', 'ACC-26'],             // Rose bud → dew, butterfly, spider web
+  'GM-I3-08': ['ACC-07', 'ACC-08', 'ACC-27'],             // Petals on water → dew, fallen petals, butterfly
+  'GM-I3-09': ['ACC-27', 'ACC-08', 'ACC-10'],             // Cherry blossom → butterfly, fallen petals, distant birds
+  // ── Spiritual & Devotional ──
+  'GM-I4-01': ['ACC-14', 'ACC-16', 'ACC-17'],             // Diya → loose petals, matchsticks, rice grains
+  'GM-I4-03': ['ACC-14', 'ACC-13', 'ACC-08'],             // Namaste → loose petals, kumkum, fallen petals
+  'GM-I4-04': ['ACC-16', 'ACC-15', 'ACC-14'],             // Agarbatti → matchsticks, small bell, loose petals
+  'GM-I4-05': ['ACC-13', 'ACC-14', 'ACC-17'],             // Tulsi → kumkum mark, loose petals, rice grains
+  'GM-I4-06': ['ACC-14', 'ACC-16', 'ACC-13'],             // Temple bell → loose petals, matchsticks, kumkum
+  'GM-I4-07': ['ACC-14', 'ACC-17', 'ACC-13'],             // Shankh → loose petals, rice grains, kumkum
+  'GM-I4-08': ['ACC-14', 'ACC-13', 'ACC-07'],             // Rangoli → loose petals, kumkum, dew
+  'GM-I4-09': ['ACC-08', 'ACC-07', 'ACC-14'],             // Peacock feather → fallen petals, dew, loose petals
+  // ── Lifestyle & People ──
+  'GM-I5-01': ['ACC-22', 'ACC-07', 'ACC-10'],             // Surya namaskar → yoga mat edge, dew, distant birds
+  'GM-I5-02': ['ACC-22', 'ACC-07', 'ACC-09'],             // Meditating → yoga mat, dew, fog wisps
+  'GM-I5-03': ['ACC-21', 'ACC-19', 'ACC-25'],             // Open window → curtain light, small plant, wind chime
+  'GM-I5-04': ['ACC-18', 'ACC-01', 'ACC-02'],             // Book+Chai → reading glasses, biscuits, newspaper
+  'GM-I5-05': ['ACC-12', 'ACC-07', 'ACC-10'],             // Morning walk → path, dew, distant birds
+  'GM-I5-06': ['ACC-24', 'ACC-19', 'ACC-21'],             // Watering plants → terracotta pot, small plant, curtain
+  // ── Birds & Wildlife ──
+  'GM-I6-01': ['ACC-09', 'ACC-10', 'ACC-07'],             // Bird flock → fog, distant birds, dew
+  'GM-I6-02': ['ACC-08', 'ACC-07', 'ACC-27'],             // Sparrow → fallen petals, dew, butterfly
+  'GM-I6-03': ['ACC-08', 'ACC-07', 'ACC-14'],             // Peacock → fallen petals, dew, loose petals
+  'GM-I6-04': ['ACC-11', 'ACC-07', 'ACC-27'],             // Parrot → wet leaves, dew, butterfly
+  'GM-I6-05': ['ACC-09', 'ACC-07', 'ACC-28'],             // Sarus crane → fog wisps, dew, dragonfly
+  'GM-I6-06': ['ACC-08', 'ACC-07', 'ACC-11'],             // Butterflies → fallen petals, dew, wet leaves
 };
 
 function renderB1SceneElements() {
@@ -1097,17 +1138,18 @@ function renderB1SceneElements() {
   if (mainEl) {
     const availableSubs = B1_SUB_ELEMENTS[mainEl] || [];
     const subItems = availableSubs.map(subId => {
-      for (const cat of ILLUS_CATS) { const item = cat.items.find(i => i.id === subId); if (item) return item; }
+      const acc = B1_ACCENT_ITEMS[subId];
+      if (acc) return { id: subId, name: acc.name, photoDesc: acc.photoDesc };
       return null;
     }).filter(Boolean);
 
-    html += `<div class="sub-section" style="margin-top:24px;"><div class="sub-section-header"><div class="sub-section-num">2</div><div class="sub-section-title">Supporting Elements <span style="font-weight:400;color:var(--muted);">(optional, up to 2)</span></div><div class="sub-section-tag">${subEls.length}/2</div></div>`;
+    html += `<div class="sub-section" style="margin-top:24px;"><div class="sub-section-header"><div class="sub-section-num">2</div><div class="sub-section-title">Scene Accents <span style="font-weight:400;color:var(--muted);">(optional, pick up to 2 small props)</span></div><div class="sub-section-tag">${subEls.length}/2</div></div>`;
+    html += `<div style="font-size:12px;color:var(--muted);margin-bottom:10px;">Small background details that naturally belong in this scene.</div>`;
     if (subItems.length > 0) {
       html += `<div class="options-grid cols-4">${subItems.map(i => {
         const isSel = subEls.includes(i.id);
         const isMaxed = subEls.length >= 2 && !isSel;
-        const photoDesc = B1_PHOTO_DESC[i.id] || i.desc;
-        return `<div class="opt-card ${isSel ? 'selected' : ''}" onclick="${isMaxed ? '' : `toggleSubElement('${i.id}')`}" style="${isMaxed ? 'cursor:not-allowed;opacity:0.4;' : ''}"><div class="opt-name">${i.name}</div><div class="opt-desc">${photoDesc}</div></div>`;
+        return `<div class="opt-card ${isSel ? 'selected' : ''}" onclick="${isMaxed ? '' : `toggleSubElement('${i.id}')`}" style="${isMaxed ? 'cursor:not-allowed;opacity:0.4;' : ''}"><div class="opt-name">${i.name}</div><div class="opt-desc">${i.photoDesc}</div></div>`;
       }).join('')}</div>`;
     }
     html += `</div>`;
@@ -1116,7 +1158,9 @@ function renderB1SceneElements() {
   // Scene composition summary
   if (STATE.sceneElements.length >= 1) {
     const selItems = STATE.sceneElements.map((id, idx) => {
-      for (const cat of ILLUS_CATS) { const item = cat.items.find(i => i.id === id); if (item) return { ...item, role: idx === 0 ? 'Main' : 'Supporting' }; }
+      for (const cat of ILLUS_CATS) { const item = cat.items.find(i => i.id === id); if (item) return { ...item, role: idx === 0 ? 'Main' : 'Accent' }; }
+      const acc = B1_ACCENT_ITEMS[id];
+      if (acc) return { id, name: acc.name, role: 'Accent' };
       return null;
     }).filter(Boolean);
     html += `<div style="margin-top:18px;padding:12px 16px;background:#F0F9FF;border:1px solid #BFDBFE;border-radius:10px;"><div style="font-size:12px;font-weight:700;color:var(--primary);margin-bottom:6px;">Scene Composition</div><div style="display:flex;flex-wrap:wrap;gap:8px;">${selItems.map((item, idx) => `<div style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;background:${idx===0 ? 'var(--primary)' : '#E2E8F0'};color:${idx===0 ? '#fff' : '#334155'};font-size:12px;font-weight:600;"><span>${idx===0 ? '⭐' : '○'}</span>${item.name}</div>`).join('')}</div></div>`;
@@ -1416,12 +1460,16 @@ function gatherB1PromptData() {
   const mood = STATE.mood ? B1_MOOD_OPTIONS.find(m => m.id === STATE.mood) : null;
   const intensity = STATE.customPreset ? B1_INTENSITY_PRESETS.find(p => p.id === STATE.customPreset) : null;
 
-  // Build scene description — first = main (foreground hero), rest = subsidiary (background/supporting)
+  // Build scene description — first = main (foreground hero), rest = small accent props
   const sceneItems = STATE.sceneElements.map(id => {
+    // Check main illustration catalogue first
     for (const cat of ILLUS_CATS) {
       const item = cat.items.find(i => i.id === id);
       if (item) return { ...item, photoDesc: B1_PHOTO_DESC[id] || item.desc };
     }
+    // Check accent items
+    const acc = B1_ACCENT_ITEMS[id];
+    if (acc) return { id, name: acc.name, photoDesc: acc.photoDesc };
     return null;
   }).filter(Boolean);
 
@@ -1429,9 +1477,9 @@ function gatherB1PromptData() {
   if (sceneItems.length === 1) {
     scenePh = `${sceneItems[0].photoDesc} as the hero subject in the foreground`;
   } else if (sceneItems.length === 2) {
-    scenePh = `${sceneItems[0].photoDesc} as the main subject in the foreground, with ${sceneItems[1].photoDesc} as a supporting element in the background`;
+    scenePh = `${sceneItems[0].photoDesc} as the hero subject in the foreground, with ${sceneItems[1].photoDesc}`;
   } else if (sceneItems.length === 3) {
-    scenePh = `${sceneItems[0].photoDesc} as the main subject in the foreground, with ${sceneItems[1].photoDesc} and ${sceneItems[2].photoDesc} as supporting elements in the mid-ground and background`;
+    scenePh = `${sceneItems[0].photoDesc} as the hero subject in the foreground, with ${sceneItems[1].photoDesc} and ${sceneItems[2].photoDesc}`;
   }
 
   // Overlay phrase — auto-determined from text position + strength
