@@ -1189,7 +1189,9 @@ function renderB1Mood() {
 
   html += `<div class="options-grid cols-3">${B1_MOOD_OPTIONS.map(m => {
     const isSuggested = suggested.includes(m.id);
-    return `<div class="opt-card ${STATE.mood === m.id ? 'selected' : ''} ${isSuggested ? 'recommended' : ''}" onclick="select('mood','${m.id}')"><div class="opt-name">${m.name}</div><div class="opt-desc">${m.desc}</div></div>`;
+    const isSelected = STATE.mood === m.id;
+    const dimStyle = (!isSuggested && !isSelected) ? 'opacity:0.5;' : '';
+    return `<div class="opt-card ${isSelected ? 'selected' : ''} ${isSuggested ? 'recommended' : ''}" onclick="select('mood','${m.id}')" style="${dimStyle}"><div class="opt-name">${m.name}</div><div class="opt-desc">${m.desc}</div></div>`;
   }).join('')}</div>`;
 
   return html;
@@ -1510,7 +1512,7 @@ function buildB1MJPrompt(d) {
   const parts = [];
 
   // Core: photorealistic photograph
-  parts.push('photorealistic photograph, full-bleed image filling the entire canvas');
+  parts.push('photorealistic photograph, full-bleed image filling the entire canvas, early morning Indian setting');
 
   // Scene elements (main subject first, supporting after)
   parts.push(d.scenePh);
@@ -1521,17 +1523,21 @@ function buildB1MJPrompt(d) {
   // Photography aesthetic (Track)
   parts.push(d.photoTrack.promptPhrase);
 
-  // Intensity (camera distance)
+  // Intensity (camera distance + depth of field)
   if (d.intensity) parts.push(d.intensity.promptPhrase);
+
+  // Colour temperature & atmosphere
+  const warmthMap = { 'MD-1': 'warm colour temperature 4500K', 'MD-2': 'neutral colour temperature 5500K', 'MD-3': 'daylight white balance 5600K', 'MD-4': 'warm dramatic colour temperature 4200K', 'MD-5': 'warm analog colour temperature 4800K', 'MD-6': 'cool colour temperature 6200K' };
+  if (d.mood && warmthMap[d.mood.id]) parts.push(warmthMap[d.mood.id]);
 
   // Layout text zone
   parts.push(d.textZonePh);
 
-  // Overlay
+  // Overlay with strength
   if (d.overlayPh) parts.push(d.overlayPh);
 
-  // Format
-  parts.push('9:16 portrait format, professional photography, high resolution');
+  // Technical quality
+  parts.push('9:16 portrait format, professional DSLR photography, sharp focus on subject, high dynamic range, natural bokeh where appropriate');
 
   const mainPrompt = parts.filter(p => p).join(', ');
   const negs = d.negs.join(', ');
@@ -1540,13 +1546,15 @@ function buildB1MJPrompt(d) {
 
 function buildB1LeonardoPrompt(d) {
   const lines = [];
-  lines.push(`Photorealistic ${d.photoTrack.name} photograph, Good Morning poster, 9:16 vertical (1080x1920). Full-bleed photo, no frames, no borders, no illustration.`);
+  lines.push(`Photorealistic ${d.photoTrack.name} photograph, Good Morning poster, 9:16 vertical (1080x1920). Full-bleed photo, no frames, no borders, no illustration. Early morning Indian setting.`);
   lines.push(`Scene: ${d.scenePh}.`);
   if (d.mood) lines.push(`Mood: ${d.mood.promptPhrase}.`);
   lines.push(`Aesthetic: ${d.photoTrack.promptPhrase}.`);
   if (d.intensity) lines.push(`Camera: ${d.intensity.promptPhrase}.`);
-  lines.push(`Text zone: ${d.textZonePh}. Overlay: ${d.overlayPh}. Keep this area darker for white text readability.`);
-  // Compact negatives — keep most critical
+  // Overlay with strength context
+  const strengthWord = d.overlayStrength === 'heavy' ? 'strong dark' : 'subtle light';
+  lines.push(`Text zone: ${d.textZonePh}. Overlay: ${strengthWord} ${d.overlayPh}. Keep this area darker for white text readability.`);
+  lines.push(`Quality: DSLR, sharp focus on subject, natural depth of field.`);
   const coreNegs = ['illustration', 'cartoon', 'painting', 'vector', 'frame', 'border', 'pattern', 'text', 'watermark', 'blurry', 'low quality', 'CGI'];
   lines.push(`Negative: ${coreNegs.join(', ')}`);
   return lines.join('\n');
@@ -1555,13 +1563,14 @@ function buildB1LeonardoPrompt(d) {
 function buildB1FireflyWithTextPrompt(d) {
   // Firefly WITH TEXT for B1: hard cap ≤950 chars.
   const parts = [];
-  parts.push(`Photorealistic ${d.photoTrack.name} Good Morning poster, 9:16 vertical, full-bleed photograph.`);
-  parts.push(`${trunc(d.scenePh, 120)}.`);
-  if (d.mood) parts.push(`${trunc(d.mood.promptPhrase, 80)}.`);
-  parts.push(`${trunc(d.photoTrack.promptPhrase, 80)}.`);
+  parts.push(`Photorealistic ${d.photoTrack.name} Good Morning poster, 9:16 vertical, full-bleed photograph, early morning Indian setting.`);
+  parts.push(`${trunc(d.scenePh, 130)}.`);
+  if (d.mood) parts.push(`${trunc(d.mood.promptPhrase, 90)}.`);
+  parts.push(`${trunc(d.photoTrack.promptPhrase, 90)}.`);
   if (d.intensity) parts.push(`${trunc(d.intensity.promptPhrase, 80)}.`);
-  parts.push(`${trunc(d.textZonePh, 60)}, ${trunc(d.overlayPh, 40)}, darker for readability.`);
-  parts.push(`"Good Morning" text in white, in the text zone, legible.`);
+  const strengthHint = d.overlayStrength === 'heavy' ? 'strong dark' : 'subtle';
+  parts.push(`${trunc(d.textZonePh, 60)}, ${strengthHint} ${trunc(d.overlayPh, 50)}.`);
+  parts.push(`"Good Morning" text in white decorative font in the text zone, legible. DSLR quality, sharp focus.`);
   let result = parts.join(' ');
   if (result.length > 950) result = result.substring(0, 950).replace(/\s+\S*$/, '');
   return result;
@@ -1570,13 +1579,14 @@ function buildB1FireflyWithTextPrompt(d) {
 function buildB1FireflyNoTextPrompt(d) {
   // Firefly NO TEXT for B1: hard cap ≤950 chars.
   const parts = [];
-  parts.push(`Photorealistic ${d.photoTrack.name} photograph, 9:16 vertical, full-bleed, no text, no letters, no words.`);
-  parts.push(`${trunc(d.scenePh, 120)}.`);
-  if (d.mood) parts.push(`${trunc(d.mood.promptPhrase, 80)}.`);
-  parts.push(`${trunc(d.photoTrack.promptPhrase, 80)}.`);
+  parts.push(`Photorealistic ${d.photoTrack.name} photograph, 9:16 vertical, full-bleed, no text, no letters, no words. Early morning Indian setting.`);
+  parts.push(`${trunc(d.scenePh, 130)}.`);
+  if (d.mood) parts.push(`${trunc(d.mood.promptPhrase, 90)}.`);
+  parts.push(`${trunc(d.photoTrack.promptPhrase, 90)}.`);
   if (d.intensity) parts.push(`${trunc(d.intensity.promptPhrase, 80)}.`);
-  parts.push(`${trunc(d.textZonePh, 60)} darker for manual text later, ${trunc(d.overlayPh, 40)}.`);
-  parts.push(`Purely visual, no text, no letters, no typography.`);
+  const strengthHint = d.overlayStrength === 'heavy' ? 'strong dark' : 'subtle';
+  parts.push(`${trunc(d.textZonePh, 60)} ${strengthHint} overlay for text zone, ${trunc(d.overlayPh, 50)}.`);
+  parts.push(`DSLR quality, sharp focus on subject. Purely visual, no text, no letters, no typography.`);
   let result = parts.join(' ');
   if (result.length > 950) result = result.substring(0, 950).replace(/\s+\S*$/, '');
   return result;
@@ -1585,22 +1595,30 @@ function buildB1FireflyNoTextPrompt(d) {
 function buildB1GeminiPrompt(d) {
   const lines = [];
 
-  lines.push(`A photorealistic ${d.photoTrack.name} style photograph for a Good Morning greeting poster in vertical 9:16 format. The image is a full-bleed photograph that fills the entire canvas — no frames, no borders, no illustration elements.`);
+  lines.push(`A photorealistic ${d.photoTrack.name} style photograph for a Good Morning greeting poster in vertical 9:16 format. The image is a full-bleed photograph that fills the entire canvas — no frames, no borders, no illustration elements. The setting is early morning in India.`);
 
   // Scene (main + supporting)
-  lines.push(`\nScene: The photograph features ${d.scenePh}.`);
+  lines.push(`\nScene: The photograph features ${d.scenePh}. The scene should feel natural and authentic — as if captured in a real Indian morning setting, not staged or artificial.`);
 
   // Mood (merged lighting + colour)
-  if (d.mood) lines.push(`\nMood: ${d.mood.promptPhrase}.`);
+  if (d.mood) lines.push(`\nLighting & Mood: ${d.mood.promptPhrase}. The light should feel natural and time-appropriate for early morning.`);
 
   // Photography Aesthetic
   lines.push(`\nPhotography Aesthetic: ${d.photoTrack.promptPhrase}.`);
 
   // Camera / Intensity
-  if (d.intensity) lines.push(`\nCamera & Framing: ${d.intensity.promptPhrase}.`);
+  if (d.intensity) lines.push(`\nCamera & Framing: ${d.intensity.promptPhrase}. Use natural depth of field appropriate to the focal length — sharp focus on the main subject with gentle falloff in the background.`);
 
-  // Layout + Overlay
-  lines.push(`\nComposition: The image has a ${d.overlayPh}. The ${d.textZonePh} — this area should be slightly darker or muted to ensure white text overlay is readable.`);
+  // Colour temperature
+  const colourTempMap = { 'MD-1': 'Warm colour temperature around 4500K — amber sunrise warmth.', 'MD-2': 'Neutral colour temperature around 5500K — true-to-life morning tones.', 'MD-3': 'Daylight white balance 5600K — clean bright colours.', 'MD-4': 'Warm dramatic temperature 4200K — emphasise the light-shadow contrast.', 'MD-5': 'Warm analog temperature 4800K — slight colour fade and lifted blacks.', 'MD-6': 'Cool colour temperature 6200K — blue-teal undertones, airy freshness.' };
+  if (d.mood && colourTempMap[d.mood.id]) lines.push(`\nColour Temperature: ${colourTempMap[d.mood.id]}`);
+
+  // Layout + Overlay with strength
+  const strengthDesc = d.overlayStrength === 'heavy' ? 'a strong, clearly visible dark overlay' : 'a subtle, light semi-transparent overlay';
+  lines.push(`\nComposition & Text Zone: The image has ${strengthDesc} — ${d.overlayPh}. The ${d.textZonePh} — this area should be ${d.overlayStrength === 'heavy' ? 'distinctly' : 'slightly'} darker or muted to ensure white text overlay is legible and readable against the photograph.`);
+
+  // Technical quality
+  lines.push(`\nTechnical Quality: Professional DSLR quality, sharp focus on the main subject, high dynamic range, natural bokeh where the depth of field creates it. The image should look like it was shot by a skilled photographer, not AI-generated.`);
 
   // Do not include
   lines.push(`\nDo not include: ${d.negs.join(', ')}.`);
