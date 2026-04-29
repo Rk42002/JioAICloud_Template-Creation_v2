@@ -542,11 +542,12 @@ const STATE = {
   // B1 Photo Background specific
   sceneElements: [],   // array of 1-3 illustration item IDs (first = main, rest = subsidiary)
   mood: null,          // B1_MOOD_OPTIONS id (merged mood + colour grading)
+  overlayStrength: 'medium', // B1 overlay opacity: 'light', 'medium', 'heavy'
 };
 
 function getSteps() {
   if (STATE.archetype === 'B1') {
-    return ['template', 'style', 'layout', 'track', 'scene_elements', 'mood', 'intensity'];
+    return ['template', 'b1_text_placement', 'track', 'scene_elements', 'mood', 'intensity'];
   }
   return ['template', 'style', 'layout', 'track', 'colour_finish', 'visual', 'intensity'];
 }
@@ -561,6 +562,7 @@ const STEP_LABELS = {
   intensity: 'Intensity',
   // font_text step removed — font/text not included in AI prompts
   // B1 Photo Background specific steps
+  b1_text_placement: 'Text & Overlay',
   scene_elements: 'Scene Elements',
   mood: 'Mood',
 };
@@ -625,6 +627,7 @@ function canProceed() {
     case 'template': return !!STATE.archetype;
     case 'style': return !!STATE.step2;
     case 'layout': return !!STATE.layout;
+    case 'b1_text_placement': return !!STATE.layout && !!STATE.overlayStrength;
     case 'track': return !!STATE.track;
     case 'colour_finish': return !!STATE.palette && !!STATE.finish;
     case 'visual': {
@@ -654,7 +657,7 @@ function select(key, value) {
     STATE.finish = null; STATE.illusRender = null; STATE.motifSet = null; STATE.customPreset = null;
     STATE.frameDecoration = null; STATE.illusSize = null; STATE.illusItem = null; STATE.illusCategory = null;
     // B1 specific resets
-    STATE.sceneElements = []; STATE.mood = null;
+    STATE.sceneElements = []; STATE.mood = null; STATE.overlayStrength = 'medium';
   }
   if (key === 'step2') { STATE.layout = null; }
   if (key === 'track') {
@@ -832,16 +835,77 @@ function renderStep3() {
   }).join('')}</div>`;
 }
 
+// ═══════════════════════════════════════════════════════════════
+// B1 MERGED: Text Placement + Overlay (auto-determined from position)
+// ═══════════════════════════════════════════════════════════════
+function renderB1TextPlacement() {
+  const stepNum = getSteps().indexOf('b1_text_placement') + 1;
+
+  // B1 layout descriptions with auto-overlay explanation
+  const b1Layouts = [
+    { id: 'L1', name: 'Text Top', desc: 'Text at the top — overlay darkens the upper zone for readability.', overlayAuto: 'Darkens top' },
+    { id: 'L2', name: 'Full Overlay', desc: 'Text centred over the entire photo — full translucent overlay darkens the whole image.', overlayAuto: 'Darkens entire image' },
+    { id: 'L3', name: 'Text Left', desc: 'Text on the left half — overlay darkens the left side.', overlayAuto: 'Darkens left' },
+    { id: 'L4', name: 'Text Right', desc: 'Text on the right half — overlay darkens the right side.', overlayAuto: 'Darkens right' },
+    { id: 'L5', name: 'Text Bottom', desc: 'Text at the bottom — overlay darkens the lower zone.', overlayAuto: 'Darkens bottom' },
+    { id: 'L6', name: 'Text Centre', desc: 'Text in the centre — vignette effect darkens edges, keeps centre bright.', overlayAuto: 'Vignette' },
+  ];
+
+  const strengths = [
+    { id: 'light', name: 'Light', desc: 'Subtle — photo shows through clearly, text still readable.', icon: '○' },
+    { id: 'medium', name: 'Medium', desc: 'Balanced — good contrast without hiding the photo.', icon: '◐' },
+    { id: 'heavy', name: 'Heavy', desc: 'Strong — maximum text readability, photo more muted.', icon: '●' },
+  ];
+
+  let html = `<div class="step-header"><div class="step-eyebrow">Step ${stepNum} · Text & Overlay</div><div class="step-title">Where Does Text Go?</div><div class="step-desc">Pick where the text sits — the overlay will automatically darken that zone for readability.</div></div>`;
+
+  // Sub-section 1: Text Position
+  html += `<div class="sub-section"><div class="sub-section-header"><div class="sub-section-num">1</div><div class="sub-section-title">Text Position</div></div>`;
+  html += `<div class="options-grid cols-3">${b1Layouts.map(l => {
+    const isSelected = STATE.layout === l.id;
+    return `<div class="opt-card ${isSelected ? 'selected' : ''}" onclick="select('layout','${l.id}')"><div>${layoutDiagram(l.id)}</div><div class="opt-name">${l.name}</div><div class="opt-desc">${l.desc}</div><div style="margin-top:6px;font-size:11px;color:var(--accent);font-weight:600;">↳ ${l.overlayAuto}</div></div>`;
+  }).join('')}</div></div>`;
+
+  // Sub-section 2: Overlay Strength
+  html += `<div class="sub-section" style="margin-top:24px;"><div class="sub-section-header"><div class="sub-section-num">2</div><div class="sub-section-title">Overlay Strength</div></div>`;
+  html += `<div class="options-grid cols-3">${strengths.map(s => {
+    const isSelected = STATE.overlayStrength === s.id;
+    return `<div class="opt-card ${isSelected ? 'selected' : ''}" onclick="select('overlayStrength','${s.id}')"><div style="font-size:28px;margin-bottom:6px;">${s.icon}</div><div class="opt-name">${s.name}</div><div class="opt-desc">${s.desc}</div></div>`;
+  }).join('')}</div></div>`;
+
+  return html;
+}
+
+// Helper: auto-determine B1 overlay from layout + strength
+function getB1AutoOverlay() {
+  const strength = STATE.overlayStrength || 'medium';
+  const opacityWord = strength === 'light' ? 'light subtle' : strength === 'heavy' ? 'heavy opaque' : 'semi-transparent';
+
+  const map = {
+    'L1': `${opacityWord} gradient overlay darker at the top fading to clear at the bottom, creating a text-readable zone at top`,
+    'L2': `uniform ${opacityWord} dark overlay across the entire image for text readability`,
+    'L3': `${opacityWord} gradient overlay darker on the left half fading to clear on the right, creating a text-readable zone on the left`,
+    'L4': `${opacityWord} gradient overlay darker on the right half fading to clear on the left, creating a text-readable zone on the right`,
+    'L5': `${opacityWord} gradient overlay darker at the bottom fading to clear at the top, creating a text-readable zone at bottom`,
+    'L6': `vignette overlay with ${opacityWord} darkened edges and bright vivid centre, text-readable at centre`,
+  };
+  return map[STATE.layout] || '';
+}
+
 function renderStep4() {
-  const compat = LAYOUT_COMPAT[STATE.archetype][STATE.step2];
-  const compatStatus = compat[STATE.layout];
+  const compat = LAYOUT_COMPAT[STATE.archetype]?.[STATE.step2];
+  const compatStatus = compat ? compat[STATE.layout] : null;
   const isB1 = STATE.archetype === 'B1';
   const stepDesc = isB1
     ? 'For photo backgrounds, each track defines a <strong>photography aesthetic</strong> — the colour treatment, contrast, and visual style of the photograph.'
     : 'Each track has its own palette, illustrations, and design language. Pick the vibe that matches your message.';
   const stepTitle = isB1 ? 'Photography Aesthetic' : 'Visual Aesthetic & Energy';
 
-  let html = `<div class="step-header"><div class="step-eyebrow">Step 4 · Track Selection</div><div class="step-title">${stepTitle}</div><div class="step-desc">${stepDesc}</div></div><div style="background:#FFFBEB;border:1px solid #FCD34D;padding:12px 16px;border-radius:10px;margin-bottom:18px;font-size:13px;color:#92400E;"><strong>Layout Compatibility:</strong> Your choice is <span style="font-weight:700;">${compatStatus}</span>.</div>`;
+  const stepNum = getSteps().indexOf('track') + 1;
+  let html = `<div class="step-header"><div class="step-eyebrow">Step ${stepNum} · Track Selection</div><div class="step-title">${stepTitle}</div><div class="step-desc">${stepDesc}</div></div>`;
+  if (compatStatus) {
+    html += `<div style="background:#FFFBEB;border:1px solid #FCD34D;padding:12px 16px;border-radius:10px;margin-bottom:18px;font-size:13px;color:#92400E;"><strong>Layout Compatibility:</strong> Your choice is <span style="font-weight:700;">${compatStatus}</span>.</div>`;
+  }
 
   if (isB1) {
     html += `<div class="options-grid cols-5">${TRACKS.map(t => {
@@ -1017,6 +1081,7 @@ function render() {
     case 'template': content = renderStep1(); break;
     case 'style': content = renderStep2(); break;
     case 'layout': content = renderStep3(); break;
+    case 'b1_text_placement': content = renderB1TextPlacement(); break;
     case 'track': content = renderStep4(); break;
     case 'colour_finish': content = renderStepColourFinish(); break;
     case 'visual': content = renderStep8(); break;
@@ -1283,15 +1348,8 @@ function gatherB1PromptData() {
     scenePh = `${sceneItems[0].photoDesc} as the main subject in the foreground, with ${sceneItems[1].photoDesc} and ${sceneItems[2].photoDesc} as supporting elements in the mid-ground and background`;
   }
 
-  // Overlay phrase
-  let overlayPh = '';
-  if (step2Opt) {
-    if (step2Opt.id === 'O1') overlayPh = 'uniform dark semi-transparent overlay across the entire image for text readability';
-    else if (step2Opt.id === 'O2') overlayPh = 'gradient overlay darker at the top fading to clear at the bottom, creating a text-readable zone at top';
-    else if (step2Opt.id === 'O3') overlayPh = 'gradient overlay darker at the bottom fading to clear at the top, creating a text-readable zone at bottom';
-    else if (step2Opt.id === 'O4') overlayPh = 'vignette overlay with darkened edges and bright vivid centre, text-readable at centre';
-    else if (step2Opt.id === 'O5') overlayPh = 'dark caption bar strip at the bottom of the image for text placement';
-  }
+  // Overlay phrase — auto-determined from text position + strength
+  let overlayPh = getB1AutoOverlay();
 
   // Layout text zone
   let textZonePh = '';
@@ -1310,7 +1368,8 @@ function gatherB1PromptData() {
   if (STATE.track === 'D') negs.push('dark', 'moody', 'desaturated', 'muted');
   if (STATE.track === 'E') negs.push('harsh', 'high contrast', 'neon', 'sharp edges');
 
-  return { step2Opt, layout, track, font, photoTrack, mood, intensity, sceneItems, scenePh, overlayPh, textZonePh, negs };
+  const overlayStrength = STATE.overlayStrength || 'medium';
+  return { step2Opt, layout, track, font, photoTrack, mood, intensity, sceneItems, scenePh, overlayPh, textZonePh, negs, overlayStrength };
 }
 
 function buildB1MJPrompt(d) {
@@ -1677,13 +1736,13 @@ function generatePrompts() {
 
     auditRows = [
       { step: '1', label: 'Template', value: 'B1 — Photo Background', section: 'Photorealistic photograph' },
-      { step: '2', label: 'Overlay', value: d.step2Opt ? d.step2Opt.name : '—', section: 'Overlay treatment' },
-      { step: '3', label: 'Layout', value: getLayout().name, section: 'Text zone placement' },
-      { step: '4', label: 'Track', value: `${trackName} (${photoTrack ? photoTrack.name : ''})`, section: 'Photography aesthetic' },
-      { step: '5a', label: 'Main Element', value: mainEl, section: 'Scene: hero subject' },
-      { step: '5b', label: 'Supporting', value: supportEls, section: 'Scene: background elements' },
-      { step: '6', label: 'Mood', value: moodOpt ? moodOpt.name : '—', section: 'Mood (light + colour)' },
-      { step: '7', label: 'Intensity', value: intensityOpt ? intensityOpt.name : '—', section: 'Camera & Framing' },
+      { step: '2a', label: 'Text Position', value: getLayout().name, section: 'Text zone placement' },
+      { step: '2b', label: 'Overlay Strength', value: (STATE.overlayStrength || 'medium').charAt(0).toUpperCase() + (STATE.overlayStrength || 'medium').slice(1), section: 'Auto-overlay from text position' },
+      { step: '3', label: 'Track', value: `${trackName} (${photoTrack ? photoTrack.name : ''})`, section: 'Photography aesthetic' },
+      { step: '4a', label: 'Main Element', value: mainEl, section: 'Scene: hero subject' },
+      { step: '4b', label: 'Supporting', value: supportEls, section: 'Scene: background elements' },
+      { step: '5', label: 'Mood', value: moodOpt ? moodOpt.name : '—', section: 'Mood (light + colour)' },
+      { step: '6', label: 'Intensity', value: intensityOpt ? intensityOpt.name : '—', section: 'Camera & Framing' },
     ];
   } else {
     const d = gatherPromptData();
@@ -1775,7 +1834,7 @@ function exportEvalRow(btn) {
   const timestamp = new Date().toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'short' });
   const archetype = STATE.archetype || '';
   const step2Opt = getStep2Option();
-  const overlay = step2Opt ? step2Opt.name : '';
+  const overlay = isB1 ? ((STATE.overlayStrength || 'medium') + ' (auto from ' + (getLayout() ? getLayout().name : '') + ')') : (step2Opt ? step2Opt.name : '');
   const layout = getLayout() ? getLayout().name : '';
   const trackObj = getTrack();
   const track = trackObj ? trackObj.name : '';
