@@ -354,6 +354,146 @@ const CUSTOM_PRESETS_E = [
 ];
 
 // ═══════════════════════════════════════════════════════════════
+// SUVICHAR / QUOTES CATEGORY — Data
+// ═══════════════════════════════════════════════════════════════
+
+const SUVICHAR_FEELINGS = [
+  { id: 'SV-F1', name: 'Rise & Shine', icon: '🌅', tagline: 'Bright, energetic, forward-moving', desc: 'Aspirational uplift — "You can do this." Optimistic, outward, action-oriented.', examples: 'Gym motivation, new beginnings, achievement', allowedTracks: ['A', 'C', 'D', 'E'] },
+  { id: 'SV-F2', name: 'Still Waters', icon: '🌙', tagline: 'Slow, contemplative, inward', desc: 'Deep reflection — "Sit with this." Philosophical, unhurried, inner-focused.', examples: 'Rumi, Kabir, philosophy, life lessons', allowedTracks: ['B', 'C', 'E'] },
+  { id: 'SV-F3', name: 'Bittersweet', icon: '🍂', tagline: 'Honest, aching, tender', desc: 'Emotional honesty — "This too." Acknowledges pain without wallowing.', examples: 'Loss, nostalgia, longing, shayari, letting go', allowedTracks: ['B', 'C', 'E'] },
+  { id: 'SV-F4', name: 'Everyday Calm', icon: '☕', tagline: 'Functional warmth, cosy habit', desc: 'Grounded daily reminder — "Just today." Practical, close-to-home, no drama.', examples: '"Drink water", micro-habits, stoic reminders', allowedTracks: ['B', 'C', 'E'] },
+  { id: 'SV-F5', name: 'Fire & Drive', icon: '⚡', tagline: 'Bold, high contrast, kinetic', desc: 'Pure ambition — "Go." Fierce, competitive, zero sentimentality.', examples: 'Startup grind, sports, hustle, bold declarations', allowedTracks: ['A', 'C', 'D'] },
+];
+
+// Suvichar-specific background finishes (added on top of per-track finishes)
+const SUVICHAR_BG_FINISHES = [
+  { id: 'SV-BG01', name: 'Watercolour Wash', desc: 'Loose watercolour bleed across canvas. Organic and artistic.', promptPhrase: 'loose watercolour wash bleeding softly across the canvas background, organic paint pooling, hand-painted feel, visible colour blending, no defined edges' },
+  { id: 'SV-BG02', name: 'Paper Texture', desc: 'Aged paper grain layered on canvas. Contemplative, literary.', promptPhrase: 'aged paper grain texture with subtle fibrous surface, slightly worn paper feel, warm parchment tone, journal-like quality' },
+  { id: 'SV-BG03', name: 'Soft Gradient Orb', desc: 'Blurred radial light bloom centred on canvas. Meditative.', promptPhrase: 'soft radial gradient light bloom centred on the canvas, smooth blurred glow fading outward, gentle ambient light, no hard edges' },
+  { id: 'SV-BG04', name: 'Ink Wash Background', desc: 'Full-canvas ink wash with visible brushwork grain. Sumi-e inspired.', promptPhrase: 'full canvas ink wash background, diffuse sumi-e ink brushwork, visible brushstroke grain, Japanese ink painting aesthetic, subtle texture' },
+];
+
+// Illustration items specific to Suvichar (not in Good Morning catalogue)
+const SUVICHAR_ILLUS_CATS = [
+  { id: 'SV-IA', name: 'Abstract', icon: '🖌️', items: [
+    { id: 'SV-I01', name: 'Ink Brush Stroke', desc: 'Single bold sumi-e brushstroke, black or deep colour on neutral.', archs: 'A1, A2', lockedRender: 'SV-IR-INK' },
+    { id: 'SV-I02', name: 'Geometric Shards', desc: 'Fragmented low-poly angular shapes, sharp and bold.', archs: 'A1, A2', lockedRender: 'SV-IR-GEO' },
+    { id: 'SV-I03', name: 'Gradient Orb', desc: 'Blurred radial light bloom as a placed accent element.', archs: 'A1, A2', lockedRender: 'SV-IR-GRAD' },
+    { id: 'SV-I04', name: 'Splatter / Paint Burst', desc: 'Dynamic ink or paint splatter, energy and expression.', archs: 'A1, A2' },
+  ]},
+  { id: 'SV-IN', name: 'Nature & Landscape', icon: '🌿', items: [
+    { id: 'SV-I05', name: 'Lone Tree (Silhouette)', desc: 'Single bare or leafy tree against empty horizon.', archs: 'A1, A2, B1' },
+    { id: 'SV-I06', name: 'Mountain Range (Minimal)', desc: 'Layered mountain silhouette, clean and minimal.', archs: 'A1, A2, B1' },
+    { id: 'SV-I07', name: 'Winding Path / Road', desc: 'Path disappearing into distance, journey metaphor.', archs: 'B1' },
+    { id: 'SV-I08', name: 'Falling Leaves', desc: 'Scattered autumn leaves in gentle drift.', archs: 'A1, A2' },
+    { id: 'SV-I09', name: 'Desert Dunes', desc: 'Smooth sand dunes, minimalist, warm tones.', archs: 'A1, A2, B1' },
+    { id: 'SV-I10', name: 'Stormy Sky', desc: 'Dramatic sky, heavy clouds, high contrast.', archs: 'B1' },
+    { id: 'SV-I11', name: 'Sunrays Through Trees', desc: 'God rays filtering through a forest canopy.', archs: 'B1' },
+    { id: 'SV-I12', name: 'Crescent Moon & Stars', desc: 'Delicate crescent moon with scattered stars, night sky.', archs: 'A1, A2' },
+    { id: 'SV-I13', name: 'Ocean Waves (Minimal)', desc: 'Simple rolling wave silhouette or horizon line.', archs: 'A1, A2, B1' },
+  ]},
+  { id: 'SV-IO', name: 'Objects & Still Life', icon: '📖', items: [
+    { id: 'SV-I14', name: 'Open Book / Pages', desc: 'Book open flat, pages in soft light.', archs: 'A1, A2, B1' },
+    { id: 'SV-I15', name: 'Hourglass', desc: 'Classic hourglass with flowing sand.', archs: 'A1, A2' },
+    { id: 'SV-I16', name: 'Compass', desc: 'Old brass compass — direction and purpose.', archs: 'A1, A2' },
+    { id: 'SV-I17', name: 'Coffee / Tea Cup (Desk)', desc: 'Cup on desk beside a notebook — daily ritual.', archs: 'A2, B1' },
+    { id: 'SV-I18', name: 'Quill Pen & Inkwell', desc: 'Writer\'s tool — knowledge, craft, expression.', archs: 'A1, A2' },
+    { id: 'SV-I19', name: 'Lantern (Glowing)', desc: 'Single glowing lantern, warm light in darkness.', archs: 'A1, A2' },
+    { id: 'SV-I20', name: 'Trophy / Medal', desc: 'Clean minimal trophy silhouette.', archs: 'A1, A2' },
+    { id: 'SV-I21', name: 'Key (Ornate / Minimal)', desc: 'A key — metaphor for opportunity, unlocking.', archs: 'A1, A2' },
+    { id: 'SV-I22', name: 'Magnifying Glass', desc: 'Curiosity, discovery, looking closer.', archs: 'A1, A2' },
+    { id: 'SV-I23', name: 'Seed / Sapling', desc: 'Small plant emerging from soil — growth, beginnings.', archs: 'A1, A2' },
+  ]},
+  { id: 'SV-IF', name: 'Fire & Energy', icon: '🔥', items: [
+    { id: 'SV-I24', name: 'Flame / Fire', desc: 'Single clean flame — ambition, passion.', archs: 'A1, A2' },
+    { id: 'SV-I25', name: 'Lightning Bolt', desc: 'Bold graphic lightning, energy and power.', archs: 'A1, A2' },
+    { id: 'SV-I26', name: 'Rising Sun (Graphic)', desc: 'Stylised graphic rising sun with rays, bold.', archs: 'A1, A2' },
+  ]},
+  { id: 'SV-IH', name: 'Silhouettes (B1 only)', icon: '🧘', items: [
+    { id: 'SV-I27', name: 'Arms Raised — Victory', desc: 'Figure arms raised against sky, freedom and triumph.', archs: 'B1' },
+    { id: 'SV-I28', name: 'Seated / Meditating', desc: 'Person in stillness, introspective and calm.', archs: 'B1' },
+    { id: 'SV-I29', name: 'Walking Alone', desc: 'Figure walking on road or beach, solitary journey.', archs: 'B1' },
+    { id: 'SV-I30', name: 'Running / Sprinting', desc: 'Dynamic running figure, motion and drive.', archs: 'B1' },
+  ]},
+];
+
+// Feeling filter per item — 'U' = Universal (all feelings), or array of allowed feeling IDs
+const SUVICHAR_ITEM_FEELINGS = {
+  'GM-I2-01': 'U', 'GM-I3-02': 'U', 'GM-I6-01': 'U', 'GM-I3-01': 'U', 'GM-I2-04': 'U',
+  'GM-I2-05': 'U',
+  'GM-I2-08': ['SV-F1', 'SV-F4'],
+  'GM-I4-01': ['SV-F2', 'SV-F3', 'SV-F4'],
+  'GM-I2-06': ['SV-F1', 'SV-F2', 'SV-F4'],
+  'GM-I1-01': ['SV-F4'],
+  'SV-I01': ['SV-F2', 'SV-F3', 'SV-F5'], 'SV-I02': ['SV-F5'], 'SV-I03': 'U', 'SV-I04': ['SV-F1', 'SV-F5'],
+  'SV-I05': ['SV-F2', 'SV-F3', 'SV-F4'], 'SV-I06': 'U', 'SV-I07': 'U',
+  'SV-I08': ['SV-F2', 'SV-F3', 'SV-F4'], 'SV-I09': ['SV-F2', 'SV-F4'],
+  'SV-I10': ['SV-F3', 'SV-F5'], 'SV-I11': 'U', 'SV-I12': ['SV-F2', 'SV-F3'], 'SV-I13': 'U',
+  'SV-I14': 'U', 'SV-I15': ['SV-F2', 'SV-F4'], 'SV-I16': 'U', 'SV-I17': ['SV-F4'],
+  'SV-I18': ['SV-F2', 'SV-F4'], 'SV-I19': ['SV-F2', 'SV-F3', 'SV-F4'],
+  'SV-I20': ['SV-F1', 'SV-F5'], 'SV-I21': 'U', 'SV-I22': ['SV-F2', 'SV-F4'],
+  'SV-I23': ['SV-F1', 'SV-F4'], 'SV-I24': ['SV-F1', 'SV-F5'], 'SV-I25': ['SV-F5'],
+  'SV-I26': ['SV-F1', 'SV-F5'], 'SV-I27': ['SV-F1', 'SV-F5'],
+  'SV-I28': ['SV-F2', 'SV-F3', 'SV-F4'], 'SV-I29': ['SV-F2', 'SV-F3'],
+  'SV-I30': ['SV-F1', 'SV-F5'],
+};
+
+// GM items shown as carry-overs in Suvichar catalogue
+const SUVICHAR_GM_CARRYOVER_IDS = ['GM-I2-01', 'GM-I3-02', 'GM-I6-01', 'GM-I3-01', 'GM-I2-04', 'GM-I2-05', 'GM-I2-08', 'GM-I4-01', 'GM-I2-06', 'GM-I1-01'];
+
+// Locked render styles for abstract Suvichar illustrations
+const SUVICHAR_LOCKED_RENDERS = {
+  'SV-I01': { id: 'SV-IR-INK', name: 'Ink / Sumi-e', desc: 'Auto-locked — ink brush stroke requires this style.', promptPhrase: 'bold sumi-e ink brush illustration, single expressive brushstroke, visible ink texture, East Asian ink painting style, black or deep tone on pale background' },
+  'SV-I02': { id: 'SV-IR-GEO', name: 'Flat Vector / Geometric', desc: 'Auto-locked — geometric shards require this style.', promptPhrase: 'flat geometric vector illustration, low-poly fragmented angular shapes, sharp crisp edges, bold graphic design aesthetic, no gradients within shapes' },
+  'SV-I03': { id: 'SV-IR-GRAD', name: 'Soft Gradient / Blur', desc: 'Auto-locked — gradient orb requires this style.', promptPhrase: 'soft blurred radial gradient orb illustration, smooth colour blend from bright centre to transparent edges, luminous glow quality, no hard outlines' },
+};
+
+// B1 photo descriptions for Suvichar-specific items
+const SV_B1_PHOTO_DESC = {
+  'SV-I05': 'a lone tree silhouette standing against an open sky, minimal and contemplative',
+  'SV-I06': 'layered mountain silhouettes in misty distance, clean minimal landscape',
+  'SV-I07': 'a winding path or road disappearing into the distance, symbolic of a journey',
+  'SV-I09': 'smooth golden sand dunes with gentle curved ridges, minimal desert landscape',
+  'SV-I10': 'a dramatic stormy sky with heavy dark clouds and high contrast light',
+  'SV-I11': 'god rays of sunlight filtering through a forest canopy, golden volumetric light',
+  'SV-I13': 'a minimal ocean horizon with a single rolling wave silhouette',
+  'SV-I14': 'an open book with soft light falling on its pages, placed on a simple surface',
+  'SV-I17': 'a cup of coffee or tea on a desk beside a notebook in warm light',
+  'SV-I27': 'a silhouette of a person with arms raised triumphantly against a dramatic open sky',
+  'SV-I28': 'a silhouette of a person seated in meditation against a calm horizon',
+  'SV-I29': 'a silhouette of a lone person walking along a road or beach, contemplative',
+  'SV-I30': 'a silhouette of a person running or sprinting forward with energy',
+};
+
+// B1 sub-elements for Suvichar items
+const SV_B1_SUB_ELEMENTS = {
+  'SV-I05': ['ACC-09', 'ACC-10', 'ACC-07'],
+  'SV-I06': ['ACC-09', 'ACC-10', 'ACC-07'],
+  'SV-I07': ['ACC-12', 'ACC-07', 'ACC-10'],
+  'SV-I11': ['ACC-27', 'ACC-26', 'ACC-07'],
+  'SV-I13': ['ACC-09', 'ACC-10', 'ACC-07'],
+  'SV-I14': ['ACC-18', 'ACC-02', 'ACC-29'],
+  'SV-I17': ['ACC-02', 'ACC-18', 'ACC-29'],
+  'SV-I27': ['ACC-09', 'ACC-10', 'ACC-07'],
+  'SV-I28': ['ACC-09', 'ACC-22', 'ACC-07'],
+  'SV-I29': ['ACC-12', 'ACC-09', 'ACC-10'],
+  'SV-I30': ['ACC-12', 'ACC-10', 'ACC-09'],
+};
+
+// A2 sub-elements for Suvichar items
+const SV_A2_SUB_ELEMENTS = {
+  'SV-I05': ['ACC-09', 'ACC-08', 'ACC-10'],
+  'SV-I06': ['ACC-09', 'ACC-10', 'ACC-07'],
+  'SV-I08': ['ACC-27', 'ACC-08', 'ACC-11'],
+  'SV-I12': ['ACC-09', 'ACC-08', 'ACC-10'],
+  'SV-I13': ['ACC-09', 'ACC-28', 'ACC-07'],
+  'SV-I14': ['ACC-18', 'ACC-02', 'ACC-29'],
+  'SV-I15': ['ACC-09', 'ACC-07', 'ACC-08'],
+  'SV-I19': ['ACC-30', 'ACC-14', 'ACC-08'],
+  'SV-I23': ['ACC-07', 'ACC-08', 'ACC-24'],
+};
+
+// ═══════════════════════════════════════════════════════════════
 // B1 PHOTO BACKGROUND — New data structures
 // ═══════════════════════════════════════════════════════════════
 
@@ -523,6 +663,8 @@ const ILLUS_SIZE_OPTS = [
 
 const STATE = {
   step: 1,
+  category: 'good_morning', // 'good_morning' | 'suvichar'
+  feeling: null,             // Suvichar: SV-F1..SV-F5
   archetype: null,
   step2: null,
   layout: null,
@@ -547,17 +689,25 @@ const STATE = {
 };
 
 function getSteps() {
+  const isSV = STATE.category === 'suvichar';
   if (STATE.archetype === 'B1') {
-    return ['template', 'b1_text_placement', 'track', 'scene_elements', 'mood', 'intensity'];
+    return isSV
+      ? ['template', 'feeling', 'b1_text_placement', 'track', 'scene_elements', 'mood', 'intensity']
+      : ['template', 'b1_text_placement', 'track', 'scene_elements', 'mood', 'intensity'];
   }
   if (STATE.archetype === 'A2') {
-    return ['template', 'layout', 'track', 'colour_finish', 'visual', 'intensity'];
+    return isSV
+      ? ['template', 'feeling', 'layout', 'track', 'colour_finish', 'visual', 'intensity']
+      : ['template', 'layout', 'track', 'colour_finish', 'visual', 'intensity'];
   }
-  return ['template', 'style', 'layout', 'track', 'colour_finish', 'visual', 'intensity'];
+  return isSV
+    ? ['template', 'feeling', 'style', 'layout', 'track', 'colour_finish', 'visual', 'intensity']
+    : ['template', 'style', 'layout', 'track', 'colour_finish', 'visual', 'intensity'];
 }
 
 const STEP_LABELS = {
   template: 'Template',
+  feeling: 'Feeling',
   style: 'Style',
   layout: 'Layout',
   track: 'Track',
@@ -596,12 +746,19 @@ function getIllusItem() {
     const item = cat.items.find(i => i.id === STATE.illusItem);
     if (item) return item;
   }
+  // Also search Suvichar catalogue
+  for (const cat of SUVICHAR_ILLUS_CATS) {
+    const item = cat.items.find(i => i.id === STATE.illusItem);
+    if (item) return item;
+  }
   return null;
 }
 
 function getFinishOptions() {
   const map = { A: FINISH_OPTIONS, B: FINISH_OPTIONS_B, C: FINISH_OPTIONS_C, D: FINISH_OPTIONS_D, E: FINISH_OPTIONS_E };
-  return map[STATE.track] || [];
+  const base = map[STATE.track] || [];
+  if (STATE.category === 'suvichar') return [...base, ...SUVICHAR_BG_FINISHES];
+  return base;
 }
 
 function getIllusRenderOptions() {
@@ -624,11 +781,83 @@ function getPaletteCountForTrack(track) {
   return counts[track] || 9;
 }
 
+function getCategoryLabel() {
+  return STATE.category === 'suvichar' ? 'Suvichar / Quote' : 'Good Morning';
+}
+
+function getFilteredTracks() {
+  if (STATE.category !== 'suvichar' || !STATE.feeling) return TRACKS;
+  const feeling = SUVICHAR_FEELINGS.find(f => f.id === STATE.feeling);
+  if (!feeling) return TRACKS;
+  return TRACKS.filter(t => feeling.allowedTracks.includes(t.id));
+}
+
+function getLockedRender() {
+  if (STATE.category !== 'suvichar' || !STATE.illusItem) return null;
+  return SUVICHAR_LOCKED_RENDERS[STATE.illusItem] || null;
+}
+
+function getSuvicharIllusCats() {
+  const arch = STATE.archetype;
+  const feelingId = STATE.feeling;
+
+  const cats = [];
+  // GM carry-overs: filter by archetype and feeling
+  const carryoverItems = [];
+  for (const gmCat of ILLUS_CATS) {
+    for (const item of gmCat.items) {
+      if (!SUVICHAR_GM_CARRYOVER_IDS.includes(item.id)) continue;
+      // Archetype filter
+      if (arch === 'B1' && !['All', 'B1'].some(a => item.archs && item.archs.includes(a))) {
+        if (!item.archs || (!item.archs.includes('All') && !item.archs.includes('B1'))) continue;
+      }
+      // Feeling filter
+      const feelingRule = SUVICHAR_ITEM_FEELINGS[item.id];
+      if (feelingRule !== 'U' && feelingId && Array.isArray(feelingRule) && !feelingRule.includes(feelingId)) continue;
+      carryoverItems.push(item);
+    }
+  }
+  if (carryoverItems.length > 0) cats.push({ id: 'SV-GM', name: 'Carry-overs', icon: '🌅', items: carryoverItems });
+
+  // SV categories
+  for (const svCat of SUVICHAR_ILLUS_CATS) {
+    const items = svCat.items.filter(item => {
+      // B1-only silhouettes
+      if (svCat.id === 'SV-IH' && arch !== 'B1') return false;
+      // Archetype filter for non-B1 items marked as B1 only
+      if (item.archs && item.archs === 'B1' && arch !== 'B1') return false;
+      // Feeling filter
+      const feelingRule = SUVICHAR_ITEM_FEELINGS[item.id];
+      if (!feelingRule) return true;
+      if (feelingRule === 'U') return true;
+      if (Array.isArray(feelingRule) && feelingId && !feelingRule.includes(feelingId)) return false;
+      return true;
+    });
+    if (items.length > 0) cats.push({ ...svCat, items });
+  }
+  return cats;
+}
+
+// Merged photo desc lookup covering GM + SV items
+function getB1PhotoDesc(itemId) {
+  return B1_PHOTO_DESC[itemId] || SV_B1_PHOTO_DESC[itemId] || null;
+}
+
+// Merged sub-element lookup
+function getB1SubElements(itemId) {
+  return B1_SUB_ELEMENTS[itemId] || SV_B1_SUB_ELEMENTS[itemId] || [];
+}
+
+function getA2SubElements(itemId) {
+  return A2_SUB_ELEMENTS[itemId] || SV_A2_SUB_ELEMENTS[itemId] || [];
+}
+
 function canProceed() {
   const stepId = getCurrentStepId();
 
   switch (stepId) {
-    case 'template': return !!STATE.archetype;
+    case 'template': return !!STATE.category && !!STATE.archetype;
+    case 'feeling': return !!STATE.feeling;
     case 'style': return !!STATE.step2;
     case 'layout': return !!STATE.layout;
     case 'b1_text_placement': return !!STATE.layout && !!STATE.overlayStrength;
@@ -656,12 +885,25 @@ function getCurrentStepId() {
 
 function select(key, value) {
   STATE[key] = value;
+  if (key === 'category') {
+    STATE.feeling = null; STATE.archetype = null; STATE.step2 = null; STATE.layout = null;
+    STATE.track = null; STATE.palette = null; STATE.font = null; STATE.finish = null;
+    STATE.illusRender = null; STATE.motifSet = null; STATE.customPreset = null;
+    STATE.frameDecoration = null; STATE.illusSize = null; STATE.illusItem = null; STATE.illusCategory = null;
+    STATE.sceneElements = []; STATE.mood = null; STATE.overlayStrength = 'light'; STATE.a2SubElements = [];
+  }
   if (key === 'archetype') {
-    STATE.step2 = null; STATE.layout = null; STATE.track = null; STATE.palette = null; STATE.font = null;
+    STATE.feeling = null; STATE.step2 = null; STATE.layout = null; STATE.track = null; STATE.palette = null; STATE.font = null;
     STATE.finish = null; STATE.illusRender = null; STATE.motifSet = null; STATE.customPreset = null;
     STATE.frameDecoration = null; STATE.illusSize = null; STATE.illusItem = null; STATE.illusCategory = null;
     // B1 specific resets
     STATE.sceneElements = []; STATE.mood = null; STATE.overlayStrength = 'light'; STATE.a2SubElements = [];
+  }
+  if (key === 'feeling') {
+    STATE.track = null; STATE.palette = null; STATE.font = null; STATE.finish = null;
+    STATE.illusRender = null; STATE.motifSet = null; STATE.customPreset = null;
+    STATE.frameDecoration = null; STATE.illusSize = null; STATE.illusItem = null; STATE.illusCategory = null;
+    STATE.sceneElements = []; STATE.mood = null; STATE.a2SubElements = [];
   }
   if (key === 'step2') { STATE.layout = null; }
   if (key === 'illusItem') { STATE.a2SubElements = []; }  // Reset sub-illustrations when main changes
@@ -806,6 +1048,11 @@ function finishPreviewSVG(id) {
     'FN-E1': `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><rect width="${w}" height="${h}" rx="4" fill="#FFF1F2"/><path d="M0 16 Q12 8 24 18 Q36 10 48 16" fill="#FCE7F3" opacity="0.6"/><path d="M0 24 Q16 16 32 24 Q40 18 48 22" fill="#FBCFE8" opacity="0.3"/></svg>`,
     'FN-E2': `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><rect width="${w}" height="${h}" rx="4" fill="#FCE7F3"/></svg>`,
     'FN-E3': `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><defs><radialGradient id="rge"><stop offset="0%" stop-color="#FFF1F2"/><stop offset="100%" stop-color="#FECDD3"/></radialGradient></defs><rect width="${w}" height="${h}" rx="4" fill="url(#rge)"/></svg>`,
+    // Suvichar finishes
+    'SV-BG01': `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><rect width="${w}" height="${h}" rx="4" fill="#E0F0F8"/><path d="M0 10 Q8 6 16 14 Q24 6 32 12 Q40 6 48 10 L48 0 L0 0 Z" fill="#A8D4E8" opacity="0.5"/><path d="M0 24 Q12 18 24 26 Q36 18 48 22 L48 32 L0 32 Z" fill="#B8DCF0" opacity="0.4"/></svg>`,
+    'SV-BG02': `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><rect width="${w}" height="${h}" rx="4" fill="#F5EDD8"/><line x1="0" y1="3" x2="48" y2="3" stroke="#D4B896" stroke-width="0.3" opacity="0.5"/><line x1="0" y1="7" x2="48" y2="7" stroke="#C8A87E" stroke-width="0.2" opacity="0.4"/><line x1="0" y1="12" x2="48" y2="12" stroke="#D4B896" stroke-width="0.3" opacity="0.5"/><line x1="0" y1="18" x2="48" y2="18" stroke="#C8A87E" stroke-width="0.2" opacity="0.4"/><line x1="0" y1="24" x2="48" y2="24" stroke="#D4B896" stroke-width="0.3" opacity="0.5"/><line x1="0" y1="29" x2="48" y2="29" stroke="#C8A87E" stroke-width="0.2" opacity="0.4"/></svg>`,
+    'SV-BG03': `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><defs><radialGradient id="svbg3"><stop offset="0%" stop-color="#FFF8F0"/><stop offset="60%" stop-color="#FFE8CC"/><stop offset="100%" stop-color="#E8C89A"/></radialGradient></defs><rect width="${w}" height="${h}" rx="4" fill="url(#svbg3)"/></svg>`,
+    'SV-BG04': `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><rect width="${w}" height="${h}" rx="4" fill="#E8E4DE"/><path d="M4 28 Q10 18 18 22 Q24 16 32 24 Q38 14 44 20" fill="none" stroke="#5A4A3A" stroke-width="3" stroke-linecap="round" opacity="0.3"/><path d="M2 18 Q14 10 24 18 Q34 10 46 16" fill="none" stroke="#3A2A1A" stroke-width="2" stroke-linecap="round" opacity="0.2"/></svg>`,
   };
   return previews[id] || `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><rect width="${w}" height="${h}" rx="4" fill="#F1F5F9" stroke="#E2E8F0" stroke-width="1"/></svg>`;
 }
@@ -849,7 +1096,39 @@ function renderProgress() {
 }
 
 function renderStep1() {
-  return `<div class="step-header"><div class="step-eyebrow">Step 1 · Template Selection</div><div class="step-title">Choose Template Style</div><div class="step-desc">Each template produces a different composition. A1/A2 generate illustrations; B1 generates photographs.</div></div><div style="background: #F0F9FF; border: 1px solid #BFDBFE; color: var(--primary); font-size: 13px; font-weight: 600; padding: 10px 16px; border-radius: 10px; margin-bottom: 20px; display: inline-flex; align-items: center; gap: 6px;"><span>🔒</span> Category: Good Morning</div><div class="options-grid cols-3">${ARCHETYPES.map(a => `<div class="opt-card ${STATE.archetype === a.id ? 'selected' : ''}" onclick="select('archetype','${a.id}')"><div class="opt-icon">${a.icon}</div><div class="opt-code">${a.codeName}</div><div class="opt-name">${a.name}</div><div class="opt-desc">${a.desc}</div></div>`).join('')}</div>`;
+  const categories = [
+    { id: 'good_morning', icon: '☀️', name: 'Good Morning', desc: 'Warm, festive poster with sunrise energy. Illustrations, florals, chai — classic morning vibes.' },
+    { id: 'suvichar',     icon: '✍️', name: 'Suvichar / Quote', desc: 'Thought-provoking quote cards. Ink, geometry, nature — reflective and meaningful.' },
+  ];
+  let html = `<div class="step-header"><div class="step-eyebrow">Step 1 · Template Selection</div><div class="step-title">Choose Category & Template</div><div class="step-desc">Pick the content category first, then choose a template style.</div></div>`;
+
+  // Sub-section 1: Category
+  html += `<div class="sub-section"><div class="sub-section-header"><div class="sub-section-num">1</div><div class="sub-section-title">Category</div></div>`;
+  html += `<div class="options-grid cols-3">${categories.map(c => `<div class="opt-card ${STATE.category === c.id ? 'selected' : ''}" onclick="select('category','${c.id}')"><div class="opt-icon">${c.icon}</div><div class="opt-name">${c.name}</div><div class="opt-desc">${c.desc}</div></div>`).join('')}</div></div>`;
+
+  // Sub-section 2: Template (only shown after category picked)
+  if (STATE.category) {
+    html += `<div class="sub-section" style="margin-top:24px;"><div class="sub-section-header"><div class="sub-section-num">2</div><div class="sub-section-title">Template Style</div></div>`;
+    html += `<div class="options-grid cols-3">${ARCHETYPES.map(a => `<div class="opt-card ${STATE.archetype === a.id ? 'selected' : ''}" onclick="select('archetype','${a.id}')"><div class="opt-icon">${a.icon}</div><div class="opt-code">${a.codeName}</div><div class="opt-name">${a.name}</div><div class="opt-desc">${a.desc}</div></div>`).join('')}</div></div>`;
+  }
+  return html;
+}
+
+function renderFeelingStep() {
+  const stepNum = getSteps().indexOf('feeling') + 1;
+  let html = `<div class="step-header"><div class="step-eyebrow">Step ${stepNum} · Feeling</div><div class="step-title">What's the Emotional Tone?</div><div class="step-desc">This shapes the track options and illustration palette for your quote card.</div></div>`;
+  html += `<div class="options-grid cols-3">${SUVICHAR_FEELINGS.map(f => {
+    const isSelected = STATE.feeling === f.id;
+    return `<div class="opt-card ${isSelected ? 'selected' : ''}" onclick="select('feeling','${f.id}')">
+      <div class="opt-icon">${f.icon}</div>
+      <div class="opt-name">${f.name}</div>
+      <div style="font-size:12px;font-weight:600;color:var(--accent);margin-bottom:6px;">${f.tagline}</div>
+      <div class="opt-desc">${f.desc}</div>
+      ${f.examples ? `<div style="margin-top:8px;font-size:11px;color:#64748B;font-style:italic;">e.g. ${f.examples}</div>` : ''}
+      <div style="margin-top:10px;font-size:11px;color:#94A3B8;">Tracks: ${f.allowedTracks.join(', ')}</div>
+    </div>`;
+  }).join('')}</div>`;
+  return html;
 }
 
 function renderStep2() {
@@ -947,13 +1226,19 @@ function renderStep4() {
     html += `<div style="background:#FFFBEB;border:1px solid #FCD34D;padding:12px 16px;border-radius:10px;margin-bottom:18px;font-size:13px;color:#92400E;"><strong>Layout Compatibility:</strong> Your choice is <span style="font-weight:700;">${compatStatus}</span>.</div>`;
   }
 
+  const availTracks = getFilteredTracks();
+  const hiddenCount = TRACKS.length - availTracks.length;
+  if (STATE.category === 'suvichar' && hiddenCount > 0) {
+    const feelingObj = SUVICHAR_FEELINGS.find(f => f.id === STATE.feeling);
+    html += `<div style="background:#FFFBEB;border:1px solid #FCD34D;padding:10px 16px;border-radius:10px;margin-bottom:18px;font-size:13px;color:#92400E;">✦ <strong>${hiddenCount} track${hiddenCount>1?'s':''} hidden</strong> — not compatible with <em>${feelingObj ? feelingObj.name : 'your feeling'}</em>.</div>`;
+  }
   if (isB1) {
-    html += `<div class="options-grid cols-5">${TRACKS.map(t => {
+    html += `<div class="options-grid cols-5">${availTracks.map(t => {
       const photoTrack = B1_PHOTO_TRACKS[t.id];
       return `<div class="opt-card ${STATE.track === t.id ? 'selected' : ''}" onclick="select('track','${t.id}')"><div class="opt-icon">${t.icon}</div><div class="opt-name">${t.name}</div><div class="opt-desc" style="font-size:11px;margin-bottom:4px;">${t.tagline}</div><div style="background:#F0F9FF;border:1px solid #BFDBFE;border-radius:6px;padding:4px 8px;margin-top:6px;font-size:10px;color:var(--primary);"><strong>📷 Photo:</strong> ${photoTrack.desc}</div></div>`;
     }).join('')}</div>`;
   } else {
-    html += `<div class="options-grid cols-4">${TRACKS.map(t => `<div class="opt-card ${STATE.track === t.id ? 'selected' : ''}" onclick="select('track','${t.id}')"><div class="opt-icon">${t.icon}</div><div class="opt-name">${t.name}</div><div class="opt-desc" style="font-size:11px;margin-bottom:6px;">${t.tagline}</div><div style="font-size:11px;color:#64748B;">${t.desc}</div></div>`).join('')}</div>`;
+    html += `<div class="options-grid cols-4">${availTracks.map(t => `<div class="opt-card ${STATE.track === t.id ? 'selected' : ''}" onclick="select('track','${t.id}')"><div class="opt-icon">${t.icon}</div><div class="opt-name">${t.name}</div><div class="opt-desc" style="font-size:11px;margin-bottom:6px;">${t.tagline}</div><div style="font-size:11px;color:#64748B;">${t.desc}</div></div>`).join('')}</div>`;
   }
   return html;
 }
@@ -994,23 +1279,36 @@ function renderStepFontText() {
 }
 
 function renderStep8() {
-  let html = `<div class="step-header"><div class="step-eyebrow">Step 6 · Visual</div><div class="step-title">Illustrations & Details</div><div class="step-desc">First pick your illustration, then choose rendering style and decorative elements.</div></div>`;
+  const stepNum = getSteps().indexOf('visual') + 1;
+  const isSV = STATE.category === 'suvichar';
+  let html = `<div class="step-header"><div class="step-eyebrow">Step ${stepNum} · Visual</div><div class="step-title">Illustrations & Details</div><div class="step-desc">First pick your illustration, then choose rendering style and decorative elements.</div></div>`;
   let n = 1;
 
-  // 1. Illustration Category (always first)
-  html += `<div class="sub-section"><div class="sub-section-header"><div class="sub-section-num">${n++}</div><div class="sub-section-title">Illustration Category</div></div><div class="options-grid cols-3">${ILLUS_CATS.map(cat => `<div class="opt-card ${STATE.illusCategory === cat.id ? 'selected' : ''}" onclick="select('illusCategory','${cat.id}')"><div class="opt-icon">${cat.icon}</div><div class="opt-name">${cat.name}</div><div style="font-size:11px;color:#64748B;">${cat.count} options</div></div>`).join('')}</div></div>`;
+  // Choose illustration catalogue
+  const illusCats = isSV ? getSuvicharIllusCats() : ILLUS_CATS;
+
+  // 1. Illustration Category
+  html += `<div class="sub-section"><div class="sub-section-header"><div class="sub-section-num">${n++}</div><div class="sub-section-title">Illustration Category</div></div><div class="options-grid cols-3">${illusCats.map(cat => `<div class="opt-card ${STATE.illusCategory === cat.id ? 'selected' : ''}" onclick="select('illusCategory','${cat.id}')"><div class="opt-icon">${cat.icon}</div><div class="opt-name">${cat.name}</div><div style="font-size:11px;color:#64748B;">${cat.items ? cat.items.length : cat.count} options</div></div>`).join('')}</div></div>`;
 
   // 2. Illustration Item (after category chosen)
   if (STATE.illusCategory) {
-    const cat = ILLUS_CATS.find(c => c.id === STATE.illusCategory);
-    html += `<div class="sub-section"><div class="sub-section-header"><div class="sub-section-num">${n++}</div><div class="sub-section-title">${cat.name} — Pick One</div></div><div class="options-grid cols-4">${cat.items.map(i => `<div class="opt-card ${STATE.illusItem === i.id ? 'selected' : ''}" onclick="select('illusItem','${i.id}')"><div class="opt-name">${i.name}</div><div class="opt-desc">${i.desc}</div></div>`).join('')}</div></div>`;
+    const cat = illusCats.find(c => c.id === STATE.illusCategory);
+    if (cat) {
+      html += `<div class="sub-section"><div class="sub-section-header"><div class="sub-section-num">${n++}</div><div class="sub-section-title">${cat.name} — Pick One</div></div><div class="options-grid cols-4">${cat.items.map(i => `<div class="opt-card ${STATE.illusItem === i.id ? 'selected' : ''}" onclick="select('illusItem','${i.id}')"><div class="opt-name">${i.name}</div><div class="opt-desc">${i.desc || ''}</div></div>`).join('')}</div></div>`;
+    }
   }
 
   if (STATE.illusItem && STATE.illusItem !== 'NONE') {
+    // Auto-apply locked render for SV items
+    const lockedRender = getLockedRender();
+    if (lockedRender && STATE.illusRender !== lockedRender.id) {
+      STATE.illusRender = lockedRender.id;
+    }
+
     // A2 Sub-illustrations: curated accent items (rendered in same illustration style)
     if (STATE.archetype === 'A2') {
-      const a2Subs = A2_SUB_ELEMENTS[STATE.illusItem] || [];
-      const subItems = a2Subs.map(subId => { const acc = ACCENT_ITEMS[subId]; return acc ? { id: subId, ...acc } : null; }).filter(Boolean);
+      const a2SubIds = getA2SubElements(STATE.illusItem);
+      const subItems = a2SubIds.map(subId => { const acc = ACCENT_ITEMS[subId]; return acc ? { id: subId, ...acc } : null; }).filter(Boolean);
       if (subItems.length > 0) {
         const a2SubEls = STATE.a2SubElements || [];
         const densityLabel = a2SubEls.length === 0 ? 'Light (main only)' : a2SubEls.length === 1 ? 'Medium' : 'Dense';
@@ -1024,19 +1322,24 @@ function renderStep8() {
       }
     }
 
-    // 3. Illustration Scale (all archetypes)
-    html += `<div class="sub-section"><div class="sub-section-header"><div class="sub-section-num">${n++}</div><div class="sub-section-title">Illustration Scale</div><div class="sub-section-tag">How much space should it take?</div></div><div class="options-grid cols-3">${ILLUS_SIZE_OPTS.map(o => `<div class="opt-card ${STATE.illusSize === o.id ? 'selected' : ''}" onclick="select('illusSize','${o.id}')"><div class="opt-name">${o.name}</div><div class="opt-desc">${o.desc}</div></div>`).join('')}</div></div>`;
+    // 3. Illustration Scale — cap at Medium for Suvichar
+    const sizeOpts = isSV ? ILLUS_SIZE_OPTS.filter(o => o.id !== 'Large') : ILLUS_SIZE_OPTS;
+    html += `<div class="sub-section"><div class="sub-section-header"><div class="sub-section-num">${n++}</div><div class="sub-section-title">Illustration Scale</div><div class="sub-section-tag">How much space should it take?</div></div>${isSV ? '<div style="font-size:12px;color:var(--muted);margin-bottom:10px;">Large / Hero not available for Suvichar — text is the hero.</div>' : ''}<div class="options-grid cols-3">${sizeOpts.map(o => `<div class="opt-card ${STATE.illusSize === o.id ? 'selected' : ''}" onclick="select('illusSize','${o.id}')"><div class="opt-name">${o.name}</div><div class="opt-desc">${o.desc}</div></div>`).join('')}</div></div>`;
 
-    // 4. Rendering Style
-    const opts = getIllusRenderOptions();
-    html += `<div class="sub-section"><div class="sub-section-header"><div class="sub-section-num">${n++}</div><div class="sub-section-title">Rendering Style</div><div class="sub-section-tag">How should the illustration look?</div></div><div class="options-grid cols-3">${opts.map(o => `<div class="opt-card ${STATE.illusRender === o.id ? 'selected' : ''}" onclick="select('illusRender','${o.id}')"><div style="margin-bottom:8px;">${renderPreviewSVG(o.id)}</div><div class="opt-name">${o.name}</div><div class="opt-desc">${o.desc}</div></div>`).join('')}</div></div>`;
+    // 4. Rendering Style — locked for some SV items
+    if (lockedRender) {
+      html += `<div class="sub-section"><div class="sub-section-header"><div class="sub-section-num">${n++}</div><div class="sub-section-title">Rendering Style</div><div class="sub-section-tag">Auto-set for this illustration</div></div><div style="background:#F0FDF4;border:1px solid #86EFAC;border-radius:10px;padding:12px 16px;font-size:13px;color:#166534;display:flex;align-items:center;gap:10px;">🔒 <strong>${lockedRender.name}</strong> — This illustration has a fixed render style for best results.</div></div>`;
+    } else {
+      const opts = getIllusRenderOptions();
+      html += `<div class="sub-section"><div class="sub-section-header"><div class="sub-section-num">${n++}</div><div class="sub-section-title">Rendering Style</div><div class="sub-section-tag">How should the illustration look?</div></div><div class="options-grid cols-3">${opts.map(o => `<div class="opt-card ${STATE.illusRender === o.id ? 'selected' : ''}" onclick="select('illusRender','${o.id}')"><div style="margin-bottom:8px;">${renderPreviewSVG(o.id)}</div><div class="opt-name">${o.name}</div><div class="opt-desc">${o.desc}</div></div>`).join('')}</div></div>`;
+    }
 
-    // 5. Frame Decoration (A1 only — comes after illustration choices)
+    // 5. Frame Decoration (A1 only)
     if (STATE.archetype === 'A1') {
       html += `<div class="sub-section"><div class="sub-section-header"><div class="sub-section-num">${n++}</div><div class="sub-section-title">Frame Decoration Level</div><div class="sub-section-tag">How ornate should the border frame be?</div></div><div class="options-grid cols-3">${FRAME_DECO_OPTS.map(o => `<div class="opt-card ${STATE.frameDecoration === o.id ? 'selected' : ''}" onclick="select('frameDecoration','${o.id}')"><div class="opt-name">${o.name}</div><div class="opt-desc">${o.desc}</div></div>`).join('')}</div></div>`;
     }
 
-    // 6. Motifs & Decoration — HIDDEN when A1 + Plain frame (plain = no motifs)
+    // 6. Motifs — hidden for A1 + Plain or when Suvichar + locked render (minimal decoration)
     const showMotifs = !(STATE.archetype === 'A1' && STATE.frameDecoration === 'Plain');
     if (showMotifs) {
       const motifs = getMotifOptions();
@@ -1213,11 +1516,12 @@ function renderB1SceneElements() {
 
   // ── Sub-section 1: Main Element ──
   html += `<div class="sub-section"><div class="sub-section-header"><div class="sub-section-num">1</div><div class="sub-section-title">Main Subject</div><div class="sub-section-tag">${mainEl ? '✓ Selected' : 'Pick one'}</div></div>`;
-  ILLUS_CATS.forEach(cat => {
+  const b1Cats = STATE.category === 'suvichar' ? getSuvicharIllusCats() : ILLUS_CATS;
+  b1Cats.forEach(cat => {
     html += `<div style="margin-bottom:12px;"><div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px;">${cat.icon} ${cat.name}</div><div class="options-grid cols-4">${cat.items.map(i => {
       const isMain = mainEl === i.id;
       const isSub = subEls.includes(i.id);
-      const photoDesc = B1_PHOTO_DESC[i.id] || i.desc;
+      const photoDesc = getB1PhotoDesc(i.id) || i.desc;
       return `<div class="opt-card ${isMain ? 'selected' : ''}" onclick="selectMainSceneElement('${i.id}')" style="${isSub ? 'opacity:0.4;pointer-events:none;' : ''}">${isMain ? '<div style="font-size:10px;font-weight:700;color:var(--primary);margin-bottom:4px;">⭐ Main</div>' : ''}<div class="opt-name">${i.name}</div><div class="opt-desc">${photoDesc}</div></div>`;
     }).join('')}</div></div>`;
   });
@@ -1225,7 +1529,7 @@ function renderB1SceneElements() {
 
   // ── Sub-section 2: Supporting Elements (curated, shown after main is picked) ──
   if (mainEl) {
-    const availableSubs = B1_SUB_ELEMENTS[mainEl] || [];
+    const availableSubs = getB1SubElements(mainEl);
     const subItems = availableSubs.map(subId => {
       const acc = B1_ACCENT_ITEMS[subId];
       if (acc) return { id: subId, name: acc.name, photoDesc: acc.photoDesc };
@@ -1248,6 +1552,7 @@ function renderB1SceneElements() {
   if (STATE.sceneElements.length >= 1) {
     const selItems = STATE.sceneElements.map((id, idx) => {
       for (const cat of ILLUS_CATS) { const item = cat.items.find(i => i.id === id); if (item) return { ...item, role: idx === 0 ? 'Main' : 'Accent' }; }
+      for (const cat of SUVICHAR_ILLUS_CATS) { const item = cat.items.find(i => i.id === id); if (item) return { ...item, role: idx === 0 ? 'Main' : 'Accent' }; }
       const acc = B1_ACCENT_ITEMS[id];
       if (acc) return { id, name: acc.name, role: 'Accent' };
       return null;
@@ -1300,6 +1605,7 @@ function render() {
   const isB1 = STATE.archetype === 'B1';
   switch (stepId) {
     case 'template': content = renderStep1(); break;
+    case 'feeling': content = renderFeelingStep(); break;
     case 'style': content = renderStep2(); break;
     case 'layout': content = renderStep3(); break;
     case 'b1_text_placement': content = renderB1TextPlacement(); break;
@@ -1331,14 +1637,14 @@ function buildSubjectLine() {
   const paletteName = palette.name;
   const layoutName = layout.name;
 
-  return `Good Morning Poster — ${trackName} · ${paletteName} · ${layoutName}`;
+  return `${getCategoryLabel()} Poster — ${trackName} · ${paletteName} · ${layoutName}`;
 }
 
 function buildNegatives() {
   const palette = getPalette();
   const roles = palette.roles || {};
   const track = STATE.track;
-  const illusRender = STATE.illusRender ? getIllusRenderOptions().find(r => r.id === STATE.illusRender) : null;
+  const illusRender = getLockedRender() || (STATE.illusRender ? getIllusRenderOptions().find(r => r.id === STATE.illusRender) : null);
 
   let negs = ['text', 'letters', 'words', 'numbers', 'typography', 'watermarks', 'logos', 'blurry', 'low quality'];
 
@@ -1390,7 +1696,10 @@ function gatherPromptData() {
   const palette = getPalette();
   const font = getFont();
   const finish = STATE.finish ? getFinishOptions().find(f => f.id === STATE.finish) : null;
-  const illusRender = STATE.illusRender ? getIllusRenderOptions().find(r => r.id === STATE.illusRender) : null;
+  const lockedRenderObj = getLockedRender();
+  const illusRender = lockedRenderObj
+    ? lockedRenderObj
+    : STATE.illusRender ? getIllusRenderOptions().find(r => r.id === STATE.illusRender) : null;
   const motif = STATE.motifSet ? getMotifOptions().find(m => m.id === STATE.motifSet) : null;
   const preset = STATE.customPreset ? getCustomPresets().find(p => p.id === STATE.customPreset) : null;
   const illusItem = getIllusItem();
@@ -1563,10 +1872,14 @@ function gatherB1PromptData() {
 
   // Build scene description — first = main (foreground hero), rest = small accent props
   const sceneItems = STATE.sceneElements.map(id => {
-    // Check main illustration catalogue first
+    // Check main illustration catalogue first (GM + SV)
     for (const cat of ILLUS_CATS) {
       const item = cat.items.find(i => i.id === id);
-      if (item) return { ...item, photoDesc: B1_PHOTO_DESC[id] || item.desc };
+      if (item) return { ...item, photoDesc: getB1PhotoDesc(id) || item.desc };
+    }
+    for (const cat of SUVICHAR_ILLUS_CATS) {
+      const item = cat.items.find(i => i.id === id);
+      if (item) return { ...item, photoDesc: getB1PhotoDesc(id) || item.desc };
     }
     // Check accent items
     const acc = B1_ACCENT_ITEMS[id];
@@ -1645,7 +1958,7 @@ function buildB1MJPrompt(d) {
 
 function buildB1LeonardoPrompt(d) {
   const lines = [];
-  lines.push(`Photorealistic ${d.photoTrack.name} photograph, Good Morning poster, 9:16 vertical (1080x1920). Full-bleed photo, no frames, no borders, no illustration. Early morning Indian setting.`);
+  lines.push(`Photorealistic ${d.photoTrack.name} photograph, ${getCategoryLabel()} poster, 9:16 vertical (1080x1920). Full-bleed photo, no frames, no borders, no illustration. Early morning Indian setting.`);
   lines.push(`Scene: ${d.scenePh}.`);
   if (d.mood) lines.push(`Mood: ${d.mood.promptPhrase}.`);
   lines.push(`Aesthetic: ${d.photoTrack.promptPhrase}.`);
@@ -1662,14 +1975,14 @@ function buildB1LeonardoPrompt(d) {
 function buildB1FireflyWithTextPrompt(d) {
   // Firefly WITH TEXT for B1: hard cap ≤950 chars.
   const parts = [];
-  parts.push(`Photorealistic ${d.photoTrack.name} Good Morning poster, 9:16 vertical, full-bleed photograph, early morning Indian setting.`);
+  parts.push(`Photorealistic ${d.photoTrack.name} ${getCategoryLabel()} poster, 9:16 vertical, full-bleed photograph, early morning Indian setting.`);
   parts.push(`${trunc(d.scenePh, 130)}.`);
   if (d.mood) parts.push(`${trunc(d.mood.promptPhrase, 90)}.`);
   parts.push(`${trunc(d.photoTrack.promptPhrase, 90)}.`);
   if (d.intensity) parts.push(`${trunc(d.intensity.promptPhrase, 80)}.`);
   const strengthHint = d.overlayStrength === 'heavy' ? 'strong dark' : 'subtle';
   parts.push(`${trunc(d.textZonePh, 60)}, ${strengthHint} ${trunc(d.overlayPh, 50)}.`);
-  parts.push(`"Good Morning" text in white decorative font in the text zone, legible. DSLR quality, sharp focus.`);
+  parts.push(`"${getCategoryLabel()}" text in white decorative font in the text zone, legible. DSLR quality, sharp focus.`);
   let result = parts.join(' ');
   if (result.length > 950) result = result.substring(0, 950).replace(/\s+\S*$/, '');
   return result;
@@ -1694,7 +2007,7 @@ function buildB1FireflyNoTextPrompt(d) {
 function buildB1GeminiPrompt(d) {
   const lines = [];
 
-  lines.push(`A photorealistic ${d.photoTrack.name} style photograph for a Good Morning greeting poster in vertical 9:16 format. The image is a full-bleed photograph that fills the entire canvas — no frames, no borders, no illustration elements. The setting is early morning in India.`);
+  lines.push(`A photorealistic ${d.photoTrack.name} style photograph for a ${getCategoryLabel()} greeting poster in vertical 9:16 format. The image is a full-bleed photograph that fills the entire canvas — no frames, no borders, no illustration elements. The setting is early morning in India.`);
 
   // Scene (main + supporting)
   lines.push(`\nScene: The photograph features ${d.scenePh}. The scene should feel natural and authentic — as if captured in a real Indian morning setting, not staged or artificial.`);
@@ -1773,7 +2086,7 @@ function buildMJPrompt(d) {
 function buildLeonardoPrompt(d) {
   // Leonardo: compact structured prompt — must stay under 1400 chars
   const lines = [];
-  lines.push(`${d.track.name} Good Morning poster, 9:16 vertical.`);
+  lines.push(`${d.track.name} ${getCategoryLabel()} poster, 9:16 vertical.`);
   lines.push(`BG: ${d.bgPh}${d.finish ? ', ' + d.finish.promptPhrase : ''}.`);
 
   if (d.framePh) {
@@ -1848,7 +2161,7 @@ function trunc(s, max) { if (s.length <= max) return s; return s.substring(0, ma
 function buildFireflyWithTextPrompt(d) {
   // Firefly WITH TEXT: hard cap ≤950 chars. Includes "Good Morning" text.
   const parts = [];
-  parts.push(`${d.track.name} Good Morning poster, 9:16 vertical.`);
+  parts.push(`${d.track.name} ${getCategoryLabel()} poster, 9:16 vertical.`);
   // BG: strip hex, truncate finish
   let bg = stripHex(d.bgPh);
   if (d.finish) { let fin = d.finish.promptPhrase; if (fin.length > 40) fin = trunc(fin, 40); bg += ', ' + fin; }
@@ -1869,7 +2182,7 @@ function buildFireflyWithTextPrompt(d) {
   parts.push(`${trunc(d.intensityPh, 60)}.`);
   parts.push(`${trunc(d.stylePh, 60)}.`);
   if (d.track.id === 'A') parts.push('Sparkle particles.');
-  parts.push(`Clean "Good Morning" text in decorative font in the text zone, legible, not overlapping illustration.`);
+  parts.push(`Clean "${getCategoryLabel()}" text in decorative font in the text zone, legible, not overlapping illustration.`);
   let result = parts.join(' ');
   if (result.length > 950) result = result.substring(0, 950).replace(/\s+\S*$/, '');
   return result;
@@ -1878,7 +2191,7 @@ function buildFireflyWithTextPrompt(d) {
 function buildFireflyNoTextPrompt(d) {
   // Firefly NO TEXT: hard cap ≤950 chars. No text in image.
   const parts = [];
-  parts.push(`${d.track.name} Good Morning poster, 9:16 vertical, no text, no letters, no words anywhere.`);
+  parts.push(`${d.track.name} ${getCategoryLabel()} poster, 9:16 vertical, no text, no letters, no words anywhere.`);
   // BG: strip hex, truncate finish
   let bg = stripHex(d.bgPh);
   if (d.finish) { let fin = d.finish.promptPhrase; if (fin.length > 40) fin = trunc(fin, 40); bg += ', ' + fin; }
@@ -1910,7 +2223,7 @@ function buildGeminiPrompt(d) {
   const lines = [];
 
   // Header
-  lines.push(`A ${d.track.name} style Good Morning greeting poster in vertical 9:16 format.`);
+  lines.push(`A ${d.track.name} style ${getCategoryLabel()} greeting poster in vertical 9:16 format.`);
 
   // [Step 5: Colour & Finish]
   let scene = `Background & Finish: ${d.bgPh}`;
@@ -2011,21 +2324,25 @@ function generatePrompts() {
   } else {
     const d = gatherPromptData();
     const illusItem = getIllusItem();
-    const illusRenderOpt = STATE.illusRender ? getIllusRenderOptions().find(r => r.id === STATE.illusRender) : null;
+    const lockedR = getLockedRender();
+    const illusRenderOpt = lockedR || (STATE.illusRender ? getIllusRenderOptions().find(r => r.id === STATE.illusRender) : null);
     const motifOpt = STATE.motifSet ? getMotifOptions().find(m => m.id === STATE.motifSet) : null;
     const finishOpt = STATE.finish ? getFinishOptions().find(f => f.id === STATE.finish) : null;
     const presetOpt = STATE.customPreset ? getCustomPresets().find(p => p.id === STATE.customPreset) : null;
     const sizeOpt = getIllusSizeLabel();
+    const feelingObj = STATE.feeling ? SUVICHAR_FEELINGS.find(f => f.id === STATE.feeling) : null;
 
     auditRows = [
-      { step: '1', label: 'Template', value: getArchetype().codeName, section: 'Frame / Density / Overlay' },
-      { step: '2', label: 'Style', value: d.step2Opt ? d.step2Opt.name : '—', section: d.framePh ? 'Frame (…)' : (d.overlayPh ? 'Overlay (…)' : 'Density (…)') },
-      { step: '3', label: 'Layout', value: getLayout().name, section: 'Layout (…)' },
-      { step: '4', label: 'Track', value: getTrack().name, section: 'Header + Style reference' },
+      { step: '1a', label: 'Category', value: getCategoryLabel(), section: 'Category selector' },
+      { step: '1b', label: 'Template', value: getArchetype().codeName, section: 'Frame / Density / Overlay' },
+      ...(STATE.category === 'suvichar' ? [{ step: '2', label: 'Feeling', value: feelingObj ? feelingObj.name : '—', section: 'Emotional tone' }] : []),
+      { step: STATE.category === 'suvichar' ? '3' : '2', label: 'Style', value: d.step2Opt ? d.step2Opt.name : '—', section: d.framePh ? 'Frame (…)' : (d.overlayPh ? 'Overlay (…)' : 'Density (…)') },
+      { step: STATE.category === 'suvichar' ? '4' : '3', label: 'Layout', value: getLayout().name, section: 'Layout (…)' },
+      { step: STATE.category === 'suvichar' ? '5' : '4', label: 'Track', value: getTrack().name, section: 'Header + Style reference' },
       { step: '5a', label: 'Palette', value: getPalette().name, section: 'Background & Finish' },
       { step: '5b', label: 'Finish', value: finishOpt ? finishOpt.name : '—', section: 'Background & Finish' },
       { step: '6a', label: 'Illustration', value: illusItem ? illusItem.name : (STATE.illusItem === 'NONE' ? 'None' : '—'), section: 'Illustration:' },
-      { step: '6b', label: 'Render Style', value: illusRenderOpt ? illusRenderOpt.name : '—', section: 'Render style (…)' },
+      { step: '6b', label: 'Render Style', value: illusRenderOpt ? (lockedR ? `🔒 ${illusRenderOpt.name}` : illusRenderOpt.name) : '—', section: 'Render style (…)' },
       { step: '6c', label: 'Size', value: sizeOpt ? sizeOpt.name : '—', section: 'Size:' },
       { step: '6d', label: 'Frame Deco', value: STATE.frameDecoration || '—', section: 'Frame (…)' },
       { step: '6e', label: 'Motif', value: motifOpt ? motifOpt.name : '—', section: 'Motif:' },
@@ -2045,7 +2362,7 @@ function generatePrompts() {
   ).join('');
 
   let outputHTML = `<div class="output-header">
-    <h2>Your Good Morning Poster Prompt</h2>
+    <h2>Your ${getCategoryLabel()} Poster Prompt</h2>
     <p>Generated for ${isB1 ? B1_PHOTO_TRACKS[STATE.track].name : getTrack().name} track${isB1 ? ' · Photo Background' : (' · ' + (getPalette() ? getPalette().name : '') + ' palette')}</p>
     <details style="margin-top:16px;cursor:pointer;">
       <summary style="font-size:13px;font-weight:700;color:#FCD34D;letter-spacing:0.5px;">PROMPT AUDIT — Every Step → Prompt Section</summary>
