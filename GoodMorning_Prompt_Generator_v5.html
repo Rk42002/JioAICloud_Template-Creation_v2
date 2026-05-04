@@ -376,9 +376,9 @@ const SUVICHAR_BG_FINISHES = [
 // Illustration items specific to Suvichar (not in Good Morning catalogue)
 const SUVICHAR_ILLUS_CATS = [
   { id: 'SV-IA', name: 'Abstract', icon: '🖌️', items: [
-    { id: 'SV-I01', name: 'Ink Brush Stroke', desc: 'Single bold sumi-e brushstroke, black or deep colour on neutral.', archs: 'A1, A2', lockedRender: 'SV-IR-INK' },
-    { id: 'SV-I02', name: 'Geometric Shards', desc: 'Fragmented low-poly angular shapes, sharp and bold.', archs: 'A1, A2', lockedRender: 'SV-IR-GEO' },
-    { id: 'SV-I03', name: 'Gradient Orb', desc: 'Blurred radial light bloom as a placed accent element.', archs: 'A1, A2', lockedRender: 'SV-IR-GRAD' },
+    { id: 'SV-I01', name: 'Ink Brush Stroke', desc: 'Single bold sumi-e brushstroke, black or deep colour on neutral.', archs: 'A1, A2' },
+    { id: 'SV-I02', name: 'Geometric Shards', desc: 'Fragmented low-poly angular shapes, sharp and bold.', archs: 'A1, A2' },
+    { id: 'SV-I03', name: 'Gradient Orb', desc: 'Blurred radial light bloom as a placed accent element.', archs: 'A1, A2' },
     { id: 'SV-I04', name: 'Splatter / Paint Burst', desc: 'Dynamic ink or paint splatter, energy and expression.', archs: 'A1, A2' },
   ]},
   { id: 'SV-IN', name: 'Nature & Landscape', icon: '🌿', items: [
@@ -440,13 +440,6 @@ const SUVICHAR_ITEM_FEELINGS = {
 
 // GM items shown as carry-overs in Suvichar catalogue
 const SUVICHAR_GM_CARRYOVER_IDS = ['GM-I2-01', 'GM-I3-02', 'GM-I6-01', 'GM-I3-01', 'GM-I2-04', 'GM-I2-05', 'GM-I2-08', 'GM-I4-01', 'GM-I2-06', 'GM-I1-01'];
-
-// Locked render styles for abstract Suvichar illustrations
-const SUVICHAR_LOCKED_RENDERS = {
-  'SV-I01': { id: 'SV-IR-INK', name: 'Ink / Sumi-e', desc: 'Auto-locked — ink brush stroke requires this style.', promptPhrase: 'bold sumi-e ink brush illustration, single expressive brushstroke, visible ink texture, East Asian ink painting style, black or deep tone on pale background' },
-  'SV-I02': { id: 'SV-IR-GEO', name: 'Flat Vector / Geometric', desc: 'Auto-locked — geometric shards require this style.', promptPhrase: 'flat geometric vector illustration, low-poly fragmented angular shapes, sharp crisp edges, bold graphic design aesthetic, no gradients within shapes' },
-  'SV-I03': { id: 'SV-IR-GRAD', name: 'Soft Gradient / Blur', desc: 'Auto-locked — gradient orb requires this style.', promptPhrase: 'soft blurred radial gradient orb illustration, smooth colour blend from bright centre to transparent edges, luminous glow quality, no hard outlines' },
-};
 
 // B1 photo descriptions for Suvichar-specific items
 const SV_B1_PHOTO_DESC = {
@@ -790,11 +783,6 @@ function getFilteredTracks() {
   const feeling = SUVICHAR_FEELINGS.find(f => f.id === STATE.feeling);
   if (!feeling) return TRACKS;
   return TRACKS.filter(t => feeling.allowedTracks.includes(t.id));
-}
-
-function getLockedRender() {
-  if (STATE.category !== 'suvichar' || !STATE.illusItem) return null;
-  return SUVICHAR_LOCKED_RENDERS[STATE.illusItem] || null;
 }
 
 function getSuvicharIllusCats() {
@@ -1299,12 +1287,6 @@ function renderStep8() {
   }
 
   if (STATE.illusItem && STATE.illusItem !== 'NONE') {
-    // Auto-apply locked render for SV items
-    const lockedRender = getLockedRender();
-    if (lockedRender && STATE.illusRender !== lockedRender.id) {
-      STATE.illusRender = lockedRender.id;
-    }
-
     // A2 Sub-illustrations: curated accent items (rendered in same illustration style)
     if (STATE.archetype === 'A2') {
       const a2SubIds = getA2SubElements(STATE.illusItem);
@@ -1326,10 +1308,8 @@ function renderStep8() {
     const sizeOpts = isSV ? ILLUS_SIZE_OPTS.filter(o => o.id !== 'Large') : ILLUS_SIZE_OPTS;
     html += `<div class="sub-section"><div class="sub-section-header"><div class="sub-section-num">${n++}</div><div class="sub-section-title">Illustration Scale</div><div class="sub-section-tag">How much space should it take?</div></div>${isSV ? '<div style="font-size:12px;color:var(--muted);margin-bottom:10px;">Large / Hero not available for Suvichar — text is the hero.</div>' : ''}<div class="options-grid cols-3">${sizeOpts.map(o => `<div class="opt-card ${STATE.illusSize === o.id ? 'selected' : ''}" onclick="select('illusSize','${o.id}')"><div class="opt-name">${o.name}</div><div class="opt-desc">${o.desc}</div></div>`).join('')}</div></div>`;
 
-    // 4. Rendering Style — locked for some SV items
-    if (lockedRender) {
-      html += `<div class="sub-section"><div class="sub-section-header"><div class="sub-section-num">${n++}</div><div class="sub-section-title">Rendering Style</div><div class="sub-section-tag">Auto-set for this illustration</div></div><div style="background:#F0FDF4;border:1px solid #86EFAC;border-radius:10px;padding:12px 16px;font-size:13px;color:#166534;display:flex;align-items:center;gap:10px;">🔒 <strong>${lockedRender.name}</strong> — This illustration has a fixed render style for best results.</div></div>`;
-    } else {
+    // 4. Rendering Style — same options across categories, varies by track
+    {
       const opts = getIllusRenderOptions();
       html += `<div class="sub-section"><div class="sub-section-header"><div class="sub-section-num">${n++}</div><div class="sub-section-title">Rendering Style</div><div class="sub-section-tag">How should the illustration look?</div></div><div class="options-grid cols-3">${opts.map(o => `<div class="opt-card ${STATE.illusRender === o.id ? 'selected' : ''}" onclick="select('illusRender','${o.id}')"><div style="margin-bottom:8px;">${renderPreviewSVG(o.id)}</div><div class="opt-name">${o.name}</div><div class="opt-desc">${o.desc}</div></div>`).join('')}</div></div>`;
     }
@@ -1644,7 +1624,7 @@ function buildNegatives() {
   const palette = getPalette();
   const roles = palette.roles || {};
   const track = STATE.track;
-  const illusRender = getLockedRender() || (STATE.illusRender ? getIllusRenderOptions().find(r => r.id === STATE.illusRender) : null);
+  const illusRender = STATE.illusRender ? getIllusRenderOptions().find(r => r.id === STATE.illusRender) : null;
 
   let negs = ['text', 'letters', 'words', 'numbers', 'typography', 'watermarks', 'logos', 'blurry', 'low quality'];
 
@@ -1696,10 +1676,7 @@ function gatherPromptData() {
   const palette = getPalette();
   const font = getFont();
   const finish = STATE.finish ? getFinishOptions().find(f => f.id === STATE.finish) : null;
-  const lockedRenderObj = getLockedRender();
-  const illusRender = lockedRenderObj
-    ? lockedRenderObj
-    : STATE.illusRender ? getIllusRenderOptions().find(r => r.id === STATE.illusRender) : null;
+  const illusRender = STATE.illusRender ? getIllusRenderOptions().find(r => r.id === STATE.illusRender) : null;
   const motif = STATE.motifSet ? getMotifOptions().find(m => m.id === STATE.motifSet) : null;
   const preset = STATE.customPreset ? getCustomPresets().find(p => p.id === STATE.customPreset) : null;
   const illusItem = getIllusItem();
@@ -2324,8 +2301,7 @@ function generatePrompts() {
   } else {
     const d = gatherPromptData();
     const illusItem = getIllusItem();
-    const lockedR = getLockedRender();
-    const illusRenderOpt = lockedR || (STATE.illusRender ? getIllusRenderOptions().find(r => r.id === STATE.illusRender) : null);
+    const illusRenderOpt = STATE.illusRender ? getIllusRenderOptions().find(r => r.id === STATE.illusRender) : null;
     const motifOpt = STATE.motifSet ? getMotifOptions().find(m => m.id === STATE.motifSet) : null;
     const finishOpt = STATE.finish ? getFinishOptions().find(f => f.id === STATE.finish) : null;
     const presetOpt = STATE.customPreset ? getCustomPresets().find(p => p.id === STATE.customPreset) : null;
@@ -2342,7 +2318,7 @@ function generatePrompts() {
       { step: '5a', label: 'Palette', value: getPalette().name, section: 'Background & Finish' },
       { step: '5b', label: 'Finish', value: finishOpt ? finishOpt.name : '—', section: 'Background & Finish' },
       { step: '6a', label: 'Illustration', value: illusItem ? illusItem.name : (STATE.illusItem === 'NONE' ? 'None' : '—'), section: 'Illustration:' },
-      { step: '6b', label: 'Render Style', value: illusRenderOpt ? (lockedR ? `🔒 ${illusRenderOpt.name}` : illusRenderOpt.name) : '—', section: 'Render style (…)' },
+      { step: '6b', label: 'Render Style', value: illusRenderOpt ? illusRenderOpt.name : '—', section: 'Render style (…)' },
       { step: '6c', label: 'Size', value: sizeOpt ? sizeOpt.name : '—', section: 'Size:' },
       { step: '6d', label: 'Frame Deco', value: STATE.frameDecoration || '—', section: 'Frame (…)' },
       { step: '6e', label: 'Motif', value: motifOpt ? motifOpt.name : '—', section: 'Motif:' },
