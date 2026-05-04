@@ -365,14 +365,6 @@ const SUVICHAR_FEELINGS = [
   { id: 'SV-F5', name: 'Fire & Drive', icon: '⚡', tagline: 'Bold, high contrast, kinetic', desc: 'Pure ambition — "Go." Fierce, competitive, zero sentimentality.', examples: 'Startup grind, sports, hustle, bold declarations', allowedTracks: ['A', 'C', 'D'] },
 ];
 
-// Suvichar-specific background finishes (added on top of per-track finishes)
-const SUVICHAR_BG_FINISHES = [
-  { id: 'SV-BG01', name: 'Watercolour Wash', desc: 'Loose watercolour bleed across canvas. Organic and artistic.', promptPhrase: 'loose watercolour wash bleeding softly across the canvas background, organic paint pooling, hand-painted feel, visible colour blending, no defined edges' },
-  { id: 'SV-BG02', name: 'Paper Texture', desc: 'Aged paper grain layered on canvas. Contemplative, literary.', promptPhrase: 'aged paper grain texture with subtle fibrous surface, slightly worn paper feel, warm parchment tone, journal-like quality' },
-  { id: 'SV-BG03', name: 'Soft Gradient Orb', desc: 'Blurred radial light bloom centred on canvas. Meditative.', promptPhrase: 'soft radial gradient light bloom centred on the canvas, smooth blurred glow fading outward, gentle ambient light, no hard edges' },
-  { id: 'SV-BG04', name: 'Ink Wash Background', desc: 'Full-canvas ink wash with visible brushwork grain. Sumi-e inspired.', promptPhrase: 'full canvas ink wash background, diffuse sumi-e ink brushwork, visible brushstroke grain, Japanese ink painting aesthetic, subtle texture' },
-];
-
 // Illustration items specific to Suvichar (not in Good Morning catalogue)
 const SUVICHAR_ILLUS_CATS = [
   { id: 'SV-IA', name: 'Abstract', icon: '🖌️', items: [
@@ -912,9 +904,7 @@ function getIllusItem() {
 
 function getFinishOptions() {
   const map = { A: FINISH_OPTIONS, B: FINISH_OPTIONS_B, C: FINISH_OPTIONS_C, D: FINISH_OPTIONS_D, E: FINISH_OPTIONS_E };
-  const base = map[STATE.track] || [];
-  if (STATE.category === 'suvichar') return [...base, ...SUVICHAR_BG_FINISHES];
-  return base;
+  return map[STATE.track] || [];
 }
 
 function getIllusRenderOptions() {
@@ -1283,11 +1273,6 @@ function finishPreviewSVG(id) {
     'FN-E1': `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><rect width="${w}" height="${h}" rx="4" fill="#FFF1F2"/><path d="M0 16 Q12 8 24 18 Q36 10 48 16" fill="#FCE7F3" opacity="0.6"/><path d="M0 24 Q16 16 32 24 Q40 18 48 22" fill="#FBCFE8" opacity="0.3"/></svg>`,
     'FN-E2': `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><rect width="${w}" height="${h}" rx="4" fill="#FCE7F3"/></svg>`,
     'FN-E3': `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><defs><radialGradient id="rge"><stop offset="0%" stop-color="#FFF1F2"/><stop offset="100%" stop-color="#FECDD3"/></radialGradient></defs><rect width="${w}" height="${h}" rx="4" fill="url(#rge)"/></svg>`,
-    // Suvichar finishes
-    'SV-BG01': `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><rect width="${w}" height="${h}" rx="4" fill="#E0F0F8"/><path d="M0 10 Q8 6 16 14 Q24 6 32 12 Q40 6 48 10 L48 0 L0 0 Z" fill="#A8D4E8" opacity="0.5"/><path d="M0 24 Q12 18 24 26 Q36 18 48 22 L48 32 L0 32 Z" fill="#B8DCF0" opacity="0.4"/></svg>`,
-    'SV-BG02': `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><rect width="${w}" height="${h}" rx="4" fill="#F5EDD8"/><line x1="0" y1="3" x2="48" y2="3" stroke="#D4B896" stroke-width="0.3" opacity="0.5"/><line x1="0" y1="7" x2="48" y2="7" stroke="#C8A87E" stroke-width="0.2" opacity="0.4"/><line x1="0" y1="12" x2="48" y2="12" stroke="#D4B896" stroke-width="0.3" opacity="0.5"/><line x1="0" y1="18" x2="48" y2="18" stroke="#C8A87E" stroke-width="0.2" opacity="0.4"/><line x1="0" y1="24" x2="48" y2="24" stroke="#D4B896" stroke-width="0.3" opacity="0.5"/><line x1="0" y1="29" x2="48" y2="29" stroke="#C8A87E" stroke-width="0.2" opacity="0.4"/></svg>`,
-    'SV-BG03': `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><defs><radialGradient id="svbg3"><stop offset="0%" stop-color="#FFF8F0"/><stop offset="60%" stop-color="#FFE8CC"/><stop offset="100%" stop-color="#E8C89A"/></radialGradient></defs><rect width="${w}" height="${h}" rx="4" fill="url(#svbg3)"/></svg>`,
-    'SV-BG04': `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><rect width="${w}" height="${h}" rx="4" fill="#E8E4DE"/><path d="M4 28 Q10 18 18 22 Q24 16 32 24 Q38 14 44 20" fill="none" stroke="#5A4A3A" stroke-width="3" stroke-linecap="round" opacity="0.3"/><path d="M2 18 Q14 10 24 18 Q34 10 46 16" fill="none" stroke="#3A2A1A" stroke-width="2" stroke-linecap="round" opacity="0.2"/></svg>`,
   };
   return previews[id] || `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><rect width="${w}" height="${h}" rx="4" fill="#F1F5F9" stroke="#E2E8F0" stroke-width="1"/></svg>`;
 }
