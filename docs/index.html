@@ -452,30 +452,30 @@ const SV_B1_PHOTO_DESC = {
 
 // B1 sub-elements for Suvichar items
 const SV_B1_SUB_ELEMENTS = {
-  'SV-I05': ['ACC-09', 'ACC-10', 'ACC-07'],
-  'SV-I06': ['ACC-09', 'ACC-10', 'ACC-07'],
-  'SV-I07': ['ACC-12', 'ACC-07', 'ACC-10'],
-  'SV-I11': ['ACC-27', 'ACC-26', 'ACC-07'],
-  'SV-I13': ['ACC-09', 'ACC-10', 'ACC-07'],
-  'SV-I14': ['ACC-18', 'ACC-02', 'ACC-29'],
-  'SV-I17': ['ACC-02', 'ACC-18', 'ACC-29'],
-  'SV-I27': ['ACC-09', 'ACC-10', 'ACC-07'],
-  'SV-I28': ['ACC-09', 'ACC-22', 'ACC-07'],
-  'SV-I29': ['ACC-12', 'ACC-09', 'ACC-10'],
-  'SV-I30': ['ACC-12', 'ACC-10', 'ACC-09'],
+  'SV-I05': ['ACC-10', 'SV-ACC-01', 'ACC-08'],      // Lone Tree → distant birds, scattered leaves, fallen petals
+  'SV-I06': ['ACC-10', 'ACC-11', 'SV-ACC-04'],       // Mountain → distant birds, wet leaves, smooth pebbles
+  'SV-I07': ['ACC-12', 'ACC-10', 'SV-ACC-01'],       // Winding Path → cobblestone, distant birds, scattered leaves
+  'SV-I11': ['ACC-27', 'ACC-08', 'ACC-26'],           // Sunrays Through Trees → butterfly, fallen petals, spider web
+  'SV-I13': ['ACC-10', 'SV-ACC-04', 'ACC-28'],       // Ocean Waves → distant birds, smooth pebbles, dragonfly
+  'SV-I14': ['ACC-18', 'SV-ACC-02', 'SV-ACC-03'],   // Open Book → reading glasses, bookmark, pen nib
+  'SV-I17': ['ACC-18', 'SV-ACC-02', 'ACC-19'],       // Coffee/Tea Cup → reading glasses, bookmark, potted plant
+  'SV-I27': ['ACC-10', 'SV-ACC-01', 'ACC-08'],       // Arms Raised — Victory → distant birds, scattered leaves, fallen petals
+  'SV-I28': ['SV-ACC-04', 'ACC-08', 'SV-ACC-05'],   // Seated/Meditating → smooth pebbles, fallen petals, dried flower
+  'SV-I29': ['ACC-12', 'SV-ACC-01', 'ACC-10'],       // Walking Alone → cobblestone, scattered leaves, distant birds
+  'SV-I30': ['ACC-10', 'SV-ACC-01', 'ACC-12'],       // Running/Sprinting → distant birds, scattered leaves, cobblestone
 };
 
 // A2 sub-elements for Suvichar items
 const SV_A2_SUB_ELEMENTS = {
-  'SV-I05': ['ACC-09', 'ACC-08', 'ACC-10'],
-  'SV-I06': ['ACC-09', 'ACC-10', 'ACC-07'],
-  'SV-I08': ['ACC-27', 'ACC-08', 'ACC-11'],
-  'SV-I12': ['ACC-09', 'ACC-08', 'ACC-10'],
-  'SV-I13': ['ACC-09', 'ACC-28', 'ACC-07'],
-  'SV-I14': ['ACC-18', 'ACC-02', 'ACC-29'],
-  'SV-I15': ['ACC-09', 'ACC-07', 'ACC-08'],
-  'SV-I19': ['ACC-30', 'ACC-14', 'ACC-08'],
-  'SV-I23': ['ACC-07', 'ACC-08', 'ACC-24'],
+  'SV-I05': ['SV-ACC-01', 'ACC-08', 'ACC-10'],       // Lone Tree → scattered leaves, fallen petals, distant birds
+  'SV-I06': ['SV-ACC-04', 'ACC-10', 'ACC-11'],       // Mountain → smooth pebbles, distant birds, wet leaves
+  'SV-I08': ['SV-ACC-01', 'ACC-08', 'ACC-27'],       // Falling Leaves → scattered leaves, fallen petals, butterfly
+  'SV-I12': ['SV-ACC-06', 'SV-ACC-05', 'ACC-08'],   // Crescent Moon & Stars → candle stub, dried flower, fallen petals
+  'SV-I13': ['ACC-10', 'SV-ACC-04', 'ACC-28'],       // Ocean Waves → distant birds, smooth pebbles, dragonfly
+  'SV-I14': ['ACC-18', 'SV-ACC-02', 'SV-ACC-03'],   // Open Book → reading glasses, bookmark, pen nib
+  'SV-I15': ['SV-ACC-04', 'SV-ACC-05', 'ACC-08'],   // Hourglass → smooth pebbles, dried flower, fallen petals
+  'SV-I19': ['SV-ACC-06', 'SV-ACC-05', 'ACC-08'],   // Lantern → candle stub, dried flower, fallen petals
+  'SV-I23': ['SV-ACC-04', 'ACC-08', 'ACC-27'],       // Seed/Sapling → smooth pebbles, fallen petals, butterfly
 };
 
 // ═══════════════════════════════════════════════════════════════
@@ -589,45 +589,45 @@ const BD_B1_PHOTO_DESC = {
 
 // B1 sub-elements (accent props) for Birthday items
 const BD_B1_SUB_ELEMENTS = {
-  'BD-I01': ['ACC-01', 'ACC-13', 'ACC-14'],
-  'BD-I06': ['ACC-13', 'ACC-14', 'ACC-29'],
-  'BD-I14': ['ACC-13', 'ACC-14', 'ACC-30'],
-  'BD-I17': ['ACC-13', 'ACC-30', 'ACC-09'],
-  'BD-I19': ['ACC-09', 'ACC-13', 'ACC-30'],
-  'BD-I20': ['ACC-13', 'ACC-30', 'ACC-09'],
-  'BD-I27': ['ACC-01', 'ACC-13', 'ACC-14'],
-  'BD-I28': ['ACC-13', 'ACC-30', 'ACC-14'],
-  'BD-I29': ['ACC-01', 'ACC-13', 'ACC-14'],
-  'BD-I30': ['ACC-13', 'ACC-30', 'ACC-09'],
+  'BD-I01': ['BD-ACC-01', 'BD-ACC-03', 'BD-ACC-05'],  // Birthday Cake → confetti, candles, sprinkles
+  'BD-I06': ['BD-ACC-02', 'BD-ACC-01', 'BD-ACC-06'],  // Gift Box → ribbon, confetti, gift tag
+  'BD-I14': ['ACC-08', 'BD-ACC-01', 'BD-ACC-02'],     // Rangoli → fallen petals, confetti, ribbon
+  'BD-I17': ['BD-ACC-01', 'BD-ACC-04', 'BD-ACC-02'],  // Fairy Lights → confetti, foil star, ribbon
+  'BD-I19': ['BD-ACC-01', 'BD-ACC-04', 'BD-ACC-02'],  // Fireworks → confetti, foil star, ribbon
+  'BD-I20': ['BD-ACC-01', 'BD-ACC-04', 'BD-ACC-05'],  // Sparkler → confetti, foil star, sprinkles
+  'BD-I27': ['BD-ACC-01', 'BD-ACC-03', 'BD-ACC-05'],  // Hands Holding Cake → confetti, candles, sprinkles
+  'BD-I28': ['BD-ACC-01', 'BD-ACC-03', 'BD-ACC-04'],  // Blowing Candles → confetti, candles, foil star
+  'BD-I29': ['BD-ACC-01', 'BD-ACC-02', 'BD-ACC-04'],  // Group Celebration → confetti, ribbon, foil star
+  'BD-I30': ['BD-ACC-01', 'BD-ACC-04', 'BD-ACC-02'],  // Child with Balloon → confetti, foil star, ribbon
 };
 
 // A2 sub-elements for Birthday items
 const BD_A2_SUB_ELEMENTS = {
-  'BD-I01': ['ACC-13', 'ACC-14', 'ACC-30'],
-  'BD-I02': ['ACC-13', 'ACC-14', 'ACC-30'],
-  'BD-I03': ['ACC-13', 'ACC-14', 'ACC-30'],
-  'BD-I04': ['ACC-13', 'ACC-14', 'ACC-30'],
-  'BD-I05': ['ACC-13', 'ACC-30', 'ACC-09'],
-  'BD-I06': ['ACC-13', 'ACC-14', 'ACC-30'],
-  'BD-I07': ['ACC-13', 'ACC-14', 'ACC-30'],
-  'BD-I08': ['ACC-13', 'ACC-14', 'ACC-30'],
-  'BD-I09': ['ACC-13', 'ACC-14', 'ACC-30'],
-  'BD-I10': ['ACC-13', 'ACC-14', 'ACC-30'],
-  'BD-I11': ['ACC-30', 'ACC-14', 'ACC-13'],
-  'BD-I12': ['ACC-13', 'ACC-14', 'ACC-30'],
-  'BD-I13': ['ACC-30', 'ACC-14', 'ACC-13'],
-  'BD-I14': ['ACC-30', 'ACC-13', 'ACC-14'],
-  'BD-I15': ['ACC-30', 'ACC-14', 'ACC-13'],
-  'BD-I16': ['ACC-13', 'ACC-14', 'ACC-30'],
-  'BD-I17': ['ACC-13', 'ACC-30', 'ACC-09'],
-  'BD-I18': ['ACC-13', 'ACC-14', 'ACC-30'],
-  'BD-I20': ['ACC-13', 'ACC-30', 'ACC-09'],
-  'BD-I21': ['ACC-08', 'ACC-13', 'ACC-14'],
-  'BD-I22': ['ACC-13', 'ACC-14', 'ACC-30'],
-  'BD-I23': ['ACC-13', 'ACC-14', 'ACC-30'],
-  'BD-I24': ['ACC-13', 'ACC-14', 'ACC-30'],
-  'BD-I25': ['ACC-13', 'ACC-14', 'ACC-30'],
-  'BD-I26': ['ACC-13', 'ACC-14', 'ACC-30'],
+  'BD-I01': ['BD-ACC-01', 'BD-ACC-03', 'BD-ACC-05'],  // Birthday Cake → confetti, candles, sprinkles
+  'BD-I02': ['BD-ACC-05', 'BD-ACC-01', 'BD-ACC-03'],  // Cake Slice → sprinkles, confetti, candles
+  'BD-I03': ['BD-ACC-03', 'BD-ACC-05', 'BD-ACC-01'],  // Cupcake → candles, sprinkles, confetti
+  'BD-I04': ['BD-ACC-04', 'BD-ACC-02', 'BD-ACC-01'],  // Balloon Bunch → foil star, ribbon, confetti
+  'BD-I05': ['BD-ACC-04', 'BD-ACC-02', 'BD-ACC-01'],  // Single Balloon → foil star, ribbon, confetti
+  'BD-I06': ['BD-ACC-02', 'BD-ACC-06', 'BD-ACC-01'],  // Gift Box → ribbon, gift tag, confetti
+  'BD-I07': ['BD-ACC-02', 'BD-ACC-06', 'BD-ACC-01'],  // Gift Stack → ribbon, gift tag, confetti
+  'BD-I08': ['BD-ACC-01', 'BD-ACC-04', 'BD-ACC-03'],  // Party Hat → confetti, foil star, candles
+  'BD-I09': ['BD-ACC-05', 'BD-ACC-01', 'BD-ACC-02'],  // Birthday Candles Row → sprinkles, confetti, ribbon
+  'BD-I10': ['BD-ACC-01', 'BD-ACC-04', 'BD-ACC-02'],  // Confetti Popper → confetti, foil star, ribbon
+  'BD-I11': ['ACC-08', 'BD-ACC-01', 'BD-ACC-02'],     // Marigold Toran → fallen petals, confetti, ribbon
+  'BD-I12': ['BD-ACC-05', 'BD-ACC-01', 'BD-ACC-02'],  // Mithai Box → sprinkles, confetti, ribbon
+  'BD-I13': ['ACC-08', 'BD-ACC-01', 'BD-ACC-03'],     // Diya Cluster → fallen petals, confetti, candles
+  'BD-I14': ['ACC-08', 'BD-ACC-01', 'BD-ACC-02'],     // Rangoli → fallen petals, confetti, ribbon
+  'BD-I15': ['ACC-08', 'BD-ACC-01', 'BD-ACC-02'],     // Puja Thali → fallen petals, confetti, ribbon
+  'BD-I16': ['BD-ACC-01', 'BD-ACC-04', 'BD-ACC-02'],  // Bunting/Banner → confetti, foil star, ribbon
+  'BD-I17': ['BD-ACC-04', 'BD-ACC-01', 'BD-ACC-02'],  // Fairy Lights → foil star, confetti, ribbon
+  'BD-I18': ['BD-ACC-01', 'BD-ACC-04', 'BD-ACC-02'],  // Streamers → confetti, foil star, ribbon
+  'BD-I20': ['BD-ACC-01', 'BD-ACC-04', 'BD-ACC-05'],  // Sparkler → confetti, foil star, sprinkles
+  'BD-I21': ['ACC-08', 'BD-ACC-02', 'BD-ACC-01'],     // Flower Bouquet → fallen petals, ribbon, confetti
+  'BD-I22': ['BD-ACC-04', 'BD-ACC-01', 'BD-ACC-02'],  // Star Scatter → foil star, confetti, ribbon
+  'BD-I23': ['BD-ACC-04', 'BD-ACC-02', 'BD-ACC-01'],  // Crown/Tiara → foil star, ribbon, confetti
+  'BD-I24': ['BD-ACC-03', 'BD-ACC-05', 'BD-ACC-01'],  // Number Candle → candles, sprinkles, confetti
+  'BD-I25': ['BD-ACC-02', 'BD-ACC-01', 'BD-ACC-06'],  // Ribbon Bow → ribbon, confetti, gift tag
+  'BD-I26': ['BD-ACC-06', 'BD-ACC-02', 'BD-ACC-01'],  // Wish Card/Envelope → gift tag, ribbon, confetti
 };
 
 // ═══════════════════════════════════════════════════════════════
@@ -798,9 +798,256 @@ const ILLUS_SIZE_OPTS = [
   { id: 'Large', name: 'Large / Hero', desc: '50%+ of canvas. Illustration is the visual anchor.' },
 ];
 
+// ═══════════════════════════════════════════════════════════════
+// OVERLAY PACK SYSTEM (Overlay_Pack_System_v2.md)
+// Thin content modifier layered on top of a Base Category.
+// 4 packs: Devotional, Summer, Rain/Monsoon, Cricket/IPL.
+// Each pack defines: track filter, illustration adds + restrictions,
+// motif swaps + adds per track, frame restrictions / F6 unlock,
+// and prompt injection strings (atmosphere / mood / negatives / B1 scene).
+// ═══════════════════════════════════════════════════════════════
+const OVERLAYS = [
+  {
+    id: 'OV-NONE', name: 'No overlay', icon: '—', desc: 'Standard category, no flavour overlay.',
+    appliesTo: ['good_morning', 'suvichar', 'birthday'],
+    blockedTracks: [],
+    illustrations: [],
+    restrictByCategory: {},
+    motifSwaps: {}, motifAdds: {},
+    frameRestrict: [], frameUnlock: [],
+    prompt: { atmosphere: '', mood: '', negatives: [], b1Scene: '',
+              fireflyAtm: '', fireflyMood: '', fireflyB1Scene: '', fireflyNegGuard: '' },
+  },
+  {
+    id: 'OV-DEV', name: 'Devotional', icon: '🪔', desc: 'Spiritual / temple / prayer atmosphere — Om, diya, temple, mala, mogra.',
+    appliesTo: ['good_morning', 'suvichar'],
+    blockedTracks: ['D'],
+    illustrations: [
+      { id: 'OV-DEV-I01', name: 'Om Symbol', desc: 'Stylised Om (ॐ) — clean single form. Warm gold or deep saffron.', archs: ['A1','A2'], group: 'Sacred Symbols' },
+      { id: 'OV-DEV-I02', name: 'Temple Bell', desc: 'Brass temple bell with clapper visible, slight patina, warm metallic.', archs: ['A1','A2'], group: 'Sacred Symbols' },
+      { id: 'OV-DEV-I03', name: 'Incense Stick (Burning)', desc: 'Single agarbatti in holder, thin smoke trail curling upward.', archs: ['A1','A2'], group: 'Sacred Symbols' },
+      { id: 'OV-DEV-I04', name: 'Rudraksha Mala', desc: 'Prayer bead strand in gentle curve or coil, deep brown texture.', archs: ['A1','A2'], group: 'Sacred Symbols' },
+      { id: 'OV-DEV-I05', name: 'Shankh (Conch Shell)', desc: 'Sacred conch shell, side view showing spiral, creamy white with pink interior.', archs: ['A1','A2'], group: 'Sacred Symbols' },
+      { id: 'OV-DEV-I06', name: 'Tulsi Plant (Pot)', desc: 'Sacred tulsi in earthen vrindavan pot with vermillion marks, terracotta base.', archs: ['A1','A2'], group: 'Flora & Nature' },
+      { id: 'OV-DEV-I07', name: 'Jasmine Garland (Mogra)', desc: 'String of white mogra flowers, gently curved, pure white buds on warm BG.', archs: ['A1','A2'], group: 'Flora & Nature' },
+      { id: 'OV-DEV-I08', name: 'Banana Leaf with Offerings', desc: 'Green banana leaf laid flat with kumkum, turmeric, flower petals, rice grains.', archs: ['A1','A2'], group: 'Flora & Nature' },
+      { id: 'OV-DEV-I09', name: 'Temple Silhouette', desc: 'Hindu temple gopuram silhouette against dawn sky, clean outline, golden-orange backlit.', archs: ['A1','A2','B1'], group: 'Scenes & Settings' },
+      { id: 'OV-DEV-I10', name: 'Praying Hands (Namaste)', desc: 'Two hands joined in namaste, warm side-lighting, hands only.', archs: ['A1','A2','B1'], group: 'Scenes & Settings' },
+      { id: 'OV-DEV-I11', name: 'Ganga / River at Dawn', desc: 'Sacred river at dawn, stone ghats foreground, temple spires background, golden reflection.', archs: ['B1'], group: 'Scenes & Settings' },
+      { id: 'OV-DEV-I12', name: 'Pooja Thali (Still Life)', desc: 'Brass thali with lit diya, kumkum, rice, marigold, brass bell. Morning light, warm tones.', archs: ['A1','A2','B1'], group: 'Scenes & Settings' },
+      { id: 'OV-DEV-I13', name: 'Temple Doorway (Interior)', desc: 'Carved temple doorway, warm light streaming in, stone architecture.', archs: ['B1'], group: 'Scenes & Settings' },
+      { id: 'OV-DEV-I14', name: 'Oil Lamp Row (Lit)', desc: 'Row of 5–7 lit brass deepam in a line, warm flame glow, shallow depth of field.', archs: ['A1','A2','B1'], group: 'Scenes & Settings' },
+    ],
+    restrictByCategory: {
+      good_morning: ['GM-I1-05','GM-I1-08','GM-I2-08','GM-I3-05','GM-I3-09','GM-I5-04','GM-I5-05','GM-I5-06','GM-I6-04','GM-I6-06','GM-I1-01'],
+      suvichar: ['SV-I02','SV-I04','SV-I10','SV-I20','SV-I22','SV-I25','SV-I27','SV-I30'],
+    },
+    motifSwaps: {
+      A: { 'MT-1': { id: 'OV-DEV-MT-A1', name: 'Om with Gold Halo', promptPhrase: 'gold-foil Om symbol with concentric radiating halo, embossed high-shine gold ornament' },
+           'MT-3': { id: 'OV-DEV-MT-A2', name: 'Brass Bell Garland', promptPhrase: 'string of small brass temple bells connected by gold thread along frame edge, each bell with visible clapper' } },
+      B: { 'MT-B7': { id: 'OV-DEV-MT-B1', name: 'Rangoli Om Corner', promptPhrase: 'Om symbol integrated into geometric rangoli quarter-pattern at frame corners, modern saffron and white' },
+           'MT-B5': { id: 'OV-DEV-MT-B2', name: 'Tulsi Pot Accent', promptPhrase: 'small tulsi vrindavan vignette at corner, simple earthen pot with green leaves' } },
+      C: { 'MT-C4': { id: 'OV-DEV-MT-C1', name: 'Minimal Om Line', promptPhrase: 'Om drawn with single continuous thin-line stroke, no fill, warm grey or muted gold corner accent' },
+           'MT-C3': { id: 'OV-DEV-MT-C2', name: 'Incense Smoke Trail', promptPhrase: 'single vertical thin line rising from bottom edge with 2-3 gentle S-curves suggesting smoke, barely-there 30-40% opacity, elegant negative space' } },
+      E: { 'MT-E2': { id: 'OV-DEV-MT-E1', name: 'Watercolour Diya', promptPhrase: 'soft-edge diya in warm ochre saffron watercolour wash with small flame bleed, no hard edges' },
+           'MT-E3': { id: 'OV-DEV-MT-E2', name: 'Marigold Wash', promptPhrase: 'loose watercolour marigold garland with diffused edges, pigment pooling at petal tips, warm orange-yellow' } },
+    },
+    motifAdds: {
+      A: [{ id: 'OV-DEV-MTA-A1', name: 'Diya Row (Gold)', promptPhrase: 'row of 3-5 brass diyas with gold flame accents along frame base, sparkle highlights on each flame' }],
+      B: [{ id: 'OV-DEV-MTA-B1', name: 'Ghee Lamp Line', promptPhrase: 'thin horizontal row of small lit ghee lamps at frame base, modern clean rendering, warm amber flame glow' }],
+      E: [{ id: 'OV-DEV-MTA-E1', name: 'Incense Haze (Soft)', promptPhrase: 'gentle warm-toned haze wash along frame base, very subtle 20-30% opacity, devotional atmosphere layer' }],
+    },
+    frameRestrict: [],
+    frameUnlock: [{ id: 'F6', name: 'Temple Arch', desc: 'Curved temple gopuram / mandir arch silhouette overhead. Bottom edge straight. Devotional only.', diagramType: 'frame-arch' }],
+    prompt: {
+      atmosphere: 'spiritual, sacred, devotional warmth, temple morning atmosphere, divine glow, sacred golden light',
+      mood: 'reverent, peaceful, prayerful, blessed, meditative, serene, devout',
+      negatives: ['party','nightclub','alcohol','modern urban','neon','loud','aggressive','cartoon','doodle','playful','comic','silly'],
+      b1Scene: 'temple courtyard at dawn, devotional morning setting, sacred river ghats at sunrise, pooja room with morning light streaming in, incense smoke visible in golden light rays',
+      fireflyAtm: 'spiritual devotional warmth, temple dawn glow',
+      fireflyMood: 'reverent, peaceful, prayerful, blessed',
+      fireflyB1Scene: 'temple courtyard at dawn, pooja room morning light',
+      fireflyNegGuard: 'party, nightclub, cartoon, doodle',
+    },
+  },
+  {
+    id: 'OV-SUM', name: 'Summer', icon: '🥭', desc: 'Bright Indian summer — mango, watermelon, kulfi, harsh golden sun.',
+    appliesTo: ['good_morning', 'suvichar', 'birthday'],
+    blockedTracks: [],
+    illustrations: [
+      { id: 'OV-SUM-I01', name: 'Mango (Aam)', desc: 'Ripe Alphonso mango whole + sliced half showing orange flesh, vibrant yellow-orange.', archs: ['A1','A2'], group: 'Fruits & Food' },
+      { id: 'OV-SUM-I02', name: 'Mango Basket / Crate', desc: 'Woven bamboo basket with 5-7 assorted mangoes, market-fresh, leaves attached.', archs: ['A1','A2','B1'], group: 'Fruits & Food' },
+      { id: 'OV-SUM-I03', name: 'Watermelon Slice', desc: 'Bright red wedge with black seeds and green rind, dripping juice.', archs: ['A1','A2'], group: 'Fruits & Food' },
+      { id: 'OV-SUM-I04', name: 'Kulfi / Ice Cream', desc: 'Traditional matka kulfi with pistachio crumble, frosty condensation.', archs: ['A1','A2'], group: 'Fruits & Food' },
+      { id: 'OV-SUM-I05', name: 'Nimbu Paani (Lemonade)', desc: 'Tall glass of lemon water with ice, mint sprig, condensation droplets.', archs: ['A1','A2','B1'], group: 'Fruits & Food' },
+      { id: 'OV-SUM-I06', name: 'Aam Panna Glass', desc: 'Glass of raw mango drink, pale green colour, mint garnish.', archs: ['A1','A2'], group: 'Fruits & Food' },
+      { id: 'OV-SUM-I07', name: 'Hand Fan (Pankha)', desc: 'Traditional Indian palm-leaf or bamboo hand fan, textured handmade feel.', archs: ['A1','A2'], group: 'Summer Objects' },
+      { id: 'OV-SUM-I08', name: 'Sunglasses', desc: 'Bold aviator or wayfarer sunglasses with reflective lenses showing sky.', archs: ['A1','A2'], group: 'Summer Objects' },
+      { id: 'OV-SUM-I09', name: 'Matka (Clay Water Pot)', desc: 'Earthen clay matka with water condensation, terracotta brown on stand.', archs: ['A1','A2'], group: 'Summer Objects' },
+      { id: 'OV-SUM-I10', name: 'Straw Hat / Sun Hat', desc: 'Woven straw sun hat, casual breezy, tan natural tones with optional ribbon.', archs: ['A1','A2'], group: 'Summer Objects' },
+      { id: 'OV-SUM-I11', name: 'Mango Tree', desc: 'Laden mango tree branch with hanging fruits and green leaves, dappled sunlight.', archs: ['A2','B1'], group: 'Scenes & Nature' },
+      { id: 'OV-SUM-I12', name: 'Ceiling Fan / Desert Cooler', desc: 'Old-style 3-blade ceiling fan or desert cooler with khus curtain, nostalgic interior.', archs: ['B1'], group: 'Scenes & Nature' },
+      { id: 'OV-SUM-I13', name: 'Sunny Courtyard', desc: 'Indian home courtyard in peak summer — bright harsh sunlight, long shadows, tulsi pot.', archs: ['B1'], group: 'Scenes & Nature' },
+      { id: 'OV-SUM-I14', name: 'Sunflower', desc: 'Single bright sunflower facing camera, bold yellow petals, dark brown centre.', archs: ['A1','A2'], group: 'Scenes & Nature' },
+    ],
+    restrictByCategory: {
+      good_morning: ['GM-I2-04','GM-I4-01','GM-I4-04','GM-I5-02','GM-I6-05'],
+      birthday: ['BD-I13','BD-I15','BD-I19','BD-I28'],
+      suvichar: ['SV-I05','SV-I08','SV-I09','SV-I10','SV-I12','SV-I19','SV-I28','SV-I29'],
+    },
+    motifSwaps: {
+      A: { 'MT-3': { id: 'OV-SUM-MT-A1', name: 'Gold Mango Cluster', promptPhrase: 'triangular cluster of 3-4 gold-leafed mangoes with sparkle highlights, lush ornate maximum saturation' },
+           'MT-2': { id: 'OV-SUM-MT-A2', name: 'Sunburst Medallion', promptPhrase: 'radiating gold sunburst medallion with 12-16 rays at frame top-centre, embossed feel' } },
+      B: { 'MT-B3': { id: 'OV-SUM-MT-B1', name: 'Block-Print Mango Motif', promptPhrase: 'mango silhouette filled with traditional Indian block-print pattern, saffron and indigo on cream' },
+           'MT-B1': { id: 'OV-SUM-MT-B2', name: 'Nimbu Slice Corner', promptPhrase: 'lemon cross-section as geometric corner accent, clean lines, yellow with white pith detail' } },
+      C: { 'MT-C4': { id: 'OV-SUM-MT-C1', name: 'Minimal Sun Arc', promptPhrase: 'thin quarter-circle sun arc at frame corner, single ~1px line, muted gold with maximum negative space' } },
+      D: { 'MT-D5': { id: 'OV-SUM-MT-D1', name: 'Doodle Mango', promptPhrase: 'hand-drawn mango with leaf, crayon style, slightly wobbly outline, scribble yellow-orange fill' },
+           'MT-D4': { id: 'OV-SUM-MT-D2', name: 'Popsicle Sticker', promptPhrase: 'puffy ice-lolly orange-bar sticker, slightly 3D with highlight, summer fun energy' } },
+      E: { 'MT-E3': { id: 'OV-SUM-MT-E1', name: 'Watercolour Mango', promptPhrase: 'soft-edge mango in warm yellow-orange watercolour wash, pigment pooling at base, green leaf wet-on-wet bleed' },
+           'MT-E4': { id: 'OV-SUM-MT-E2', name: 'Pastel Citrus Slice', promptPhrase: 'gentle lemon half-slice in muted yellow-cream pastel, soft edges no outlines, subtle segment lines' } },
+    },
+    motifAdds: {
+      A: [{ id: 'OV-SUM-MTA-A1', name: 'Watermelon Wedge (Gold-rimmed)', promptPhrase: 'small watermelon slice motif with gold rind outline as corner accent, playful but ornate, fits Track A maximalist energy' }],
+      B: [{ id: 'OV-SUM-MTA-B1', name: 'Matka Icon', promptPhrase: 'small clay pot silhouette with condensation dots, simple 2-colour modern icon, warm terracotta' }],
+      D: [{ id: 'OV-SUM-MTA-D1', name: 'Doodle Sun (Smiling)', promptPhrase: 'hand-drawn smiling sun with wavy rays, classic childhood circle face triangle rays, warm yellow' }],
+      E: [{ id: 'OV-SUM-MTA-E1', name: 'Sun Glow Wash', promptPhrase: 'gentle warm-toned radial glow at frame top-centre, very subtle 15-25% opacity, warm sunshine atmosphere' }],
+    },
+    frameRestrict: [], frameUnlock: [],
+    prompt: {
+      atmosphere: 'bright Indian summer, warm harsh sunlight, peak daylight, hot season ambience, golden hour warmth, long shadows',
+      mood: 'vibrant, sunny, refreshing, cheerful, high-energy, bright, juicy, alive',
+      negatives: ['cold','snow','winter','fog','overcast','grey','dark','cloudy','sweater','blanket','rain','umbrella','monsoon','frost'],
+      b1Scene: 'Indian summer setting, bright sunlight casting strong shadows, courtyard or veranda in afternoon heat, mango trees, earthen pots, summer morning freshness',
+      fireflyAtm: 'bright Indian summer, harsh golden sunlight',
+      fireflyMood: 'vibrant, sunny, refreshing, cheerful',
+      fireflyB1Scene: 'Indian summer courtyard, bright harsh sunlight, mango trees',
+      fireflyNegGuard: 'cold, snow, fog, rain, overcast',
+    },
+  },
+  {
+    id: 'OV-RAIN', name: 'Rain / Monsoon', icon: '☔', desc: 'Indian monsoon — overcast skies, chai, paper boats, petrichor.',
+    appliesTo: ['good_morning', 'suvichar'],
+    blockedTracks: ['A'],
+    illustrations: [
+      { id: 'OV-RAIN-I01', name: 'Umbrella (Open, Colourful)', desc: 'Bright open umbrella with raindrops bouncing off, red yellow or multi-colour, casual angle.', archs: ['A1','A2'], group: 'Rain Elements' },
+      { id: 'OV-RAIN-I02', name: 'Umbrella (Closed, Minimal)', desc: 'Closed umbrella leaning against wall or held at side, clean silhouette.', archs: ['A1','A2'], group: 'Rain Elements' },
+      { id: 'OV-RAIN-I03', name: 'Raindrops on Leaf', desc: 'Macro: 3-5 clear water droplets on a single green leaf, sharp focus on drops.', archs: ['A1','A2','B1'], group: 'Rain Elements' },
+      { id: 'OV-RAIN-I04', name: 'Puddle Reflection', desc: 'Rain puddle reflecting sky, trees, or temple, ground-level angle, ripple rings.', archs: ['A2','B1'], group: 'Rain Elements' },
+      { id: 'OV-RAIN-I05', name: 'Paper Boat', desc: 'Small white/newspaper paper boat in gentle rainwater stream along roadside gutter.', archs: ['A1','A2'], group: 'Rain Elements' },
+      { id: 'OV-RAIN-I06', name: 'Chai in Rain', desc: 'Steaming cutting chai on window ledge, rain-streaked glass behind, blurred wet street.', archs: ['A1','A2','B1'], group: 'Comfort & Nostalgia' },
+      { id: 'OV-RAIN-I07', name: 'Pakora / Bhajiya Plate', desc: 'Fresh hot onion pakoras on steel plate or newspaper, steam rising, green chutney side.', archs: ['A1','A2'], group: 'Comfort & Nostalgia' },
+      { id: 'OV-RAIN-I08', name: 'Wet Window Pane', desc: 'Rain streaks running down glass, warm interior light glowing behind, blurred warm tones.', archs: ['A1','A2','B1'], group: 'Comfort & Nostalgia' },
+      { id: 'OV-RAIN-I09', name: 'Person with Umbrella (Silhouette)', desc: 'Solo figure walking with umbrella on wet road, seen from behind, reflection on wet ground.', archs: ['B1'], group: 'Comfort & Nostalgia' },
+      { id: 'OV-RAIN-I10', name: 'Monsoon Sky (Dramatic)', desc: 'Heavy cumulus clouds, dark-grey with silver edges, dramatic formations, no rain visible.', archs: ['B1'], group: 'Nature & Atmosphere' },
+      { id: 'OV-RAIN-I11', name: 'Green Field in Rain', desc: 'Lush green rice paddy with rain falling, overcast light, saturated greens, distant treeline.', archs: ['B1'], group: 'Nature & Atmosphere' },
+      { id: 'OV-RAIN-I12', name: 'Frog on Leaf', desc: 'Small green frog on wet leaf with water droplets around it, charming monsoon wildlife.', archs: ['A1','A2'], group: 'Nature & Atmosphere' },
+      { id: 'OV-RAIN-I13', name: 'Wet Marigold', desc: 'Single marigold flower with rain droplets on petals, vivid orange against grey-green BG.', archs: ['A1','A2'], group: 'Nature & Atmosphere' },
+      { id: 'OV-RAIN-I14', name: 'Rain on Rooftop', desc: 'Rain hitting corrugated tin or tile rooftop, splashing droplets frozen mid-bounce.', archs: ['B1'], group: 'Nature & Atmosphere' },
+      { id: 'OV-RAIN-I15', name: 'Peacock (Rain Dance)', desc: 'Peacock with fanned tail in rain, classic monsoon image, side view, feathers glistening.', archs: ['A2','B1'], group: 'Nature & Atmosphere' },
+    ],
+    restrictByCategory: {
+      good_morning: ['GM-I2-01','GM-I2-02','GM-I2-05','GM-I2-06','GM-I2-08','GM-I3-05','GM-I5-01','GM-I6-01','GM-I6-06','GM-I1-05','GM-I1-08'],
+      suvichar: ['SV-I09','SV-I20','SV-I23','SV-I24','SV-I25','SV-I26','SV-I27','SV-I30'],
+    },
+    motifSwaps: {
+      B: { 'MT-B3': { id: 'OV-RAIN-MT-B1', name: 'Block-Print Umbrella', promptPhrase: 'umbrella silhouette filled with traditional block-print pattern, indigo and white on cream, modern' },
+           'MT-B1': { id: 'OV-RAIN-MT-B2', name: 'Monsoon Vine Border', promptPhrase: 'wet tropical vine with small white flowers along frame edge, dewdrops on leaves, green and white' } },
+      C: { 'MT-C4': { id: 'OV-RAIN-MT-C1', name: 'Minimal Raindrop Line', promptPhrase: 'thin vertical line of small raindrop-shaped dots evenly spaced, metallic grey or silver' },
+           'MT-C2': { id: 'OV-RAIN-MT-C2', name: 'Rain Streak (Fine)', promptPhrase: '3-4 diagonal fine parallel lines at 60 degree angle suggesting rain, sparse and elegant, light grey thin stroke' } },
+      D: { 'MT-D5': { id: 'OV-RAIN-MT-D1', name: 'Doodle Umbrella', promptPhrase: 'hand-drawn open umbrella with bouncy raindrop doodles around it, wobbly outline, crayon fill' },
+           'MT-D4': { id: 'OV-RAIN-MT-D2', name: 'Paper Boat Sticker', promptPhrase: 'puffy paper-boat sticker on wavy blue line, slightly 3D with shadow, playful childhood energy' } },
+      E: { 'MT-E3': { id: 'OV-RAIN-MT-E1', name: 'Watercolour Raindrops', promptPhrase: '5-7 soft-edge raindrop shapes in blue-grey watercolour wash, varying sizes, pigment pooling at bottom' },
+           'MT-E4': { id: 'OV-RAIN-MT-E2', name: 'Pastel Umbrella', promptPhrase: 'gentle closed umbrella outline in muted blue-grey pastel, soft edges no hard lines, casual tilt' } },
+    },
+    motifAdds: {
+      B: [{ id: 'OV-RAIN-MTA-B1', name: 'Raindrop Bead String', promptPhrase: 'thin vertical string of stylised raindrops at frame edge, modern geometric drops, blue-grey tones' }],
+      D: [{ id: 'OV-RAIN-MTA-D1', name: 'Doodle Cloud (Rainy)', promptPhrase: 'hand-drawn grey cloud with zigzag rain lines, simple cheerful 2-3 clouds at different sizes' },
+          { id: 'OV-RAIN-MTA-D2', name: 'Frog Doodle', promptPhrase: 'tiny hand-drawn frog on lily pad with 2-3 raindrop doodles around, charming corner accent' }],
+      E: [{ id: 'OV-RAIN-MTA-E1', name: 'Mist Wash', promptPhrase: 'light watercolour mist fog wash along frame base, very subtle 15-20% opacity cool grey-blue' }],
+    },
+    frameRestrict: [], frameUnlock: [],
+    prompt: {
+      atmosphere: 'Indian monsoon atmosphere, overcast sky, soft diffused rain light, rain-washed freshness, petrichor mood, humid green lushness',
+      mood: 'cosy, nostalgic, peaceful, contemplative, refreshing, romantic, warm-inside-while-cold-outside',
+      negatives: ['harsh sunlight','desert','dry','arid','bright blue sky','clear sky','scorching','drought','dust','snow','winter'],
+      b1Scene: 'monsoon setting in India, rain-washed streets or balcony or window scene, wet reflective surfaces, heavy overcast or dramatic cloud sky, lush saturated green foliage',
+      fireflyAtm: 'Indian monsoon, overcast rain light, petrichor',
+      fireflyMood: 'cosy, nostalgic, refreshing, contemplative',
+      fireflyB1Scene: 'monsoon balcony, rain-washed streets, overcast lush green',
+      fireflyNegGuard: 'harsh sunlight, desert, clear blue sky',
+    },
+  },
+  {
+    id: 'OV-CRK', name: 'Cricket / IPL', icon: '🏏', desc: 'Match-day energy — bat, ball, stumps, stadium, gully cricket.',
+    appliesTo: ['good_morning', 'birthday'],
+    blockedTracks: ['E'],
+    illustrations: [
+      { id: 'OV-CRK-I01', name: 'Cricket Bat & Ball', desc: 'Classic willow bat crossed diagonally with red leather ball, iconic composition, grain and seam visible.', archs: ['A1','A2'], group: 'Equipment & Gear' },
+      { id: 'OV-CRK-I02', name: 'Cricket Ball (Close-up)', desc: 'Red leather cricket ball isolated, stitched seam prominently visible, slight scuff marks, rich red.', archs: ['A1','A2'], group: 'Equipment & Gear' },
+      { id: 'OV-CRK-I03', name: 'Stumps & Bails', desc: 'Three wooden stumps with bails balanced on top, clean side view, sunlit wood grain.', archs: ['A1','A2'], group: 'Equipment & Gear' },
+      { id: 'OV-CRK-I04', name: 'Cricket Helmet', desc: "Batsman's helmet with metal grille, front or 3/4 angle, dark navy or green, protective gear.", archs: ['A1','A2'], group: 'Equipment & Gear' },
+      { id: 'OV-CRK-I05', name: 'Cricket Gloves', desc: 'Batting gloves in fist-clenched ready position, white with coloured accents, grip detail.', archs: ['A1','A2'], group: 'Equipment & Gear' },
+      { id: 'OV-CRK-I06', name: 'Batsman Silhouette (Cover Drive)', desc: 'Batsman mid-cover-drive, classic textbook shot, full body silhouette, weight forward.', archs: ['A1','A2','B1'], group: 'Action & Players' },
+      { id: 'OV-CRK-I07', name: 'Bowler Silhouette (Delivery Stride)', desc: 'Fast bowler at peak delivery stride, arm high back arched, maximum kinetic energy.', archs: ['A1','A2','B1'], group: 'Action & Players' },
+      { id: 'OV-CRK-I08', name: 'Batsman Silhouette (Six — Celebration)', desc: 'Batsman looking up after hitting a six, bat raised overhead, crowd-energy implied.', archs: ['A1','A2','B1'], group: 'Action & Players' },
+      { id: 'OV-CRK-I09', name: 'Wicketkeeper (Dive)', desc: 'Keeper diving sideways for catch, horizontal body, gloves extended, athletic action.', archs: ['A2','B1'], group: 'Action & Players' },
+      { id: 'OV-CRK-I10', name: 'Cricket Stadium (Wide)', desc: 'Floodlit stadium panorama, evening match, packed stands, green pitch centre, bright floodlights.', archs: ['B1'], group: 'Celebration & Venue' },
+      { id: 'OV-CRK-I11', name: 'Trophy / Cup', desc: 'Gold cricket trophy with handles (generic), spotlight on trophy, dark background, aspiration.', archs: ['A1','A2'], group: 'Celebration & Venue' },
+      { id: 'OV-CRK-I12', name: 'Six / Boundary Burst', desc: 'Ball flying over boundary rope with graphic energy burst, motion lines, comic-book energy.', archs: ['A1','A2'], group: 'Celebration & Venue' },
+      { id: 'OV-CRK-I13', name: 'Gully Cricket Scene', desc: 'Informal street cricket in Indian lane, makeshift stumps (bricks), narrow lane, kids playing.', archs: ['B1'], group: 'Celebration & Venue' },
+      { id: 'OV-CRK-I14', name: 'Cricket Pitch (Close-up)', desc: 'Close-up of pitch with crease line, bat shadow, red ball on good length, textured grass.', archs: ['B1'], group: 'Celebration & Venue' },
+      { id: 'OV-CRK-I15', name: 'Scoreboard / Numbers', desc: 'Abstract scoreboard graphic showing "SIX" or score numbers, bold typography, stadium-style.', archs: ['A1','A2'], group: 'Celebration & Venue' },
+    ],
+    restrictByCategory: {
+      good_morning: ['GM-I4-01','GM-I4-03','GM-I4-04','GM-I4-05','GM-I4-06','GM-I4-07','GM-I4-08','GM-I4-09','GM-I3-02','GM-I3-03','GM-I3-06','GM-I3-07','GM-I3-08','GM-I5-02','GM-I6-05'],
+      birthday: ['BD-I11','BD-I13','BD-I14','BD-I15','BD-I21','BD-I26','BD-I28'],
+    },
+    motifSwaps: {
+      A: { 'MT-3': { id: 'OV-CRK-MT-A1', name: 'Gold Cricket Ball', promptPhrase: 'metallic gold cricket ball with raised stitch detail, high-shine embossed 3D feel, repeating corner motif' },
+           'MT-2': { id: 'OV-CRK-MT-A2', name: 'Stadium Lights Burst', promptPhrase: 'stylised floodlight burst radiating outward like a star at frame top-centre, gold rays 12-16 points, stadium energy' } },
+      B: { 'MT-B7': { id: 'OV-CRK-MT-B1', name: 'Cricket Ball Rangoli', promptPhrase: 'cricket ball shape integrated into geometric rangoli quarter-pattern at corners, modern lines, red and white' },
+           'MT-B5': { id: 'OV-CRK-MT-B2', name: 'Modern Stumps Icon', promptPhrase: 'clean minimal stumps-and-bails graphic in 2-colour line art, thin strokes, wood-tone or black on cream' } },
+      C: { 'MT-C4': { id: 'OV-CRK-MT-C1', name: 'Minimal Bat Line', promptPhrase: 'single continuous thin-line cricket bat profile, no fill, warm grey or muted red corner accent' },
+           'MT-C3': { id: 'OV-CRK-MT-C2', name: 'Ball Seam Arc', promptPhrase: 'quarter-circle arc mimicking cricket ball seam stitch pattern, 6 small V-shapes along the arc, subtle barely-there detail' } },
+      D: { 'MT-D5': { id: 'OV-CRK-MT-D1', name: 'Doodle Bat & Ball', promptPhrase: 'hand-drawn bat and ball with crayon texture, wobbly outlines scribble fill, oversized bat, hand-drawn stitches' },
+           'MT-D4': { id: 'OV-CRK-MT-D2', name: '"SIX!" Sticker', promptPhrase: 'puffy comic-book "SIX!" text sticker in bold red and yellow, slightly 3D drop shadow, impact stars around' } },
+    },
+    motifAdds: {
+      A: [{ id: 'OV-CRK-MTA-A1', name: 'Bat & Ball Crest', promptPhrase: 'ornate cricket crest with crossed bat and ball framed by laurel wreath, gold trophy-style engraving, heraldic feel' }],
+      B: [{ id: 'OV-CRK-MTA-B1', name: 'Boundary Rope Line', promptPhrase: 'stylised boundary rope along frame base as decorative line, subtle wave pattern, red or white rope texture' }],
+      D: [{ id: 'OV-CRK-MTA-D1', name: 'Doodle Stumps (Flying)', promptPhrase: 'hand-drawn stumps with bails flying off in different directions, action lines showing impact, crayon style' },
+          { id: 'OV-CRK-MTA-D2', name: 'Cricket Star Burst', promptPhrase: 'hand-drawn star explosion burst in bright comic colours, "POW" energy as corner accent' }],
+    },
+    frameRestrict: ['F5'],
+    frameUnlock: [],
+    prompt: {
+      atmosphere: 'cricket match energy, stadium floodlight atmosphere, sporting excitement, Indian cricket fervour, competitive intensity, match-day buzz',
+      mood: 'energetic, competitive, exciting, victorious, spirited, adrenaline, fierce, proud, triumphant',
+      negatives: ['calm','serene','spiritual','devotional','temple','meditation','quiet','peaceful','slow','gentle','soft','pastel','watercolour','muted'],
+      b1Scene: 'Indian cricket setting, floodlit stadium at evening or bright daytime match, lush green pitch with white crease lines, packed stands with cheering crowd, or nostalgic gully cricket in Indian neighbourhood lane',
+      fireflyAtm: 'cricket match energy, stadium floodlight buzz',
+      fireflyMood: 'energetic, competitive, exciting, proud',
+      fireflyB1Scene: 'floodlit cricket stadium evening, green pitch, packed stands',
+      fireflyNegGuard: 'calm, spiritual, soft, pastel, watercolour',
+    },
+  },
+];
+
+// Helper: returns the active overlay object (or null)
+function getActiveOverlay() {
+  if (!STATE.overlay || STATE.overlay === 'OV-NONE') return null;
+  return OVERLAYS.find(o => o.id === STATE.overlay) || null;
+}
+
+// Helper: which overlays are valid for a given base category
+function getOverlaysForCategory(catId) {
+  return OVERLAYS.filter(o => o.appliesTo.includes(catId));
+}
+
 const STATE = {
   step: 1,
   category: 'good_morning', // 'good_morning' | 'suvichar' | 'birthday'
+  overlay: 'OV-NONE',        // Overlay pack: OV-NONE | OV-DEV | OV-SUM | OV-RAIN | OV-CRK
   feeling: null,             // Suvichar: SV-F1..SV-F5
   customText: '',            // Suvichar: user-entered quote text rendered into the poster
   archetype: null,
@@ -899,6 +1146,12 @@ function getIllusItem() {
     const item = cat.items.find(i => i.id === STATE.illusItem);
     if (item) return item;
   }
+  // Overlay illustrations
+  const ov = getActiveOverlay();
+  if (ov) {
+    const ovItem = ov.illustrations.find(i => i.id === STATE.illusItem);
+    if (ovItem) return { id: ovItem.id, name: ovItem.name, desc: ovItem.desc, archs: ovItem.archs.join(', ') };
+  }
   return null;
 }
 
@@ -913,12 +1166,24 @@ function getIllusRenderOptions() {
 }
 
 function getMotifOptions() {
+  let base;
   if (STATE.category === 'birthday') {
     const bd = { A: BIRTHDAY_MOTIF_OPTIONS_A, B: BIRTHDAY_MOTIF_OPTIONS_B, C: BIRTHDAY_MOTIF_OPTIONS_C, D: BIRTHDAY_MOTIF_OPTIONS_D, E: BIRTHDAY_MOTIF_OPTIONS_E };
-    return bd[STATE.track] || [];
+    base = bd[STATE.track] || [];
+  } else {
+    const map = { A: MOTIF_OPTIONS, B: MOTIF_OPTIONS_B, C: MOTIF_OPTIONS_C, D: MOTIF_OPTIONS_D, E: MOTIF_OPTIONS_E };
+    base = map[STATE.track] || [];
   }
-  const map = { A: MOTIF_OPTIONS, B: MOTIF_OPTIONS_B, C: MOTIF_OPTIONS_C, D: MOTIF_OPTIONS_D, E: MOTIF_OPTIONS_E };
-  return map[STATE.track] || [];
+  // Apply overlay motif swap (1:1 replacement of named base motifs) + adds (extra motifs).
+  const ov = getActiveOverlay();
+  if (!ov || !STATE.track) return base;
+  const swapMap = ov.motifSwaps[STATE.track] || {};
+  const swapped = base.map(m => {
+    const sw = swapMap[m.id];
+    return sw ? { id: sw.id, name: sw.name, promptPhrase: sw.promptPhrase, bestWith: m.bestWith || 'All' } : m;
+  });
+  const adds = (ov.motifAdds[STATE.track] || []).map(a => ({ id: a.id, name: a.name, promptPhrase: a.promptPhrase, bestWith: 'All' }));
+  return [...swapped, ...adds];
 }
 
 function getCustomPresets() {
@@ -1014,55 +1279,121 @@ function getBirthdayIllusCats() {
 }
 
 function getFilteredTracks() {
-  if (STATE.category !== 'suvichar' || !STATE.feeling) return TRACKS;
-  const feeling = SUVICHAR_FEELINGS.find(f => f.id === STATE.feeling);
-  if (!feeling) return TRACKS;
-  return TRACKS.filter(t => feeling.allowedTracks.includes(t.id));
+  let tracks = TRACKS;
+  // Suvichar feeling filter
+  if (STATE.category === 'suvichar' && STATE.feeling) {
+    const feeling = SUVICHAR_FEELINGS.find(f => f.id === STATE.feeling);
+    if (feeling) tracks = tracks.filter(t => feeling.allowedTracks.includes(t.id));
+  }
+  // Overlay hard-block filter (Devotional → blocks D, Rain → blocks A, Cricket → blocks E)
+  const ov = getActiveOverlay();
+  if (ov && ov.blockedTracks.length) {
+    tracks = tracks.filter(t => !ov.blockedTracks.includes(t.id));
+  }
+  return tracks;
 }
 
 function getSuvicharIllusCats() {
   const arch = STATE.archetype;
   const feelingId = STATE.feeling;
 
-  const cats = [];
-  // GM carry-overs: filter by archetype and feeling
-  const carryoverItems = [];
+  // Map each GM carry-over to its semantic SV category (no "Carry-overs" bucket)
+  const CARRYOVER_TO_SV_CAT = {
+    'GM-I2-01': 'SV-IN', 'GM-I2-04': 'SV-IN', 'GM-I2-05': 'SV-IN',
+    'GM-I2-06': 'SV-IN', 'GM-I2-08': 'SV-IN',
+    'GM-I3-01': 'SV-IN', 'GM-I3-02': 'SV-IN', 'GM-I6-01': 'SV-IN',
+    'GM-I4-01': 'SV-IO', 'GM-I1-01': 'SV-IO',
+  };
+
+  function carryoverOk(item) {
+    if (arch === 'B1') {
+      if (item.archs && !item.archs.includes('All') && !item.archs.includes('B1')) return false;
+    }
+    const rule = SUVICHAR_ITEM_FEELINGS[item.id];
+    if (rule !== 'U' && feelingId && Array.isArray(rule) && !rule.includes(feelingId)) return false;
+    return true;
+  }
+
+  function nativeOk(item, catId) {
+    if (catId === 'SV-IH' && arch !== 'B1') return false;
+    if (item.archs && item.archs === 'B1' && arch !== 'B1') return false;
+    const rule = SUVICHAR_ITEM_FEELINGS[item.id];
+    if (!rule || rule === 'U') return true;
+    if (Array.isArray(rule) && feelingId && !rule.includes(feelingId)) return false;
+    return true;
+  }
+
+  // Collect carry-overs grouped by target SV category
+  const carryoverByCat = {};
   for (const gmCat of ILLUS_CATS) {
     for (const item of gmCat.items) {
-      if (!SUVICHAR_GM_CARRYOVER_IDS.includes(item.id)) continue;
-      // Archetype filter
-      if (arch === 'B1' && !['All', 'B1'].some(a => item.archs && item.archs.includes(a))) {
-        if (!item.archs || (!item.archs.includes('All') && !item.archs.includes('B1'))) continue;
-      }
-      // Feeling filter
-      const feelingRule = SUVICHAR_ITEM_FEELINGS[item.id];
-      if (feelingRule !== 'U' && feelingId && Array.isArray(feelingRule) && !feelingRule.includes(feelingId)) continue;
-      carryoverItems.push(item);
+      const svCatId = CARRYOVER_TO_SV_CAT[item.id];
+      if (!svCatId || !carryoverOk(item)) continue;
+      if (!carryoverByCat[svCatId]) carryoverByCat[svCatId] = [];
+      carryoverByCat[svCatId].push(item);
     }
   }
-  if (carryoverItems.length > 0) cats.push({ id: 'SV-GM', name: 'Carry-overs', icon: '🌅', items: carryoverItems });
 
-  // SV categories
+  const cats = [];
   for (const svCat of SUVICHAR_ILLUS_CATS) {
-    const items = svCat.items.filter(item => {
-      // B1-only silhouettes
-      if (svCat.id === 'SV-IH' && arch !== 'B1') return false;
-      // Archetype filter for non-B1 items marked as B1 only
-      if (item.archs && item.archs === 'B1' && arch !== 'B1') return false;
-      // Feeling filter
-      const feelingRule = SUVICHAR_ITEM_FEELINGS[item.id];
-      if (!feelingRule) return true;
-      if (feelingRule === 'U') return true;
-      if (Array.isArray(feelingRule) && feelingId && !feelingRule.includes(feelingId)) return false;
-      return true;
-    });
+    const items = [
+      ...(carryoverByCat[svCat.id] || []),
+      ...svCat.items.filter(item => nativeOk(item, svCat.id)),
+    ];
     if (items.length > 0) cats.push({ ...svCat, items });
   }
   return cats;
 }
 
-// Merged photo desc lookup covering GM + SV + BD items
+// Apply overlay add + restrict on top of a base catalogue (array of { id, name, items[] }).
+// - Removes items in the overlay's restrictByCategory[STATE.category] list
+// - Appends overlay-added illustrations as new categories grouped by their `group` field
+// - Filters overlay items by current archetype (B1 photo / A1+A2 illustrated)
+function applyOverlayToCatalogue(baseCats) {
+  const ov = getActiveOverlay();
+  if (!ov) return baseCats;
+  const arch = STATE.archetype;
+  const restricted = new Set(ov.restrictByCategory[STATE.category] || []);
+
+  // Step 1: filter out restricted items from each base cat
+  const filteredCats = baseCats.map(cat => ({
+    ...cat,
+    items: cat.items.filter(item => !restricted.has(item.id)),
+  })).filter(cat => cat.items.length > 0);
+
+  // Step 2: group overlay items by their `group` field, filtering by archetype
+  const overlayGroups = {};
+  for (const item of ov.illustrations) {
+    if (arch && item.archs && !item.archs.includes(arch)) continue;
+    if (!overlayGroups[item.group]) overlayGroups[item.group] = [];
+    overlayGroups[item.group].push({
+      id: item.id,
+      name: item.name,
+      desc: item.desc,
+      // store as array-like archs for downstream consumers; expose as space-joined string for UI compat
+      archs: item.archs.join(', '),
+    });
+  }
+
+  // Step 3: append overlay groups as new catalogue categories (icon = overlay icon)
+  const overlayCats = Object.keys(overlayGroups).map((groupName, idx) => ({
+    id: `${ov.id}-${idx}`,
+    name: `${ov.name} · ${groupName}`,
+    icon: ov.icon,
+    items: overlayGroups[groupName],
+  }));
+
+  return [...filteredCats, ...overlayCats];
+}
+
+// Merged photo desc lookup covering GM + SV + BD + overlay items
 function getB1PhotoDesc(itemId) {
+  // Overlay illustrations: use desc as photo desc (already photorealistic in spec)
+  const ov = getActiveOverlay();
+  if (ov) {
+    const ovItem = ov.illustrations.find(i => i.id === itemId);
+    if (ovItem) return ovItem.desc;
+  }
   return B1_PHOTO_DESC[itemId] || SV_B1_PHOTO_DESC[itemId] || BD_B1_PHOTO_DESC[itemId] || null;
 }
 
@@ -1111,11 +1442,21 @@ function getCurrentStepId() {
 function select(key, value) {
   STATE[key] = value;
   if (key === 'category') {
+    STATE.overlay = 'OV-NONE'; // overlay validity depends on base category — reset
     STATE.feeling = null; STATE.customText = ''; STATE.archetype = null; STATE.step2 = null; STATE.layout = null;
     STATE.track = null; STATE.palette = null; STATE.font = null; STATE.finish = null;
     STATE.illusRender = null; STATE.motifSet = null; STATE.customPreset = null;
     STATE.frameDecoration = null; STATE.illusSize = null; STATE.illusItem = null; STATE.illusCategory = null;
     STATE.sceneElements = []; STATE.mood = null; STATE.overlayStrength = 'light'; STATE.a2SubElements = [];
+  }
+  if (key === 'overlay') {
+    // Overlay change can invalidate previously-picked track (blockedTracks), illustration (restricted),
+    // motif (swapped/blocked), and frame (F5 restricted by Cricket; F6 only available with Devotional).
+    STATE.step2 = null; STATE.layout = null;
+    STATE.track = null; STATE.palette = null; STATE.font = null; STATE.finish = null;
+    STATE.illusRender = null; STATE.motifSet = null; STATE.customPreset = null;
+    STATE.frameDecoration = null; STATE.illusSize = null; STATE.illusItem = null; STATE.illusCategory = null;
+    STATE.sceneElements = []; STATE.mood = null; STATE.a2SubElements = [];
   }
   if (key === 'archetype') {
     STATE.feeling = null; STATE.step2 = null; STATE.layout = null; STATE.track = null; STATE.palette = null; STATE.font = null;
@@ -1327,9 +1668,22 @@ function renderStep1() {
   html += `<div class="sub-section"><div class="sub-section-header"><div class="sub-section-num">1</div><div class="sub-section-title">Category</div></div>`;
   html += `<div class="options-grid cols-3">${categories.map(c => `<div class="opt-card ${STATE.category === c.id ? 'selected' : ''}" onclick="select('category','${c.id}')"><div class="opt-icon">${c.icon}</div><div class="opt-name">${c.name}</div><div class="opt-desc">${c.desc}</div></div>`).join('')}</div></div>`;
 
-  // Sub-section 2: Template (only shown after category picked)
+  // Sub-section 2: Overlay Pack (only shown after category picked)
   if (STATE.category) {
-    html += `<div class="sub-section" style="margin-top:24px;"><div class="sub-section-header"><div class="sub-section-num">2</div><div class="sub-section-title">Template Style</div></div>`;
+    const validOverlays = getOverlaysForCategory(STATE.category);
+    html += `<div class="sub-section" style="margin-top:24px;"><div class="sub-section-header"><div class="sub-section-num">2</div><div class="sub-section-title">Overlay Pack</div><div class="sub-section-tag">Optional flavour layer</div></div>`;
+    html += `<div style="font-size:12px;color:var(--muted);margin-bottom:10px;">An overlay adds a contextual flavour (devotional, summer, rain, cricket) on top of the base category — it filters tracks, swaps motifs, and adds themed illustrations. "No overlay" keeps things standard.</div>`;
+    const cols = Math.min(validOverlays.length, 5);
+    html += `<div class="options-grid cols-${cols}">${validOverlays.map(o => {
+      const isSel = STATE.overlay === o.id;
+      const blockTxt = o.blockedTracks.length ? `Blocks Track ${o.blockedTracks.join(', ')}` : 'All tracks available';
+      return `<div class="opt-card ${isSel ? 'selected' : ''}" onclick="select('overlay','${o.id}')"><div class="opt-icon">${o.icon}</div><div class="opt-name">${o.name}</div><div class="opt-desc">${o.desc}</div><div style="margin-top:8px;font-size:10px;color:#94A3B8;">${blockTxt}</div></div>`;
+    }).join('')}</div></div>`;
+  }
+
+  // Sub-section 3: Template (only shown after category picked)
+  if (STATE.category) {
+    html += `<div class="sub-section" style="margin-top:24px;"><div class="sub-section-header"><div class="sub-section-num">3</div><div class="sub-section-title">Template Style</div></div>`;
     html += `<div class="options-grid cols-3">${ARCHETYPES.map(a => `<div class="opt-card ${STATE.archetype === a.id ? 'selected' : ''}" onclick="select('archetype','${a.id}')"><div class="opt-icon">${a.icon}</div><div class="opt-code">${a.codeName}</div><div class="opt-name">${a.name}</div><div class="opt-desc">${a.desc}</div></div>`).join('')}</div></div>`;
   }
   return html;
@@ -1354,9 +1708,35 @@ function renderFeelingStep() {
 
 function renderStep2() {
   const arch = getArchetype();
-  const options = STEP2_OPTIONS[arch.step2Key];
+  const options = getStep2Options();
   const cols = Math.min(options.length, 5);
-  return `<div class="step-header"><div class="step-eyebrow">Step 2 · ${arch.codeName}</div><div class="step-title">${arch.step2Label}</div><div class="step-desc">This choice is specific to ${arch.name}. It determines the primary structural element.</div></div><div class="options-grid cols-${cols}">${options.map(o => `<div class="opt-card ${STATE.step2 === o.id ? 'selected' : ''}" onclick="select('step2','${o.id}')"><div style="margin-bottom:10px;">${step2Diagram(o.diagramType)}</div><div class="opt-name">${o.name}</div><div class="opt-desc">${o.desc}</div></div>`).join('')}</div>`;
+  const ov = getActiveOverlay();
+  let banner = '';
+  if (ov && arch.id === 'A1') {
+    const restricted = ov.frameRestrict || [];
+    const unlocked = ov.frameUnlock || [];
+    const notes = [];
+    if (restricted.length) notes.push(`<strong>${ov.name}</strong> hides: ${restricted.join(', ')}`);
+    if (unlocked.length) notes.push(`<strong>${ov.name}</strong> unlocks: ${unlocked.map(f => f.name).join(', ')}`);
+    if (notes.length) banner = `<div style="background:#FFFBEB;border:1px solid #FCD34D;padding:10px 16px;border-radius:10px;margin-bottom:18px;font-size:13px;color:#92400E;">${notes.join(' · ')}</div>`;
+  }
+  return `<div class="step-header"><div class="step-eyebrow">Step 2 · ${arch.codeName}</div><div class="step-title">${arch.step2Label}</div><div class="step-desc">This choice is specific to ${arch.name}. It determines the primary structural element.</div></div>${banner}<div class="options-grid cols-${cols}">${options.map(o => `<div class="opt-card ${STATE.step2 === o.id ? 'selected' : ''}" onclick="select('step2','${o.id}')"><div style="margin-bottom:10px;">${step2Diagram(o.diagramType)}</div><div class="opt-name">${o.name}</div><div class="opt-desc">${o.desc}</div></div>`).join('')}</div>`;
+}
+
+// Overlay-aware step 2 options. A1 frames: applies frameRestrict (hides) and frameUnlock (adds e.g. F6 Temple Arch for Devotional).
+// A2/B1: pass-through (overlays don't touch density or B1 overlay treatments).
+function getStep2Options() {
+  const arch = getArchetype();
+  if (!arch) return [];
+  let options = STEP2_OPTIONS[arch.step2Key] || [];
+  if (arch.id === 'A1') {
+    const ov = getActiveOverlay();
+    if (ov) {
+      if (ov.frameRestrict.length) options = options.filter(o => !ov.frameRestrict.includes(o.id));
+      if (ov.frameUnlock.length) options = [...options, ...ov.frameUnlock];
+    }
+  }
+  return options;
 }
 
 function renderStep3() {
@@ -1506,8 +1886,9 @@ function renderStep8() {
   let html = `<div class="step-header"><div class="step-eyebrow">Step ${stepNum} · Visual</div><div class="step-title">Illustrations & Details</div><div class="step-desc">First pick your illustration, then choose rendering style and decorative elements.</div></div>`;
   let n = 1;
 
-  // Choose illustration catalogue
-  const illusCats = isSV ? getSuvicharIllusCats() : isBD ? getBirthdayIllusCats() : ILLUS_CATS;
+  // Choose illustration catalogue, then layer overlay (add overlay items, restrict base items)
+  let illusCats = isSV ? getSuvicharIllusCats() : isBD ? getBirthdayIllusCats() : ILLUS_CATS;
+  illusCats = applyOverlayToCatalogue(illusCats);
 
   // 1. Illustration Category
   html += `<div class="sub-section"><div class="sub-section-header"><div class="sub-section-num">${n++}</div><div class="sub-section-title">Illustration Category</div></div><div class="options-grid cols-3">${illusCats.map(cat => `<div class="opt-card ${STATE.illusCategory === cat.id ? 'selected' : ''}" onclick="select('illusCategory','${cat.id}')"><div class="opt-icon">${cat.icon}</div><div class="opt-name">${cat.name}</div><div style="font-size:11px;color:#64748B;">${cat.items ? cat.items.length : cat.count} options</div></div>`).join('')}</div></div>`;
@@ -1641,6 +2022,20 @@ const ACCENT_ITEMS = {
   // Steam / smoke (illustration-friendly)
   'ACC-29': { name: 'Curl of Steam', photoDesc: 'a visible curl of steam rising', illusDesc: 'a decorative illustrated curl of steam rising' },
   'ACC-30': { name: 'Incense Smoke Wisp', photoDesc: 'a thin trail of incense smoke curling upward', illusDesc: 'a thin illustrated incense smoke trail curling upward' },
+  // Suvichar / quote-card accents
+  'SV-ACC-01': { name: 'Scattered Autumn Leaves', photoDesc: 'a few scattered dried autumn leaves on the ground', illusDesc: 'a few small illustrated autumn leaves scattered nearby' },
+  'SV-ACC-02': { name: 'Bookmark', photoDesc: 'a slim ribbon bookmark peeking out from a book', illusDesc: 'a small illustrated ribbon bookmark tucked into the scene' },
+  'SV-ACC-03': { name: 'Pen Nib / Ink Drop', photoDesc: 'a calligraphy pen nib or small ink drop on the surface', illusDesc: 'a tiny illustrated pen nib or ink drop accent' },
+  'SV-ACC-04': { name: 'Smooth River Pebbles', photoDesc: 'two or three smooth rounded river pebbles on the surface', illusDesc: 'two or three small illustrated smooth pebbles' },
+  'SV-ACC-05': { name: 'Dried Pressed Flower', photoDesc: 'a single dried pressed flower or botanical sprig on the surface', illusDesc: 'a small illustrated dried pressed botanical' },
+  'SV-ACC-06': { name: 'Simple Candle Stub', photoDesc: 'a short unadorned candle with a small gentle flame', illusDesc: 'a small illustrated slim candle with a tiny flame' },
+  // Birthday / celebration accents
+  'BD-ACC-01': { name: 'Confetti Scatter', photoDesc: 'small scattered confetti pieces in bright colours on the surface', illusDesc: 'small illustrated confetti pieces scattered nearby' },
+  'BD-ACC-02': { name: 'Ribbon Curl Accent', photoDesc: 'a short curled satin ribbon in a festive colour', illusDesc: 'a small illustrated curled ribbon accent nearby' },
+  'BD-ACC-03': { name: 'Thin Birthday Candles', photoDesc: 'one or two slim colourful birthday candles with lit flames', illusDesc: 'one or two small illustrated thin birthday candles' },
+  'BD-ACC-04': { name: 'Foil Star Accent', photoDesc: 'a metallic foil star or a trailing balloon string accent', illusDesc: 'a small illustrated metallic star or balloon string' },
+  'BD-ACC-05': { name: 'Sprinkles / Sugar Pearls', photoDesc: 'scattered cake sprinkles or small sugar pearl beads', illusDesc: 'small illustrated cake sprinkles scattered nearby' },
+  'BD-ACC-06': { name: 'Gift Tag', photoDesc: 'a small blank gift tag with a ribbon loop', illusDesc: 'a tiny illustrated gift tag with a ribbon loop' },
 };
 // Backward compat alias
 const B1_ACCENT_ITEMS = ACCENT_ITEMS;
@@ -1756,7 +2151,8 @@ function renderB1SceneElements() {
 
   // ── Sub-section 1: Main Element ──
   html += `<div class="sub-section"><div class="sub-section-header"><div class="sub-section-num">1</div><div class="sub-section-title">Main Subject</div><div class="sub-section-tag">${mainEl ? '✓ Selected' : 'Pick one'}</div></div>`;
-  const b1Cats = STATE.category === 'suvichar' ? getSuvicharIllusCats() : STATE.category === 'birthday' ? getBirthdayIllusCats() : ILLUS_CATS;
+  const b1CatsBase = STATE.category === 'suvichar' ? getSuvicharIllusCats() : STATE.category === 'birthday' ? getBirthdayIllusCats() : ILLUS_CATS;
+  const b1Cats = applyOverlayToCatalogue(b1CatsBase);
   b1Cats.forEach(cat => {
     html += `<div style="margin-bottom:12px;"><div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px;">${cat.icon} ${cat.name}</div><div class="options-grid cols-4">${cat.items.map(i => {
       const isMain = mainEl === i.id;
@@ -1925,8 +2321,8 @@ function buildNegatives() {
 
 function getStep2Option() {
   if (!STATE.step2) return null;
-  const arch = getArchetype();
-  const opts = STEP2_OPTIONS[arch.step2Key] || [];
+  // Use overlay-aware list so unlocked frames (e.g. F6 Temple Arch) resolve correctly.
+  const opts = getStep2Options();
   return opts.find(o => o.id === STATE.step2);
 }
 
@@ -1968,6 +2364,7 @@ function gatherPromptData() {
     else if (step2Opt.id === 'F3') frameShape = 'single decorative band at the bottom edge';
     else if (step2Opt.id === 'F4') frameShape = 'ornamental corner accents at all four corners';
     else if (step2Opt.id === 'F5') frameShape = 'curved arch canopy frame at top with side patches';
+    else if (step2Opt.id === 'F6') frameShape = 'curved temple gopuram mandir arch silhouette overhead with straight bottom edge, devotional architectural arch as top frame element';
     else frameShape = 'decorative border frame';
 
     let decoPh = 'with subtle motifs at corners';
@@ -2081,7 +2478,15 @@ function gatherPromptData() {
   // Preset intensity phrase
   let intensityPh = preset ? preset.promptPhrase : 'balanced composition';
 
-  return { arch, step2Opt, layout, track, palette, font, finish, illusRender, motif, preset, illusItem, illusSize, roles, sizePh, framePh, overlayPh, densityPh, a2AccentPh, textZonePh, illusPositionPh, bgPh, illusColPh, textColPh, motifPh, motifPhFirefly, renderPh, ornamentalGuard, motifBoundary, stylePh, intensityPh };
+  // Overlay prompt additions (atmosphere + mood appended; negatives + guard merged into builders)
+  const ov = getActiveOverlay();
+  const overlayAtm = ov ? ov.prompt.atmosphere : '';
+  const overlayMood = ov ? ov.prompt.mood : '';
+  const overlayNegs = ov ? ov.prompt.negatives : [];
+  const overlayFireflyAtm = ov ? ov.prompt.fireflyAtm : '';
+  const overlayFireflyNegGuard = ov ? ov.prompt.fireflyNegGuard : '';
+
+  return { arch, step2Opt, layout, track, palette, font, finish, illusRender, motif, preset, illusItem, illusSize, roles, sizePh, framePh, overlayPh, densityPh, a2AccentPh, textZonePh, illusPositionPh, bgPh, illusColPh, textColPh, motifPh, motifPhFirefly, renderPh, ornamentalGuard, motifBoundary, stylePh, intensityPh, overlay: ov, overlayAtm, overlayMood, overlayNegs, overlayFireflyAtm, overlayFireflyNegGuard };
 }
 
 function buildPrompt(platform) {
@@ -2129,6 +2534,12 @@ function gatherB1PromptData() {
       const item = cat.items.find(i => i.id === id);
       if (item) return { ...item, photoDesc: getB1PhotoDesc(id) || item.desc };
     }
+    // Check overlay illustrations
+    const ov = getActiveOverlay();
+    if (ov) {
+      const ovItem = ov.illustrations.find(i => i.id === id);
+      if (ovItem) return { id: ovItem.id, name: ovItem.name, photoDesc: getB1PhotoDesc(id) || ovItem.desc };
+    }
     // Check accent items
     const acc = B1_ACCENT_ITEMS[id];
     if (acc) return { id, name: acc.name, photoDesc: acc.photoDesc };
@@ -2168,8 +2579,20 @@ function gatherB1PromptData() {
     negs.push('funeral', 'mourning', 'sad', 'wilted', 'dark mood', 'horror', 'illustrated elements', 'graphic design', 'decorative overlay');
   }
 
+  // Overlay negatives appended last (overlay can only ADD negatives, never remove base/track ones)
+  const ov = getActiveOverlay();
+  if (ov) negs.push(...ov.prompt.negatives);
+
   const overlayStrength = STATE.overlayStrength || 'medium';
-  return { step2Opt, layout, track, font, photoTrack, mood, intensity, sceneItems, scenePh, overlayPh, textZonePh, negs, overlayStrength };
+  const overlayAtm = ov ? ov.prompt.atmosphere : '';
+  const overlayMood = ov ? ov.prompt.mood : '';
+  const overlayB1Scene = ov ? ov.prompt.b1Scene : '';
+  const overlayFireflyAtm = ov ? ov.prompt.fireflyAtm : '';
+  const overlayFireflyMood = ov ? ov.prompt.fireflyMood : '';
+  const overlayFireflyB1Scene = ov ? ov.prompt.fireflyB1Scene : '';
+
+  return { step2Opt, layout, track, font, photoTrack, mood, intensity, sceneItems, scenePh, overlayPh, textZonePh, negs, overlayStrength,
+           overlay: ov, overlayAtm, overlayMood, overlayB1Scene, overlayFireflyAtm, overlayFireflyMood, overlayFireflyB1Scene };
 }
 
 function buildB1MJPrompt(d) {
@@ -2177,13 +2600,20 @@ function buildB1MJPrompt(d) {
   const atm = getCategoryAtmosphere();
 
   // Core: photorealistic photograph
-  parts.push(`photorealistic photograph, full-bleed image filling the entire canvas, ${atm.atmosphereInline}`);
+  const atmInline = d.overlayAtm ? `${atm.atmosphereInline}, ${d.overlayAtm}` : atm.atmosphereInline;
+  parts.push(`photorealistic photograph, full-bleed image filling the entire canvas, ${atmInline}`);
 
-  // Scene elements (main subject first, supporting after)
-  parts.push(d.scenePh);
+  // Scene elements (main subject first, supporting after) + overlay scene context
+  const scene = d.overlayB1Scene ? `${d.scenePh}, ${d.overlayB1Scene}` : d.scenePh;
+  parts.push(scene);
 
-  // Mood (merged lighting + colour treatment)
-  if (d.mood) parts.push(d.mood.promptPhrase);
+  // Mood (merged lighting + colour treatment) + overlay mood
+  if (d.mood) {
+    const mood = d.overlayMood ? `${d.mood.promptPhrase}, ${d.overlayMood}` : d.mood.promptPhrase;
+    parts.push(mood);
+  } else if (d.overlayMood) {
+    parts.push(d.overlayMood);
+  }
 
   // Photography aesthetic (Track)
   parts.push(d.photoTrack.promptPhrase);
@@ -2212,9 +2642,16 @@ function buildB1MJPrompt(d) {
 function buildB1LeonardoPrompt(d) {
   const lines = [];
   const atm = getCategoryAtmosphere();
-  lines.push(`Photorealistic ${d.photoTrack.name} photograph, ${getCategoryLabel()} poster, 9:16 vertical (1080x1920). Full-bleed photo, no frames, no borders, no illustration. ${atm.atmosphereSentenceCase}.`);
-  lines.push(`Scene: ${d.scenePh}.`);
-  if (d.mood) lines.push(`Mood: ${d.mood.promptPhrase}.`);
+  const atmSentence = d.overlayAtm ? `${atm.atmosphereSentenceCase}, ${d.overlayAtm}` : atm.atmosphereSentenceCase;
+  lines.push(`Photorealistic ${d.photoTrack.name} photograph, ${getCategoryLabel()} poster, 9:16 vertical (1080x1920). Full-bleed photo, no frames, no borders, no illustration. ${atmSentence}.`);
+  const scene = d.overlayB1Scene ? `${d.scenePh}, ${d.overlayB1Scene}` : d.scenePh;
+  lines.push(`Scene: ${scene}.`);
+  if (d.mood) {
+    const mood = d.overlayMood ? `${d.mood.promptPhrase}, ${d.overlayMood}` : d.mood.promptPhrase;
+    lines.push(`Mood: ${mood}.`);
+  } else if (d.overlayMood) {
+    lines.push(`Mood: ${d.overlayMood}.`);
+  }
   lines.push(`Aesthetic: ${d.photoTrack.promptPhrase}.`);
   if (d.intensity) lines.push(`Camera: ${d.intensity.promptPhrase}.`);
   // Overlay with strength context
@@ -2225,6 +2662,7 @@ function buildB1LeonardoPrompt(d) {
   if (STATE.category === 'birthday') {
     coreNegs.push('funeral', 'mourning', 'sad', 'wilted', 'dark mood', 'horror');
   }
+  if (d.overlay && d.overlay.prompt.negatives.length) coreNegs.push(...d.overlay.prompt.negatives);
   lines.push(`Negative: ${coreNegs.join(', ')}`);
   return lines.join('\n');
 }
@@ -2233,9 +2671,18 @@ function buildB1FireflyWithTextPrompt(d) {
   // Firefly WITH TEXT for B1: hard cap ≤950 chars.
   const parts = [];
   const atm = getCategoryAtmosphere();
-  parts.push(`Photorealistic ${d.photoTrack.name} ${getCategoryLabel()} poster, 9:16 vertical, full-bleed photograph, ${atm.atmosphereInline}.`);
-  parts.push(`${trunc(d.scenePh, 130)}.`);
-  if (d.mood) parts.push(`${trunc(d.mood.promptPhrase, 90)}.`);
+  // Header: base atmosphere + compact overlay atmosphere (≤50 chars per spec)
+  const atmH = d.overlayFireflyAtm ? `${atm.atmosphereInline}, ${trunc(d.overlayFireflyAtm, 50)}` : atm.atmosphereInline;
+  parts.push(`Photorealistic ${d.photoTrack.name} ${getCategoryLabel()} poster, 9:16 vertical, full-bleed photograph, ${atmH}.`);
+  // Scene + compact overlay scene context (combined ≤130 via trunc)
+  const sceneCombined = d.overlayFireflyB1Scene ? `${d.scenePh}, ${d.overlayFireflyB1Scene}` : d.scenePh;
+  parts.push(`${trunc(sceneCombined, 130)}.`);
+  if (d.mood || d.overlayFireflyMood) {
+    const moodCombined = d.mood
+      ? (d.overlayFireflyMood ? `${d.mood.promptPhrase}, ${d.overlayFireflyMood}` : d.mood.promptPhrase)
+      : d.overlayFireflyMood;
+    parts.push(`${trunc(moodCombined, 90)}.`);
+  }
   parts.push(`${trunc(d.photoTrack.promptPhrase, 90)}.`);
   if (d.intensity) parts.push(`${trunc(d.intensity.promptPhrase, 80)}.`);
   const strengthHint = d.overlayStrength === 'heavy' ? 'strong dark' : 'subtle';
@@ -2252,9 +2699,16 @@ function buildB1FireflyNoTextPrompt(d) {
   // Firefly NO TEXT for B1: hard cap ≤950 chars.
   const parts = [];
   const atm = getCategoryAtmosphere();
-  parts.push(`Photorealistic ${d.photoTrack.name} photograph, 9:16 vertical, full-bleed, no text, no letters, no words. ${atm.atmosphereSentenceCase}.`);
-  parts.push(`${trunc(d.scenePh, 130)}.`);
-  if (d.mood) parts.push(`${trunc(d.mood.promptPhrase, 90)}.`);
+  const atmH = d.overlayFireflyAtm ? `${atm.atmosphereSentenceCase}, ${trunc(d.overlayFireflyAtm, 50)}` : atm.atmosphereSentenceCase;
+  parts.push(`Photorealistic ${d.photoTrack.name} photograph, 9:16 vertical, full-bleed, no text, no letters, no words. ${atmH}.`);
+  const sceneCombined = d.overlayFireflyB1Scene ? `${d.scenePh}, ${d.overlayFireflyB1Scene}` : d.scenePh;
+  parts.push(`${trunc(sceneCombined, 130)}.`);
+  if (d.mood || d.overlayFireflyMood) {
+    const moodCombined = d.mood
+      ? (d.overlayFireflyMood ? `${d.mood.promptPhrase}, ${d.overlayFireflyMood}` : d.mood.promptPhrase)
+      : d.overlayFireflyMood;
+    parts.push(`${trunc(moodCombined, 90)}.`);
+  }
   parts.push(`${trunc(d.photoTrack.promptPhrase, 90)}.`);
   if (d.intensity) parts.push(`${trunc(d.intensity.promptPhrase, 80)}.`);
   const strengthHint = d.overlayStrength === 'heavy' ? 'strong dark' : 'subtle';
@@ -2269,13 +2723,22 @@ function buildB1GeminiPrompt(d) {
   const lines = [];
   const atm = getCategoryAtmosphere();
 
-  lines.push(`A photorealistic ${d.photoTrack.name} style photograph for a ${getCategoryLabel()} greeting poster in vertical 9:16 format. The image is a full-bleed photograph that fills the entire canvas — no frames, no borders, no illustration elements. The setting is ${atm.gemSettingContext}.`);
+  const settingCtx = d.overlayAtm ? `${atm.gemSettingContext}, with an additional ${d.overlay.name.toLowerCase()} flavour: ${d.overlayAtm}` : atm.gemSettingContext;
+  lines.push(`A photorealistic ${d.photoTrack.name} style photograph for a ${getCategoryLabel()} greeting poster in vertical 9:16 format. The image is a full-bleed photograph that fills the entire canvas — no frames, no borders, no illustration elements. The setting is ${settingCtx}.`);
 
-  // Scene (main + supporting)
-  lines.push(`\nScene: The photograph features ${d.scenePh}. The scene should feel natural and authentic — as if captured in a ${atm.sceneAuthenticity}, not staged or artificial.`);
+  // Scene (main + supporting) + overlay-specific scene context
+  const sceneSentence = d.overlayB1Scene
+    ? `The photograph features ${d.scenePh}. The setting includes: ${d.overlayB1Scene}. The scene should feel natural and authentic — as if captured in a ${atm.sceneAuthenticity}, not staged or artificial.`
+    : `The photograph features ${d.scenePh}. The scene should feel natural and authentic — as if captured in a ${atm.sceneAuthenticity}, not staged or artificial.`;
+  lines.push(`\nScene: ${sceneSentence}`);
 
-  // Mood (merged lighting + colour)
-  if (d.mood) lines.push(`\nLighting & Mood: ${d.mood.promptPhrase}. The light should feel ${atm.lightTimeContext}.`);
+  // Mood (merged lighting + colour) + overlay mood
+  if (d.mood) {
+    const moodCombined = d.overlayMood ? `${d.mood.promptPhrase}. Additional mood layer: ${d.overlayMood}` : d.mood.promptPhrase;
+    lines.push(`\nLighting & Mood: ${moodCombined}. The light should feel ${atm.lightTimeContext}.`);
+  } else if (d.overlayMood) {
+    lines.push(`\nLighting & Mood: ${d.overlayMood}. The light should feel ${atm.lightTimeContext}.`);
+  }
 
   // Photography Aesthetic
   lines.push(`\nPhotography Aesthetic: ${d.photoTrack.promptPhrase}.`);
@@ -2337,10 +2800,15 @@ function buildMJPrompt(d) {
   // [Track style + sparkle + format]
   parts.push(d.stylePh);
   if (d.track.id === 'A') parts.push('white sparkle particles scattered');
+  // [Overlay] Atmosphere + mood appended after track style so they layer on top of base aesthetic
+  if (d.overlayAtm) parts.push(d.overlayAtm);
+  if (d.overlayMood) parts.push(d.overlayMood);
   parts.push('9:16 portrait format');
 
   const mainPrompt = parts.filter(p => p).join(', ');
-  const negs = buildNegatives().join(', ');
+  const allNegs = buildNegatives();
+  if (d.overlayNegs && d.overlayNegs.length) allNegs.push(...d.overlayNegs);
+  const negs = allNegs.join(', ');
 
   return `${mainPrompt} --ar 9:16 --s 400 --no ${negs}`;
 }
@@ -2391,7 +2859,14 @@ function buildLeonardoPrompt(d) {
   if (styleShort.length > 100) styleShort = styleShort.substring(0, 100).replace(/,\s*[^,]*$/, '');
   lines.push(`Style: ${styleShort}.${d.track.id === 'A' ? ' Sparkle particles.' : ''}`);
 
+  // Overlay flavour layer (full keyword sets — Leonardo has a 1400 char budget)
+  if (d.overlay) {
+    if (d.overlayAtm) lines.push(`Atmosphere: ${d.overlayAtm}.`);
+    if (d.overlayMood) lines.push(`Mood: ${d.overlayMood}.`);
+  }
+
   const coreNegs = buildLeonardoNegatives(d);
+  if (d.overlayNegs && d.overlayNegs.length) coreNegs.push(...d.overlayNegs);
   lines.push(`Negative: ${coreNegs.join(', ')}`);
 
   return lines.join('\n');
@@ -2447,11 +2922,14 @@ function buildFireflyWithTextPrompt(d) {
   parts.push(`${trunc(d.intensityPh, 60)}.`);
   parts.push(`${trunc(d.stylePh, 60)}.`);
   if (d.track.id === 'A') parts.push('Sparkle particles.');
+  // Overlay compact atmosphere — bounded ≤50 chars per Section 6.4 of overlay spec
+  if (d.overlayFireflyAtm) parts.push(`${trunc(d.overlayFireflyAtm, 50)}.`);
   {
     const txt = getDisplayText();
+    const guard = d.overlayFireflyNegGuard ? `, ${d.overlayFireflyNegGuard}` : '';
     parts.push(txt
-      ? `Clean "${txt}" text in decorative font in the text zone, legible, not overlapping illustration.`
-      : `Clean decorative text in the text zone, legible, not overlapping illustration.`);
+      ? `Clean "${txt}" text in decorative font in the text zone, legible, not overlapping illustration. Do not include text duplicates${guard}.`
+      : `Clean decorative text in the text zone, legible, not overlapping illustration. Do not include text duplicates${guard}.`);
   }
   let result = parts.join(' ');
   if (result.length > 950) result = result.substring(0, 950).replace(/\s+\S*$/, '');
@@ -2482,7 +2960,10 @@ function buildFireflyNoTextPrompt(d) {
   parts.push(`${trunc(d.intensityPh, 60)}.`);
   parts.push(`${trunc(d.stylePh, 60)}.`);
   if (d.track.id === 'A') parts.push('Sparkle particles.');
-  parts.push(`Purely visual, no text, no letters, no typography.`);
+  // Overlay compact atmosphere
+  if (d.overlayFireflyAtm) parts.push(`${trunc(d.overlayFireflyAtm, 50)}.`);
+  const guard2 = d.overlayFireflyNegGuard ? ` Do not include ${d.overlayFireflyNegGuard}.` : '';
+  parts.push(`Purely visual, no text, no letters, no typography.${guard2}`);
   let result = parts.join(' ');
   if (result.length > 950) result = result.substring(0, 950).replace(/\s+\S*$/, '');
   return result;
@@ -2539,8 +3020,14 @@ function buildGeminiPrompt(d) {
   lines.push(`\nStyle reference: ${d.stylePh}.`);
   if (d.track.id === 'A') lines.push(`Small white sparkle particles are scattered across the design.`);
 
+  // [Overlay] Atmosphere + mood layered after track style — Gemini has no char cap so use full keyword sets
+  if (d.overlay) {
+    lines.push(`\nOverlay flavour (${d.overlay.name}): The poster carries an additional ${d.overlay.name.toLowerCase()} atmosphere — ${d.overlayAtm}. The mood is ${d.overlayMood}.`);
+  }
+
   // Do not include
   const negs = buildNegatives();
+  if (d.overlayNegs && d.overlayNegs.length) negs.push(...d.overlayNegs);
   lines.push(`\nDo not include: ${negs.join(', ')}.`);
 
   return lines.join('\n');
@@ -2581,8 +3068,10 @@ function generatePrompts() {
     const mainEl = d.sceneItems.length >= 1 ? d.sceneItems[0].name : '—';
     const supportEls = d.sceneItems.slice(1).map(i => i.name).join(', ') || '—';
 
+    const ovObj = getActiveOverlay();
     auditRows = [
       { step: '1', label: 'Template', value: 'B1 — Photo Background', section: 'Photorealistic photograph' },
+      ...(ovObj ? [{ step: '1b', label: 'Overlay', value: ovObj.name, section: 'Flavour layer' }] : []),
       { step: '2a', label: 'Text Position', value: getLayout().name, section: 'Text zone placement' },
       { step: '2b', label: 'Overlay Strength', value: (STATE.overlayStrength || 'medium').charAt(0).toUpperCase() + (STATE.overlayStrength || 'medium').slice(1), section: 'Auto-overlay from text position' },
       { step: '3', label: 'Track', value: `${trackName} (${photoTrack ? photoTrack.name : ''})`, section: 'Photography aesthetic' },
@@ -2601,9 +3090,11 @@ function generatePrompts() {
     const sizeOpt = getIllusSizeLabel();
     const feelingObj = STATE.feeling ? SUVICHAR_FEELINGS.find(f => f.id === STATE.feeling) : null;
 
+    const ovObj = getActiveOverlay();
     auditRows = [
       { step: '1a', label: 'Category', value: getCategoryLabel(), section: 'Category selector' },
-      { step: '1b', label: 'Template', value: getArchetype().codeName, section: 'Frame / Density / Overlay' },
+      ...(ovObj ? [{ step: '1b', label: 'Overlay', value: ovObj.name, section: 'Flavour layer' }] : []),
+      { step: '1c', label: 'Template', value: getArchetype().codeName, section: 'Frame / Density / Overlay' },
       ...(STATE.category === 'suvichar' ? [{ step: '2', label: 'Feeling', value: feelingObj ? feelingObj.name : '—', section: 'Emotional tone' }] : []),
       { step: STATE.category === 'suvichar' ? '3' : '2', label: 'Style', value: d.step2Opt ? d.step2Opt.name : '—', section: d.framePh ? 'Frame (…)' : (d.overlayPh ? 'Overlay (…)' : 'Density (…)') },
       { step: STATE.category === 'suvichar' ? '4' : '3', label: 'Layout', value: getLayout().name, section: 'Layout (…)' },
