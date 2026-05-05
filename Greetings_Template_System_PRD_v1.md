@@ -1,7 +1,7 @@
-# JioAICloud Greetings & Creation — Unified PRD v1.0
+# JioAICloud Greetings & Creation — Unified PRD v1.1
 
 > **Single source of truth for the JioAICloud Greetings Template System.**
-> Combines: Template Creation Framework v20 (engine), Birthday Category Pack v2, Suvichar Category Pack v2, Overlay Pack System v2.
+> Combines: Template Creation Framework v20 (engine), Birthday Category Pack v2, Suvichar Category Pack v2, Overlay Pack System v2, **V2 Expansion** (7 new category packs + bottom safe zone + adaptive B1 text colour — see Part 7).
 > Implemented in `GoodMorning_Prompt_Generator_v5.html`.
 
 ---
@@ -83,6 +83,19 @@
 - [40. Adding a New Base Category](#40-adding-a-new-base-category)
 - [41. Adding a New Overlay Pack](#41-adding-a-new-overlay-pack)
 - [42. Future Enhancements & Open Items](#42-future-enhancements--open-items)
+
+### Part 7 — V2 Expansion
+- [43. Bottom Safe Zone (Personalization Band)](#43-bottom-safe-zone-personalization-band)
+- [44. Adaptive B1 Hero Text Colour](#44-adaptive-b1-hero-text-colour)
+- [45. Category Pack: Rath Yatra](#45-category-pack-rath-yatra)
+- [46. Category Pack: Vat Savitri](#46-category-pack-vat-savitri)
+- [47. Category Pack: Father's Day](#47-category-pack-fathers-day)
+- [48. Category Pack: Devotional — Shivji](#48-category-pack-devotional--shivji)
+- [49. Category Pack: Devotional — Ganeshji](#49-category-pack-devotional--ganeshji)
+- [50. Category Pack: Devotional — Jesus](#50-category-pack-devotional--jesus)
+- [51. Category Pack: Devotional — Islamic](#51-category-pack-devotional--islamic)
+- [52. Master tables — V2 expansion (10 categories total)](#52-master-tables--v2-expansion-10-categories-total)
+- [53. Implementation summary — V2 expansion](#53-implementation-summary--v2-expansion)
 
 ### Appendices
 - [Appendix A — Master Cross-Reference](#appendix-a--master-cross-reference)
@@ -3206,6 +3219,590 @@ Illustration: longest-named GM item   Sub-elements: 2   Intensity: Complex
 
 ---
 
+# Part 7 — V2 Expansion (live in branch `V2--->-Expansion-to-7-more-categories`)
+
+This part documents three v2 additions on top of the v1 PRD: a **bottom 20% personalization safe zone** that all generated posters now respect, **adaptive B1 hero-text colour** based on photo aesthetic + overlay strength, and **7 new base-category packs** (`CATEGORY_PACKS` config table).
+
+## 43. Bottom Safe Zone (Personalization Band)
+
+### 43.1 Why
+
+Every generated poster needs a clean bottom band where the user can composite their own name / signature / branding post-generation without the AI's main subject or hero text overlapping. The band has to read as intentional, calm space — not a blank gap that feels weird if the user adds nothing. Frame, background fill, sparkle particles, and small motif accents are free to extend so the area never looks empty.
+
+### 43.2 Spec
+
+- **Reserved height:** bottom **20% of canvas** (≈19.52% on the wizard preview).
+- **Clamped above safe zone:** hero text, main illustration subject, B1 supporting subject.
+- **Free to extend into safe zone:** background fill, frame border, decorative motifs, Track-A sparkle particles, A2 sub-element accents.
+- **B1 specific:** photograph extends naturally to the bottom edge with a **soft gradient fade-out**, but the photo's main subject must stay above the band.
+- **L5 (Text Bottom):** hero text band moves up to the **60–80% from top** strip so it sits above the safe zone instead of overlapping it.
+- **Other layouts (L1, L2, L3, L4, L6):** illustration position phrase appended with "main subject above the bottom 20% personalization safe zone".
+
+### 43.3 Prompt language
+
+Four constants drive consistent language across all 5 platform builders:
+
+| Constant | Used by | Length |
+|----------|---------|:------:|
+| `SAFE_ZONE_DESC` | A1/A2 — MJ, Leonardo, Gemini (full keyword set) | ~ 280 chars |
+| `SAFE_ZONE_DESC_B1` | B1 — MJ, Leonardo, Gemini (full keyword set with photo fade) | ~ 280 chars |
+| `SAFE_ZONE_FIREFLY_AB` | A1/A2 — Firefly with-text + no-text (compact) | ~ 110 chars |
+| `SAFE_ZONE_FIREFLY_B1` | B1 — Firefly with-text + no-text (compact) | ~ 100 chars |
+
+`SAFE_ZONE_DESC` (A1/A2) verbatim:
+
+> the bottom 20 percent of the canvas is a clean personalization safe zone — the main illustration subject and any hero text must stay above this zone, but the background colour, frame border, and small decorative accents like sparkle particles or scattered motifs may extend naturally into it so the area never looks empty or out of place
+
+`SAFE_ZONE_DESC_B1` verbatim:
+
+> the bottom 20 percent of the canvas is a personalization safe zone — the photograph extends naturally to the bottom edge, but the main subject of the photo must stay above this zone and the bottom should soft-gradient fade slightly to a calmer area so user-added text or branding sits comfortably without looking out of place
+
+### 43.4 Layout text-zone updates (per layout)
+
+| Layout | Pre-v2 text zone | v2 text zone |
+|--------|-----------------|--------------|
+| L1 Text Top | upper 25% | upper 25% (unchanged) |
+| L2 Overlay/Centre | centred | centred at 40–50% from top, never overlapping bottom 20% |
+| L3 Text Left | left column all rows | left column, text stays above bottom 20% |
+| L4 Text Right | right column all rows | right column, text stays above bottom 20% |
+| L5 Text Bottom | lower 25% | **band between 60–80% from top** (above safe zone) |
+| L6 Text Centre | central 60% | central 60%, kept above bottom 20% |
+
+### 43.5 Layout diagrams
+
+The wizard's layout-step preview SVGs gain a dashed bottom band labelled "safe zone". For L5, the text rect is redrawn at 60–80% to match the new prompt language.
+
+### 43.6 Character budget impact
+
+Adding the safe-zone phrase to each prompt costs:
+- A1/A2 Firefly: + ~ 110 chars (compact)
+- A1/A2 MJ / Leonardo / Gemini: + ~ 280 chars (full)
+- B1 Firefly: + ~ 100 chars (compact)
+- B1 MJ / Leonardo / Gemini: + ~ 280 chars (full)
+
+Worst-case Firefly with-text across all 10 categories × A1 measured at **818–838 chars** post-update — > 110 chars headroom under the 950-char cap.
+
+---
+
+## 44. Adaptive B1 Hero Text Colour
+
+### 44.1 Why
+
+Pre-v2, all B1 prompts hardcoded "white decorative font" / "white text". On bright/airy or muted-earth photographs (Track D, Track E), white type vanishes even with a darker overlay. The fix is to pick the text colour based on the photo's aesthetic register — track-tuned default — with the dark-overlay case still using white.
+
+### 44.2 Spec
+
+New `getB1TextColour()` helper returns `{ name, desc }` based on `STATE.track` and `STATE.overlayStrength`.
+
+**Rule:** Heavy overlay always returns white (the dark band beneath the text guarantees contrast). Light overlay returns the per-track default.
+
+| Track | Light overlay | Heavy overlay | Reasoning |
+|-------|---------------|---------------|-----------|
+| **A** HDR Saturated | `white` | `white` | High-saturation, often dark/dramatic — white pops |
+| **B** Editorial Muted (Portra) | `warm cream off-white (#FFF7E8)` | `white` | Pure white feels harsh on muted earth tones |
+| **C** Desaturated Minimal | `very dark grey or near-black` | `white` | High-contrast minimal posters expect dark type |
+| **D** Bright Lifestyle (airy) | `dark warm grey / charcoal (#2A1F1A)` | `white` | Bright/overexposed scenes — white vanishes |
+| **E** Soft Dreamy (pastel) | `soft warm dark or muted maroon` | `white` | Pastel BG + white = washed out; warm dark reads |
+
+### 44.3 Prompt injection
+
+Replaced hardcoded `white` references in:
+
+| Builder | Pre-v2 | v2 |
+|---------|--------|-----|
+| `buildB1LeonardoPrompt` | `Keep this area darker for white text readability.` | `Keep this area readable for ${txtColour.desc} text overlay.` |
+| `buildB1FireflyWithTextPrompt` | `"${txt}" text in white decorative font in the text zone, legible.` | `"${txt}" text in ${txtColour.name} decorative font in the text zone, legible.` |
+| `buildB1GeminiPrompt` | `... ensure white text overlay is legible ...` | `... ensure ${txtColour.desc} text overlay is legible ...` |
+
+`buildB1MJPrompt` and `buildB1FireflyNoTextPrompt` were untouched (no text-rendering instruction in either).
+
+### 44.4 A1/A2 unchanged
+
+Illustrated archetypes (A1, A2) source their text colour from per-palette `roles.textCol`, which is already tuned per palette × track. No change.
+
+### 44.5 No new wizard step
+
+The colour is fully derived from existing wizard inputs (Track + Overlay Strength). No additional UI surface — the wizard stays at 7 steps.
+
+---
+
+## 45. Category Pack: Rath Yatra
+
+> **Hero text:** "शुभ रथ यात्रा" / "Happy Rath Yatra" / "जय जगन्नाथ" (fixed — no Custom Text step).
+> **Seasonal:** Yes — June/July (Ashadha Shukla Dwitiya).
+> **Track filter:** A ✅, B ✅, C ✅, D ❌, E ✅.
+> **Overlay compatibility:** Devotional ✅, Summer ✅, Rain/Monsoon ✅, Cricket —.
+
+### 45.1 What it is
+
+Festival-first devotional category centred on Lord Jagannath's chariot procession. Visual energy from the iconic chariot (rath), the three deities (Jagannath, Balabhadra, Subhadra), procession crowd, and Odia/Puri cultural markers. Track D blocked — playful doodle treatment of sacred deities is tonally disrespectful (same logic as the Devotional overlay).
+
+### 45.2 Illustration catalogue (22 items)
+
+**GM carry-overs (3):** GM-I3-01 Marigold Garland, GM-I4-01 Lit Diya, GM-I3-02 Lotus.
+
+**Chariot & Procession (5):**
+
+| ID | Name | Archetypes |
+|----|------|------------|
+| RY-I01 | Rath (Chariot) — Full | A1, A2, B1 |
+| RY-I02 | Chariot Wheel (Close-up) | A1, A2 |
+| RY-I03 | Three Chariots (Procession) | A2, B1 |
+| RY-I04 | Procession Crowd | B1 |
+| RY-I05 | Chariot Rope (Pulling) | B1 |
+
+**Deities & Sacred (4):**
+
+| ID | Name | Archetypes |
+|----|------|------------|
+| RY-I06 | Jagannath Face (Iconic) | A1, A2 |
+| RY-I07 | Jagannath-Balabhadra-Subhadra Trio | A1, A2 |
+| RY-I08 | Sudarshan Chakra | A1, A2 |
+| RY-I09 | Neela Chakra (Blue Wheel) | A1, A2, B1 |
+
+**Temple & Setting (3):** RY-I10 Jagannath Temple (Puri), RY-I11 Grand Road (Bada Danda), RY-I12 Temple Doorway (Singha Dwara).
+
+**Decorative & Festive (7):** RY-I13 Marigold Toran with Mango Leaves, RY-I14 Coconut & Banana Offering, RY-I15 Rath Yatra Flag, RY-I16 Conch Shell (Shankh), RY-I17 Puri Beach at Sunrise, RY-I18 Prasad Thali (Mahaprasad), RY-I19 Odia Rangoli (Jhoti Chita).
+
+### 45.3 Per-track motifs (RY-MT-*)
+
+5 motifs each for A/B/C/E (D blocked). Highlights:
+- **Track A:** Gold Chariot Wheel, Jagannath Face (Gold), Marigold & Mango Leaf Garland, Sudarshan Chakra (Gold), Temple Spire Silhouette.
+- **Track B:** Block-Print Chariot Wheel, Jhoti Chita Corner, Modern Jagannath Icon, Mango Leaf String, Conch Shell (Line Art).
+- **Track C:** None / Minimal Wheel Arc / Single Mango Leaf / Dot Mandala (Subtle).
+- **Track E:** None / Watercolour Wheel / Soft Marigold Wash / Pastel Lotus.
+
+### 45.4 Prompt context
+
+| Element | Value |
+|---------|-------|
+| atmosphereInline | `Rath Yatra festival procession, Jagannath temple celebration` |
+| sceneAuthenticity | `real Rath Yatra celebration in Puri, Odisha` |
+| stylePhMoodWord | `festival` |
+| Negatives | `funeral, mourning, sad, dark mood, horror, cartoon, doodle, playful, comic, modern urban, neon, nightclub` |
+| Firefly Atmosphere | `Rath Yatra festival, Jagannath procession` |
+| Firefly Mood | `devotional, festive, joyful, sacred, grand` |
+| Firefly B1 Scene | `Puri chariot procession, temple backdrop, festival crowd` |
+
+### 45.5 Layout bias
+
+L5 ★ Best · L2 ★ Best · L1 ✓ · L6 ✓ · L3/L4 ✓.
+
+---
+
+## 46. Category Pack: Vat Savitri
+
+> **Hero text:** "वट सावित्री व्रत की शुभकामनाएं" / "Happy Vat Savitri" / "सुहाग का त्योहार" (fixed).
+> **Seasonal:** Yes — May/June (Jyeshtha Amavasya / Purnima).
+> **Track filter:** A ✅, B ✅, C ✅, D ❌, E ✅.
+> **Overlay compatibility:** Devotional ✅, Summer ✅, Rain —, Cricket —.
+
+### 46.1 What it is
+
+Married women's vrat — devotion of Savitri to Satyavan; women tie sacred thread around banyan (vat) tree and pray for husband's long life. Visual energy from the sacred banyan, suhag symbols (red bangles, sindoor, mangalsutra, mehendi), and the Savitri-Satyavan legend. Track D blocked — playful treatment of a solemn vrat is disrespectful.
+
+### 46.2 Illustration catalogue (20 items)
+
+**GM carry-overs (3):** GM-I3-01 Marigold Garland, GM-I4-01 Lit Diya, GM-I3-02 Lotus.
+
+**Sacred Tree & Ritual (5):** VS-I01 Banyan Tree (Vat Vriksha), VS-I02 Thread-Tying Ritual (B1), VS-I03 Banyan Tree (Silhouette), VS-I04 Sacred Thread (Mauli), VS-I05 Pooja Thali (Vat Savitri).
+
+**Suhag Symbols (5):** VS-I06 Red Bangles, VS-I07 Sindoor Box (Open), VS-I08 Mangalsutra, VS-I09 Mehendi Hands, VS-I10 Toe Rings (Bichiya).
+
+**Devotional & Atmosphere (7):** VS-I11 Savitri-Satyavan, VS-I12 Banyan Leaf (Close-up), VS-I13 Women at Banyan Tree (B1), VS-I14 Incense & Flowers at Tree Base, VS-I15 Red & Green Saree Drape, VS-I16 Coconut & Banana Offering, VS-I17 Turmeric & Kumkum.
+
+### 46.3 Per-track motifs (VS-MT-*)
+
+- **Track A:** Gold Banyan Leaf, Red Bangle Cluster, Mauli Thread Garland, Gold Sindoor Dot, Marigold & Mango Leaf Toran.
+- **Track B:** Block-Print Banyan Leaf, Rangoli Vat Corner, Modern Bangle Icon, Mehendi Pattern Strip, Mango Leaf String.
+- **Track C:** None / Minimal Leaf Outline / Thin Thread Line / Dot Bindi Accent.
+- **Track E:** None / Watercolour Banyan Leaf / Pastel Bangles / Soft Marigold Wash.
+
+### 46.4 Prompt context
+
+| Element | Value |
+|---------|-------|
+| atmosphereInline | `Vat Savitri vrat celebration, sacred banyan tree ritual` |
+| sceneAuthenticity | `real Indian Vat Savitri celebration, married women's festival` |
+| Negatives | `funeral, mourning, dark mood, horror, cartoon, doodle, playful, comic, modern urban, neon, nightclub, widow, white saree, barren` |
+| Firefly Atmosphere | `Vat Savitri vrat, sacred banyan tree, suhag` |
+| Firefly Mood | `devotional, auspicious, blessed, sacred` |
+| Firefly B1 Scene | `banyan tree with thread, women in red saree, pooja` |
+
+### 46.5 Layout bias
+
+L5 ★ Best · L2 ★ Best · L6 ✓ · L1 ✓ · L3/L4 ~ With Care (banyan tree is wide).
+
+---
+
+## 47. Category Pack: Father's Day
+
+> **Hero text:** "Happy Father's Day" / "पापा, आपको सलाम" / "पिता दिवस की शुभकामनाएं" (fixed).
+> **Seasonal:** Yes — Third Sunday of June.
+> **Track filter:** A ✅, B ✅, C ✅, D ✅, E ✅ (only category that keeps all 5 tracks — secular/emotional, not sacred).
+> **Overlay compatibility:** Devotional —, Summer ✅, Rain —, Cricket/IPL ✅.
+
+### 47.1 What it is
+
+Warm celebration of fathers and father-figures — emotional bonds, dad's personal objects (watch, glasses, tie, shoes, briefcase), nostalgic Indian moments (cricket-with-dad, newspaper-and-chai). Universal/cross-cultural — not religious. Cricket + Father's Day is a powerful Indian cultural pairing.
+
+### 47.2 Illustration catalogue (24 items)
+
+**GM carry-overs (2):** GM-I1-01 Steaming Chai Cup ("Chai with Dad"), GM-I6-01 Bird Flock at Sunrise.
+
+**Father-Child Moments (6):** FD-I01 Father & Child (Silhouette), FD-I02 Father Lifting Child, FD-I03 Father & Child on Shoulders, FD-I04 Father & Daughter, FD-I05 Father Teaching (Cycle/Cricket), FD-I06 Old Hands Holding Young Hands.
+
+**Dad's Objects & Symbols (8):** FD-I07 Wristwatch, FD-I08 Spectacles, FD-I09 Necktie, FD-I10 Shoes (Pair), FD-I11 Briefcase, FD-I12 Toolbox/Spanner, FD-I13 Newspaper & Chai, FD-I14 Cricket Bat (Old/Worn).
+
+**Emotional & Atmospheric (8):** FD-I15 Trophy/#1 Dad, FD-I16 Heart, FD-I17 Family Tree, FD-I18 Star/Shield, FD-I19 Moustache (Fun), FD-I20 Crown (King Dad), FD-I21 Garden/Plant in Pot, FD-I22 Sunset/Park Bench (B1).
+
+### 47.3 Per-track motifs (FD-MT-*) — all 5 tracks
+
+- **Track A:** Gold Crown, Gold Star Cluster, Ornate Heart, Trophy Accent, Confetti & Sparkle.
+- **Track B:** Block-Print Heart, Modern Moustache Icon, Tie Stripe Pattern, Simple Star Accent.
+- **Track C:** None / Minimal Heart Line / Thin Star Outline / Dot Trail.
+- **Track D (only Father's Day uses D!):** Doodle Heart, Doodle Crown, Doodle Star Burst, Sticker Moustache, Doodle Trophy.
+- **Track E:** None / Watercolour Heart / Pastel Star / Soft Leaf Wreath.
+
+### 47.4 Prompt context
+
+| Element | Value |
+|---------|-------|
+| atmosphereInline | `Father's Day celebration, warm emotional family setting` |
+| sceneAuthenticity | `real warm Indian family moment, father-child bond` |
+| Negatives | `funeral, mourning, sad, dark mood, horror, lonely, abandoned, cold, harsh, angry, violent, broken` |
+| Firefly Atmosphere | `Father's Day warmth, family bond, proud` |
+| Firefly Mood | `warm, proud, loving, nostalgic, grateful` |
+| Firefly B1 Scene | `father and child moment, warm golden home or park` |
+
+### 47.5 Layout bias
+
+L5 ★ Best · L2 ★ Best · L1 ✓ · L6 ✓ · L3/L4 ✓.
+
+---
+
+## 48. Category Pack: Devotional — Shivji
+
+> **Hero text:** "ॐ नमः शिवाय" / "हर हर महादेव" / "Om Namah Shivaya" (default — **editable** Custom Text step).
+> **Seasonal:** No (peak Sawan July–August + Maha Shivratri).
+> **Track filter:** A ✅, B ✅, C ✅, D ❌, E ✅.
+> **Overlay compatibility:** Devotional ✅, Summer —, Rain/Monsoon ✅ (Sawan = Shiva's sacred monsoon month), Cricket —.
+
+### 48.1 What it is
+
+Lord Shiva — Mahadev devotional. Visual energy from Shiva's iconic symbols: trishul, damru, Nandi, Ganga, third eye, blue skin reference, Kailash, lingam, rudraksha, snake (Vasuki). Track D blocked — playful treatment of Mahadev is disrespectful.
+
+### 48.2 Wizard flow change
+
+`Archetype → Track → Layout → Colour → Font → Illustration → Intensity → Custom Text ✎`
+
+Custom Text step is pre-filled with the default greeting. User can keep it, pick a language variant from chip-row buttons, or type their own Shiv-bhakti text.
+
+### 48.3 Illustration catalogue (22 items)
+
+**GM carry-overs (2):** GM-I3-02 Lotus, GM-I4-01 Lit Diya.
+
+**Shiva — Iconic Forms (8):** SH-I01 Shiva Lingam, SH-I02 Trishul (Trident), SH-I03 Damru (Drum), SH-I04 Nandi (Bull), SH-I05 Third Eye (Stylised), SH-I06 Rudraksha Mala, SH-I07 Crescent Moon, SH-I08 Snake (Vasuki).
+
+**Shiva — Scenes & Settings (6):** SH-I09 Mount Kailash, SH-I10 Ganga Flowing (B1), SH-I11 Shiva Temple Silhouette, SH-I12 Meditation Cave (B1), SH-I13 Bel/Bilva Tree, SH-I14 Burning Pyre/Sacred Fire.
+
+**Pooja & Devotional (6):** SH-I15 Bilva Leaves on Lingam, SH-I16 Abhishek (Water Pour), SH-I17 Shiva Pooja Thali, SH-I18 Vibhuti (Ash Lines), SH-I19 Kanwar (Water Pot on Pole), SH-I20 Ganga Aarti (B1).
+
+### 48.4 Per-track motifs (SH-MT-*)
+
+- **Track A:** Gold Trishul, Damru with Gold Bells, Rudraksha String, Snake (Ornate), Om with Trishul Halo.
+- **Track B:** Block-Print Trishul, Modern Damru Icon, Bilva Leaf Trio, Crescent Moon (Line).
+- **Track C:** None / Minimal Trishul Line / Dot Tripundra.
+- **Track E:** None / Watercolour Trishul / Pastel Bilva Leaf / Soft Rudraksha Wash.
+
+### 48.5 Prompt context
+
+| Element | Value |
+|---------|-------|
+| atmosphereInline | `Shiva devotional setting, sacred Mahadev worship atmosphere` |
+| sceneAuthenticity | `real Shiva temple or Himalayan sacred setting` |
+| Negatives | `funeral, dark mood, horror, cartoon, doodle, playful, comic, modern urban, neon, nightclub, party, alcohol, other deities, cross-faith symbols` |
+| Firefly Atmosphere | `Shiva devotional, sacred Mahadev, temple glow` |
+| Firefly Mood | `reverent, powerful, meditative, sacred` |
+| Firefly B1 Scene | `Shiva temple at dawn, Kailash, lingam pooja` |
+
+### 48.6 Layout bias
+
+L2 ★ Best · L5 ★ Best · L6 ✓ · L1 ✓ · L3/L4 ✓.
+
+---
+
+## 49. Category Pack: Devotional — Ganeshji
+
+> **Hero text:** "गणपति बप्पा मोरया" / "श्री गणेशाय नमः" / "Jai Ganesh" (default — **editable**).
+> **Seasonal:** No (peak Ganesh Chaturthi August/September).
+> **Track filter:** A ✅, B ✅, C ✅, D ❌, E ✅.
+> **Overlay compatibility:** Devotional ✅, Summer —, Rain/Monsoon ✅ (Chaturthi often falls in late monsoon), Cricket —.
+
+### 49.1 What it is
+
+Lord Ganesha — Ganpati bhakti, Ganesh Chaturthi, Wednesday devotional. Visual energy from Ganesha's iconic form (elephant head, modak, mouse, lotus seat) and the warm, auspicious, obstacle-removing energy.
+
+### 49.2 Wizard flow
+
+`Archetype → Track → Layout → Colour → Font → Illustration → Intensity → Custom Text ✎`
+
+### 49.3 Illustration catalogue (22 items)
+
+**GM carry-overs (3):** GM-I3-01 Marigold Garland, GM-I4-01 Lit Diya, GM-I3-02 Lotus.
+
+**Ganesh — Iconic Forms (8):** GN-I01 Ganesh Idol (Seated), GN-I02 Ganesh Face (Close-up), GN-I03 Modak (Sweet), GN-I04 Mouse (Mushak), GN-I05 Om / Ganesha Om, GN-I06 Ganesh Silhouette, GN-I07 Broken Tusk, GN-I08 Lotus Seat (with Ganesh).
+
+**Setting & Scene (4):** GN-I09 Ganesh Mandal/Pandal (B1), GN-I10 Ganesh Visarjan Procession (B1), GN-I11 Ganesh Temple Doorway (B1), GN-I12 Home Pooja Setup.
+
+**Pooja & Devotional (7):** GN-I13 Ganesh Pooja Thali, GN-I14 Durva Grass Bundle, GN-I15 Coconut (Whole), GN-I16 Red Hibiscus, GN-I17 Dhol/Drum, GN-I18 Rangoli (Ganesh) (B1), GN-I19 Mango Leaf Toran with Marigold.
+
+### 49.4 Per-track motifs (GN-MT-*)
+
+- **Track A:** Gold Ganesh Silhouette, Modak String, Marigold & Durva Garland, Om with Ganesh Trunk, Sparkle Cluster.
+- **Track B:** Block-Print Ganesh, Rangoli Corner (Ganesh), Modern Modak Icon, Durva Grass Line.
+- **Track C:** None / Minimal Ganesh Line / Single Modak Outline.
+- **Track E:** None / Watercolour Ganesh / Pastel Hibiscus / Soft Marigold Wash.
+
+### 49.5 Prompt context
+
+| Element | Value |
+|---------|-------|
+| atmosphereInline | `Ganesh devotional setting, Ganpati worship atmosphere` |
+| sceneAuthenticity | `real Ganesh pooja or Chaturthi celebration setting` |
+| Negatives | `funeral, dark mood, horror, cartoon, doodle, playful, comic, modern urban, neon, nightclub, party, alcohol, other deities, cross-faith symbols` |
+| Firefly Atmosphere | `Ganesh devotional, Ganpati pooja, sacred` |
+| Firefly Mood | `auspicious, joyful, blessed, sacred` |
+| Firefly B1 Scene | `Ganesh idol home pooja, mandal decoration, festive` |
+
+### 49.6 Layout bias
+
+L2 ★ Best · L5 ★ Best · L6 ✓ · L1 ✓ · L3/L4 ✓.
+
+---
+
+## 50. Category Pack: Devotional — Jesus
+
+> **Hero text:** "God Bless You" / "Praise the Lord" / "प्रभु आपको आशीर्वाद दें" (default — **editable**).
+> **Seasonal:** No (peak Christmas, Good Friday, Easter).
+> **Track filter:** A ✅, B ✅, C ✅, D ❌, E ✅.
+> **Overlay compatibility:** Devotional ✅, Summer —, Rain —, Cricket —.
+
+### 50.1 What it is
+
+Christian devotional — Sunday blessings, Christmas, Easter, faith-based inspiration. Visual energy from cross, church, candle, dove, Bible, praying hands, divine light. Track D blocked — playful doodle of cross/Bible/prayer is tonally wrong; Indian Christian imagery leans respectful and warm.
+
+### 50.2 Wizard flow
+
+`Archetype → Track → Layout → Colour → Font → Illustration → Intensity → Custom Text ✎`
+
+### 50.3 Illustration catalogue (20 items)
+
+**GM carry-overs (2):** GM-I4-01 Lit Diya/Candle, GM-I3-02 Lotus.
+
+**Sacred Symbols (8):** JE-I01 Cross (Wooden), JE-I02 Cross (Golden/Ornate), JE-I03 Rosary Beads, JE-I04 Dove (Peace), JE-I05 Bible (Open), JE-I06 Praying Hands, JE-I07 Fish (Ichthys), JE-I08 Crown of Thorns.
+
+**Church & Setting (5):** JE-I09 Church (Exterior — Indian Goa/Kerala/CNI style), JE-I10 Church Interior (Aisle) (B1), JE-I11 Stained Glass Window, JE-I12 Church Bell, JE-I13 Sunset Cross (Hilltop).
+
+**Devotional & Atmosphere (5):** JE-I14 Candle Row (Vigil), JE-I15 Olive Branch, JE-I16 Light Rays (Divine), JE-I17 Lily/White Flowers, JE-I18 Bread & Wine.
+
+### 50.4 Per-track motifs (JE-MT-*)
+
+- **Track A:** Gold Cross, Dove with Rays, Lily & Vine Garland, Rosary Loop, Stained Glass Border.
+- **Track B:** Modern Cross Icon, Olive Branch Strip, Dove (Line Art), Candle Icon Row.
+- **Track C:** None / Minimal Cross Line / Single Dove Outline.
+- **Track E:** None / Watercolour Cross / Pastel Lily / Soft Candle Glow.
+
+### 50.5 Prompt context
+
+| Element | Value |
+|---------|-------|
+| atmosphereInline | `Christian devotional setting, peaceful church or prayer atmosphere` |
+| sceneAuthenticity | `real Indian church or Christian home prayer setting` |
+| Negatives | `funeral, horror, dark mood, cartoon, doodle, playful, comic, neon, nightclub, party, alcohol, Hindu deities, Islamic symbols, temple, mosque` |
+| Firefly Atmosphere | `Christian devotional, peaceful church, divine light` |
+| Firefly Mood | `blessed, peaceful, hopeful, serene` |
+| Firefly B1 Scene | `Indian church morning, cross sunrise, prayer candles` |
+
+### 50.6 Layout bias
+
+L2 ★ Best · L5 ★ Best · L1 ✓ · L6 ✓ · L3/L4 ✓.
+
+---
+
+## 51. Category Pack: Devotional — Islamic
+
+> **Hero text:** "Jumma Mubarak" / "Assalamu Alaikum" / "بسم الله الرحمن الرحیم" / "अल्लाह की रहमत" (default — **editable**).
+> **Seasonal:** No (peak Ramadan, Eid-ul-Fitr, Eid-ul-Adha, Shab-e-Barat).
+> **Track filter:** A ✅, B ✅, C ✅, D ❌, E ✅.
+> **Overlay compatibility:** Devotional ✅, Summer —, Rain —, Cricket —.
+
+### 51.1 What it is
+
+Islamic devotional — Jumma Mubarak (Friday), Eid greetings, Ramadan, Salam blessings. Visual energy from crescent and star, mosque, Quran, prayer beads (tasbih), Arabic calligraphy (non-Quranic), Ramadan lantern (fanoos), and geometric Islamic patterns. Track D blocked — playful doodle of Islamic sacred symbols is disrespectful; Islamic art traditionally leans towards geometric precision and calligraphic elegance.
+
+### 51.2 Wizard flow
+
+`Archetype → Track → Layout → Colour → Font → Illustration → Intensity → Custom Text ✎`
+
+### 51.3 Illustration catalogue (20 items)
+
+**GM carry-overs (1):** GM-I4-01 Lit Diya/Lamp.
+
+**Sacred Symbols (8):** IS-I01 Crescent Moon & Star, IS-I02 Mosque Silhouette, IS-I03 Quran (Open), IS-I04 Tasbih (Prayer Beads), IS-I05 Arabic Calligraphy (Bismillah), IS-I06 Praying Hands (Dua), IS-I07 Lantern (Fanoos), IS-I08 Dates (Khajoor).
+
+**Mosque & Setting (4):** IS-I09 Mosque (Grand, Front View) (B1), IS-I10 Mosque Interior (Mihrab) (B1), IS-I11 Minaret (Close-up), IS-I12 Jali Screen (Geometric).
+
+**Devotional & Atmosphere (6):** IS-I13 Prayer Cap & Beads, IS-I14 Iftar Table (B1), IS-I15 Full Moon (Eid Moon), IS-I16 Islamic Geometric Pattern, IS-I17 Green Dome, IS-I18 Rosewater & Attar.
+
+### 51.4 Per-track motifs (IS-MT-*)
+
+- **Track A:** Gold Crescent & Star, Islamic Geometric Border, Lantern (Fanoos) Row, Arabic Calligraphy Accent, Dome & Minaret Silhouette.
+- **Track B:** Modern Crescent Icon, Geometric Star Pattern, Lantern (Line Art), Arabesque Vine.
+- **Track C:** None / Minimal Crescent Line / Geometric Star (Single).
+- **Track E:** None / Watercolour Crescent / Pastel Lantern / Soft Geometric Wash.
+
+### 51.5 Prompt context
+
+| Element | Value |
+|---------|-------|
+| atmosphereInline | `Islamic devotional setting, peaceful mosque or prayer atmosphere` |
+| sceneAuthenticity | `real Indian mosque or Muslim home prayer setting` |
+| Negatives | `funeral, horror, dark mood, cartoon, doodle, playful, comic, neon, nightclub, party, alcohol, Hindu deities, cross, church, temple, pork, figurative depiction of Prophet` |
+| Firefly Atmosphere | `Islamic devotional, mosque prayer, sacred` |
+| Firefly Mood | `blessed, peaceful, reverent, serene` |
+| Firefly B1 Scene | `Indian mosque at fajr dawn, crescent moon, prayer` |
+
+### 51.6 Layout bias
+
+L2 ★ Best · L5 ★ Best · L6 ★ Best (Islamic geometric frame is a natural fit for centred text) · L1 ✓ · L3/L4 ✓.
+
+---
+
+## 52. Master tables — V2 expansion (10 categories total)
+
+### 52.1 Track locking — all 10 categories
+
+| Category | A Shiny Maximal | B Modern Desi | C Minimalist Classy | D Artsy Playful | E Soft & Warm |
+|----------|:-:|:-:|:-:|:-:|:-:|
+| Good Morning | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Birthday | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Suvichar | ✅ | ✅ | ✅ | ✅ | ✅ (filtered by feeling) |
+| Rath Yatra | ✅ | ✅ | ✅ | ❌ | ✅ |
+| Vat Savitri | ✅ | ✅ | ✅ | ❌ | ✅ |
+| Father's Day | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Devotional — Shivji | ✅ | ✅ | ✅ | ❌ | ✅ |
+| Devotional — Ganeshji | ✅ | ✅ | ✅ | ❌ | ✅ |
+| Devotional — Jesus | ✅ | ✅ | ✅ | ❌ | ✅ |
+| Devotional — Islamic | ✅ | ✅ | ✅ | ❌ | ✅ |
+
+**Pattern:** Track D is blocked for ALL devotional/religious categories (6 of the 7 v2 packs). Only Father's Day keeps all 5 tracks — secular & emotional, not sacred.
+
+### 52.2 Overlay compatibility — all 10 categories
+
+| Category | Devotional | Summer | Rain/Monsoon | Cricket/IPL |
+|----------|:---:|:---:|:---:|:---:|
+| Good Morning | ✅ | ✅ | ✅ | ✅ |
+| Birthday | — | ✅ | — | ✅ |
+| Suvichar | ✅ | ✅ | ✅ | — |
+| Rath Yatra | ✅ | ✅ | ✅ | — |
+| Vat Savitri | ✅ | ✅ | — | — |
+| Father's Day | — | ✅ | — | ✅ |
+| Devotional — Shivji | ✅ | — | ✅ | — |
+| Devotional — Ganeshji | ✅ | — | ✅ | — |
+| Devotional — Jesus | ✅ | — | — | — |
+| Devotional — Islamic | ✅ | — | — | — |
+
+### 52.3 Custom text behaviour — all 10 categories
+
+| Category | Custom Text Step? | Default Pre-fill | User-editable? |
+|----------|:---:|---|:---:|
+| Good Morning | No | "Good Morning" | No |
+| Birthday | No | "Happy Birthday" | No |
+| Suvichar | **Yes** | (empty — required) | Yes — required |
+| Rath Yatra | No | "शुभ रथ यात्रा" | No |
+| Vat Savitri | No | "वट सावित्री व्रत की शुभकामनाएं" | No |
+| Father's Day | No | "Happy Father's Day" | No |
+| Devotional — Shivji | **Yes** | "ॐ नमः शिवाय" | Yes — optional |
+| Devotional — Ganeshji | **Yes** | "गणपति बप्पा मोरया" | Yes — optional |
+| Devotional — Jesus | **Yes** | "God Bless You" | Yes — optional |
+| Devotional — Islamic | **Yes** | "Jumma Mubarak" | Yes — optional |
+
+### 52.4 Illustration count — V2 expansion summary
+
+| Category | Carry-over | New | Total |
+|----------|:----------:|:---:|:-----:|
+| Rath Yatra | 3 | 19 | 22 |
+| Vat Savitri | 3 | 17 | 20 |
+| Father's Day | 2 | 22 | 24 |
+| Devotional — Shivji | 2 | 20 | 22 |
+| Devotional — Ganeshji | 3 | 19 | 22 |
+| Devotional — Jesus | 2 | 18 | 20 |
+| Devotional — Islamic | 2 | 18 | 20 |
+| **V2 expansion total** | **17** | **133** | **150** |
+
+### 52.5 Wizard flow variants
+
+| Variant | Used by | Step sequence |
+|---------|---------|---------------|
+| Standard | GM, Birthday, Rath Yatra, Vat Savitri, Father's Day | `Template → (Frame/Density/Overlay) → Layout → Track → Colour & Finish → Visual / Scene → Intensity` |
+| Suvichar | Suvichar | adds **Feeling** (after Template) and **Custom Text** (final) |
+| Devotional editable | Shivji, Ganeshji, Jesus, Islamic | standard + **Custom Text** (final, pre-filled) |
+
+---
+
+## 53. Implementation summary — V2 expansion
+
+### 53.1 New data structures
+
+| Symbol | Lines | Purpose |
+|--------|:-----:|---------|
+| `CATEGORY_PACKS` | ~ 700 | Single config table holding all 7 v2 categories' data (id, name, icon, hero text + lang variants, customText flag, blockedTracks, appliesOverlays, carryoverIds, illusCats, motifs per track, atmosphere bundle, negatives, firefly compact strings, layout bias). |
+| `SAFE_ZONE_DESC` / `SAFE_ZONE_DESC_B1` / `SAFE_ZONE_FIREFLY_AB` / `SAFE_ZONE_FIREFLY_B1` | 4 const | Personalization safe-zone prompt strings (full + compact). |
+
+### 53.2 New helper functions
+
+| Function | Purpose |
+|----------|---------|
+| `getCategoryPack()` | Returns the active pack object or `null` for the original 3 categories. |
+| `getPackIllusCats()` | Builds the catalogue (carry-overs + native sub-categories), filtered by archetype — mirrors `getBirthdayIllusCats` / `getSuvicharIllusCats` shape so `applyOverlayToCatalogue` and the Visual / B1-Scene steps consume it identically. |
+| `getB1TextColour()` | Returns `{name, desc}` for B1 hero text colour based on track + overlay strength. |
+| `seedCustomText(v)` | Wires the language-variant chip-row buttons in the Custom Text step. |
+
+### 53.3 Modified dispatch functions
+
+All consult `getCategoryPack()` first, falling through to the original GM/Birthday/Suvichar logic for the 3 original categories:
+
+- `getCategoryLabel()` — pack.name takes precedence.
+- `getDisplayText()` — pack.heroText (fixed) or `STATE.customText || pack.heroText` (editable fallback).
+- `getCategoryAtmosphere()` — pack.atmosphere bundle.
+- `getMotifOptions()` — pack.motifs[track] (with framework fallback if track missing, e.g. Father's Day uses Track-D base motifs since FD-MT-D* exists).
+- `getFilteredTracks()` — applies pack.blockedTracks on top of feeling-filter and overlay block.
+- `buildNegatives()` (A1/A2) and `gatherB1PromptData` — append pack.negatives.
+- `getOverlaysForCategory(catId)` — checks pack.appliesOverlays for v2 categories; original `o.appliesTo` for the 3 originals.
+- `getIllusItem()` and B1 scene-element loop — also resolve pack-native illustration IDs.
+
+### 53.4 UI updates
+
+- `renderStep1()` — picker shows 10 cards (3 originals + 7 packs via `Object.values(CATEGORY_PACKS)`).
+- `getSteps()` — appends `'custom_text'` for the 4 packs with `customText: true` (Shivji, Ganeshji, Jesus, Islamic).
+- `renderCustomTextStep()` — reused for Suvichar (mandatory quote) AND the 4 editable packs (pre-filled hero text, language-variant chip row).
+- `canProceed()` for `custom_text` — accepts empty for editable packs (heroText is the fallback); Suvichar still requires non-empty.
+- Audit panel — surfaces a "Greeting Text" row for editable packs.
+- Layout diagrams — dashed safe-zone band at bottom; L5 text rect redrawn at 60–80% from top.
+
+### 53.5 Verification
+
+Runtime smoke tests (all 19 passing):
+
+- All 7 packs return correct labels, hero text, track filters, motif counts, overlay compatibility.
+- Custom Text behaviour: Shivji empty → fallback to "ॐ नमः शिवाय"; Shivji typed → user text. Rath Yatra always returns fixed text and skips the Custom Text step.
+- Safe-zone language present in MJ, Leonardo, Firefly with-/without-text, and Gemini for both archetypes.
+- B1 adaptive text colour matches the track × overlay-strength matrix exactly.
+- Worst-case Firefly with-text across all 10 categories × A1: **818–838 chars** (≤ 950 cap with > 110 chars headroom).
+
+---
+
 # Appendices
 
 ## Appendix A — Master Cross-Reference
@@ -3252,6 +3849,8 @@ Illustration: longest-named GM item   Sub-elements: 2   Intensity: Complex
 | Summer overlay add | 14 | 17 base items restricted (5 GM + 4 BD + 8 SV) |
 | Rain / Monsoon overlay add | 15 | 19 base items restricted (11 GM + 8 SV) |
 | Cricket / IPL overlay add | 15 | 22 base items restricted (15 GM + 7 BD) |
+| **V2 expansion — 7 category packs** | **150** | 17 GM carry-overs + 133 native (Rath Yatra 22, Vat Savitri 20, Father's Day 24, Shivji 22, Ganeshji 22, Jesus 20, Islamic 20). See §52.4. |
+| **Total catalogue across 10 categories** | **~ 264** | Native illustration count summed across Good Morning + Birthday native + Suvichar native + 7 V2 packs (excluding GM carry-overs which are reused, and overlay-added items). |
 
 Restrictions are aggressive by design. It's better to hide a borderline item than to let a user create a "Devotional Good Morning" with a parrot or a "Cricket Birthday" with floating petals. The overlay's added illustrations fill the gap — the user never sees a depleted pool.
 
@@ -3296,7 +3895,23 @@ Restrictions are aggressive by design. It's better to hide a borderline item tha
 
 ## Appendix C — Change Log
 
-### v1.0 (this document)
+### v1.1 — V2 Expansion (current)
+
+Adds Part 7 covering three additions to the implementation:
+
+- **§43 Bottom Safe Zone (Personalization Band)** — bottom 20% of canvas reserved for user personalization. Hero text + main illustration subject clamped above; BG / frame / sparkle / accents free to extend so the area never reads as empty. L5 text band moves to 60–80% from top. New `SAFE_ZONE_DESC`, `SAFE_ZONE_DESC_B1`, `SAFE_ZONE_FIREFLY_AB`, `SAFE_ZONE_FIREFLY_B1` constants drive consistent prompt language across all 5 platform builders × 2 archetypes. Layout diagram SVGs gain a dashed safe-zone band.
+- **§44 Adaptive B1 Hero Text Colour** — new `getB1TextColour()` helper. Heavy overlay → white. Light overlay → per-track default (A=white, B=warm cream #FFF7E8, C=very dark grey/near-black, D=dark warm grey #2A1F1A, E=warm dark/muted maroon). Replaces hardcoded "white text" in Leonardo / Firefly with-text / Gemini B1 builders. A1/A2 unchanged.
+- **§45–51 Seven new category packs** — Rath Yatra, Vat Savitri, Father's Day, Devotional Shivji, Devotional Ganeshji, Devotional Jesus, Devotional Islamic. All 7 ship via a single `CATEGORY_PACKS` config table; dispatch helpers (`getCategoryPack`, `getPackIllusCats`, etc.) consult it first while the original 3 categories keep their existing logic. 4 of the 7 (Shivji, Ganeshji, Jesus, Islamic) ship an editable Custom Text step pre-filled with the default greeting + language-variant chip-row. Track D blocked for 6 of 7 (Father's Day keeps all 5 tracks).
+- **§52 Master tables** — track lock × overlay compatibility × custom-text behaviour × illustration counts × wizard flow variants for all 10 categories.
+- **§53 Implementation summary** — new data structures, helpers, dispatch hooks, UI updates, runtime verification.
+
+Source: `New_Category_Packs_v1.md` (v2 expansion playbook).
+
+Verified at runtime: 19/19 smoke tests passing; worst-case Firefly with-text across all 10 categories × A1 = 818–838 chars (≤ 950 cap, > 110 chars headroom).
+
+Live in branch `V2--->-Expansion-to-7-more-categories`, commits `41f18b3` (7 categories) + `2f38259` (safe zone + adaptive text colour).
+
+### v1.0 (initial document)
 - Initial unified PRD merging Template Creation Framework v20, Birthday Category Pack v2, Suvichar Category Pack v2, Overlay Pack System v2.
 - Sections 1–4: System architecture and glossary.
 - Sections 5–18: Framework foundation (archetypes, frames, layouts, tracks, palettes, fonts, finishes, render styles, motifs, intensity, GM library, accent library).
@@ -3329,9 +3944,18 @@ Restrictions are aggressive by design. It's better to hide a borderline item tha
 | Rain / Monsoon overlay | ✅ Implemented |
 | Cricket / IPL overlay | ✅ Implemented (incl. F5 restrict) |
 | 5 platform builders | ✅ Implemented (Firefly w/, Firefly w/o, MJ, Leonardo, Gemini) |
-| Audit panel | ✅ Implemented (incl. overlay row) |
+| Audit panel | ✅ Implemented (incl. overlay + greeting-text rows) |
 | TSV / HTML eval export | ✅ Implemented (Prompt Eval Framework v4 alignment) |
+| **V2 — bottom safe zone** | ✅ Implemented (all 10 platform builders + layout diagrams) |
+| **V2 — adaptive B1 text colour** | ✅ Implemented (Leonardo / Firefly with-text / Gemini) |
+| **V2 — Rath Yatra category** | ✅ Implemented |
+| **V2 — Vat Savitri category** | ✅ Implemented |
+| **V2 — Father's Day category** | ✅ Implemented (only v2 pack keeping all 5 tracks) |
+| **V2 — Devotional Shivji** | ✅ Implemented (editable Custom Text) |
+| **V2 — Devotional Ganeshji** | ✅ Implemented (editable Custom Text) |
+| **V2 — Devotional Jesus** | ✅ Implemented (editable Custom Text) |
+| **V2 — Devotional Islamic** | ✅ Implemented (editable Custom Text) |
 
 ---
 
-*End of PRD v1.0.*
+*End of PRD v1.1.*

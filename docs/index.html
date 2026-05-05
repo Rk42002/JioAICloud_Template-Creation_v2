@@ -631,6 +631,577 @@ const BD_A2_SUB_ELEMENTS = {
 };
 
 // ═══════════════════════════════════════════════════════════════
+// CATEGORY PACKS — 7 new categories (New_Category_Packs_v1.md)
+// One config table for: Rath Yatra, Vat Savitri, Father's Day,
+// Shivji, Ganeshji, Jesus, Islamic.
+// Each pack supplies: hero text, atmosphere, per-track motifs,
+// illustration catalogue, GM carry-overs, negatives, overlay
+// compatibility, and (for the 4 devotional editable ones) the
+// custom-text default.
+// Dispatched via getCategoryPack(); the 3 original categories
+// (good_morning / suvichar / birthday) keep their existing logic.
+// ═══════════════════════════════════════════════════════════════
+const CATEGORY_PACKS = {
+  'rath_yatra': {
+    id: 'rath_yatra', name: 'Rath Yatra', icon: '🛕',
+    desc: 'Lord Jagannath chariot procession — Puri devotional festival.',
+    heroText: 'शुभ रथ यात्रा',
+    heroLangVariants: ['शुभ रथ यात्रा', 'Happy Rath Yatra', 'जय जगन्नाथ'],
+    customText: false,
+    blockedTracks: ['D'],
+    appliesOverlays: ['OV-DEV', 'OV-SUM', 'OV-RAIN'],
+    carryoverIds: ['GM-I3-01', 'GM-I4-01', 'GM-I3-02'],
+    illusCats: [
+      { id: 'RY-CHARIOT', name: 'Chariot & Procession', icon: '🛕', items: [
+        { id: 'RY-I01', name: 'Rath (Chariot) — Full', desc: 'Grand decorated wooden chariot with canopy, wheels, flag, bright yellow/red cloth.', archs: 'A1, A2, B1' },
+        { id: 'RY-I02', name: 'Chariot Wheel (Close-up)', desc: 'Iconic large wooden wheel with spokes and hub detail, Konark or Puri style.', archs: 'A1, A2' },
+        { id: 'RY-I03', name: 'Three Chariots (Procession)', desc: 'Nandighosa, Taladhwaja, Darpadalana in a row — distant procession view.', archs: 'A2, B1' },
+        { id: 'RY-I04', name: 'Procession Crowd', desc: 'Devotees pulling chariot with thick ropes, dense festival crowd.', archs: 'B1' },
+        { id: 'RY-I05', name: 'Chariot Rope (Pulling)', desc: 'Close-up of thick rope being pulled by many hands, collective devotion.', archs: 'B1' },
+      ]},
+      { id: 'RY-DEITY', name: 'Deities & Sacred', icon: '🪔', items: [
+        { id: 'RY-I06', name: 'Jagannath Face (Iconic)', desc: 'Stylised round face — large eyes, no nose, flat mouth, Puri form, bold black/white/red/yellow.', archs: 'A1, A2' },
+        { id: 'RY-I07', name: 'Jagannath-Balabhadra-Subhadra Trio', desc: 'All three deity faces side by side, classic Puri art arrangement.', archs: 'A1, A2' },
+        { id: 'RY-I08', name: 'Sudarshan Chakra', desc: 'Sacred disc weapon — circular with radiating flame edges, gold or bright red.', archs: 'A1, A2' },
+        { id: 'RY-I09', name: 'Neela Chakra (Blue Wheel)', desc: 'Sacred blue wheel atop Jagannath Temple, silhouette against sky.', archs: 'A1, A2, B1' },
+      ]},
+      { id: 'RY-TEMPLE', name: 'Temple & Setting', icon: '🛕', items: [
+        { id: 'RY-I10', name: 'Jagannath Temple (Puri)', desc: 'Iconic white temple gopuram of Puri Mandir, front view or silhouette against dawn sky.', archs: 'A1, A2, B1' },
+        { id: 'RY-I11', name: 'Grand Road (Bada Danda)', desc: 'Wide road of Puri with chariot in distance, temple spire behind, festival atmosphere.', archs: 'B1' },
+        { id: 'RY-I12', name: 'Temple Doorway (Singha Dwara)', desc: 'Lion Gate entrance of Puri temple, carved stone, devotional grandeur.', archs: 'B1' },
+      ]},
+      { id: 'RY-FESTIVE', name: 'Decorative & Festive', icon: '🌼', items: [
+        { id: 'RY-I13', name: 'Marigold Toran with Mango Leaves', desc: 'Festival door decoration — marigold garland with fresh mango leaf strand.', archs: 'A1, A2' },
+        { id: 'RY-I14', name: 'Coconut & Banana Offering', desc: 'Whole coconut on banana leaf with flowers and kumkum, pooja offering set.', archs: 'A1, A2' },
+        { id: 'RY-I15', name: 'Rath Yatra Flag', desc: 'Triangular festival flag with Jagannath emblem, fluttering, bright cloth.', archs: 'A1, A2' },
+        { id: 'RY-I16', name: 'Conch Shell (Shankh)', desc: 'Sacred conch shell — blown during procession, white with golden mouth.', archs: 'A1, A2' },
+        { id: 'RY-I17', name: 'Puri Beach at Sunrise', desc: 'Golden sunrise over Puri beach with temple silhouette in distance, serene dawn.', archs: 'B1' },
+        { id: 'RY-I18', name: 'Prasad Thali (Mahaprasad)', desc: 'Plate of Jagannath temple prasad — rice, dal, sabzi on sal leaf, sacred food.', archs: 'A1, A2' },
+        { id: 'RY-I19', name: 'Odia Rangoli (Jhoti Chita)', desc: 'Traditional Odia floor art in white rice paste on red/ochre floor, geometric sacred.', archs: 'A2, B1' },
+      ]},
+    ],
+    motifs: {
+      A: [
+        { id: 'RY-MT-A1', name: 'Gold Chariot Wheel', promptPhrase: 'ornate gold chariot wheel with spoke detail, embossed metallic feel, repeating corner motif' },
+        { id: 'RY-MT-A2', name: 'Jagannath Face (Gold)', promptPhrase: 'stylised Jagannath face in gold foil, small scale as repeating motif' },
+        { id: 'RY-MT-A3', name: 'Marigold & Mango Leaf Garland', promptPhrase: 'thick marigold toran with mango leaves, gold sparkle accents along frame edge' },
+        { id: 'RY-MT-A4', name: 'Sudarshan Chakra (Gold)', promptPhrase: 'sacred disc motif in ornate gold, radiating flame edges, embossed' },
+        { id: 'RY-MT-A5', name: 'Temple Spire Silhouette', promptPhrase: 'small Puri temple gopuram outline in gold, repeating along frame top' },
+      ],
+      B: [
+        { id: 'RY-MT-B1', name: 'Block-Print Chariot Wheel', promptPhrase: 'chariot wheel in traditional block-print style, indigo on cream' },
+        { id: 'RY-MT-B2', name: 'Jhoti Chita Corner', promptPhrase: 'Odia floor art patterns as geometric quarter-motifs at frame corners' },
+        { id: 'RY-MT-B3', name: 'Modern Jagannath Icon', promptPhrase: 'clean minimal Jagannath face icon, 2-colour, contemporary rendering' },
+        { id: 'RY-MT-B4', name: 'Mango Leaf String', promptPhrase: 'simple string of mango leaves along frame base, modern illustration' },
+        { id: 'RY-MT-B5', name: 'Conch Shell (Line Art)', promptPhrase: 'clean line-art conch shell, modern minimal rendering' },
+      ],
+      C: [
+        { id: 'RY-MT-C0', name: 'None', promptPhrase: 'no decorative motifs, completely clean' },
+        { id: 'RY-MT-C1', name: 'Minimal Wheel Arc', promptPhrase: 'quarter-circle arc suggesting chariot wheel spoke, single thin line, muted gold' },
+        { id: 'RY-MT-C2', name: 'Single Mango Leaf', promptPhrase: 'one mango leaf outline, no fill, warm grey or muted gold corner accent' },
+        { id: 'RY-MT-C3', name: 'Dot Mandala (Subtle)', promptPhrase: 'tiny dot-based mandala at corner, barely visible, sacred geometry' },
+      ],
+      E: [
+        { id: 'RY-MT-E0', name: 'None', promptPhrase: 'no decorative motifs, completely clean' },
+        { id: 'RY-MT-E1', name: 'Watercolour Wheel', promptPhrase: 'soft-edge chariot wheel in warm ochre watercolour wash, no hard edges' },
+        { id: 'RY-MT-E2', name: 'Soft Marigold Wash', promptPhrase: 'loose watercolour marigold blooms, diffused edges, warm orange' },
+        { id: 'RY-MT-E3', name: 'Pastel Lotus', promptPhrase: 'gentle pastel lotus shape, no hard edges, devotional softness' },
+      ],
+    },
+    atmosphere: {
+      atmosphereInline: 'Rath Yatra festival procession, Jagannath temple celebration',
+      atmosphereSentenceCase: 'Rath Yatra festival procession, Jagannath temple celebration',
+      sceneAuthenticity: 'real Rath Yatra celebration in Puri, Odisha',
+      gemSettingContext: 'a Rath Yatra procession or Jagannath temple setting',
+      lightTimeContext: 'natural and warm, festive daylight or golden hour procession lighting',
+      stylePhMoodWord: 'festival',
+    },
+    negatives: ['funeral', 'mourning', 'sad', 'dark mood', 'horror', 'cartoon', 'doodle', 'playful', 'comic', 'modern urban', 'neon', 'nightclub'],
+    fireflyAtm: 'Rath Yatra festival, Jagannath procession',
+    fireflyMood: 'devotional, festive, joyful, sacred, grand',
+    fireflyB1Scene: 'Puri chariot procession, temple backdrop, festival crowd',
+    layoutBias: { L5: 'best', L2: 'best', L1: 'works', L6: 'works', L3: 'works', L4: 'works' },
+  },
+
+  'vat_savitri': {
+    id: 'vat_savitri', name: 'Vat Savitri', icon: '🌳',
+    desc: "Married women's vrat — sacred banyan tree, Savitri-Satyavan legend.",
+    heroText: 'वट सावित्री व्रत की शुभकामनाएं',
+    heroLangVariants: ['वट सावित्री व्रत की शुभकामनाएं', 'Happy Vat Savitri', 'सुहाग का त्योहार'],
+    customText: false,
+    blockedTracks: ['D'],
+    appliesOverlays: ['OV-DEV', 'OV-SUM'],
+    carryoverIds: ['GM-I3-01', 'GM-I4-01', 'GM-I3-02'],
+    illusCats: [
+      { id: 'VS-RITUAL', name: 'Sacred Tree & Ritual', icon: '🌳', items: [
+        { id: 'VS-I01', name: 'Banyan Tree (Vat Vriksha)', desc: 'Majestic banyan with aerial roots, thick trunk, wide canopy, sacred red thread tied around trunk.', archs: 'A1, A2, B1' },
+        { id: 'VS-I02', name: 'Thread-Tying Ritual', desc: "Woman's hands tying sacred red/yellow thread (mauli) around banyan trunk, close-up.", archs: 'B1' },
+        { id: 'VS-I03', name: 'Banyan Tree (Silhouette)', desc: 'Banyan silhouette against dawn or dusk sky, grand canopy spread, iconic shape.', archs: 'A1, A2, B1' },
+        { id: 'VS-I04', name: 'Sacred Thread (Mauli)', desc: 'Coiled red-yellow sacred thread with turmeric and kumkum marks, close-up warm tones.', archs: 'A1, A2' },
+        { id: 'VS-I05', name: 'Pooja Thali (Vat Savitri)', desc: 'Brass thali with kumkum, turmeric, rice, mauli thread, flowers, small diya.', archs: 'A1, A2, B1' },
+      ]},
+      { id: 'VS-SUHAG', name: 'Suhag Symbols', icon: '💍', items: [
+        { id: 'VS-I06', name: 'Red Bangles', desc: 'Stack of red glass bangles (chooda), bright crimson, stacked on wrist or arranged in circle.', archs: 'A1, A2' },
+        { id: 'VS-I07', name: 'Sindoor Box (Open)', desc: 'Small ornate sindoor container, open showing bright vermillion powder, gold/brass.', archs: 'A1, A2' },
+        { id: 'VS-I08', name: 'Mangalsutra', desc: 'Black bead and gold mangalsutra necklace, laid on silk cloth, sacred married symbol.', archs: 'A1, A2' },
+        { id: 'VS-I09', name: 'Mehendi Hands', desc: "Woman's hands with henna design, palms up, festive bridal energy.", archs: 'A1, A2, B1' },
+        { id: 'VS-I10', name: 'Toe Rings (Bichiya)', desc: 'Silver toe rings on feet with alta (red dye), traditional married adornment.', archs: 'A1, A2' },
+      ]},
+      { id: 'VS-DEVOTIONAL', name: 'Devotional & Atmosphere', icon: '🪔', items: [
+        { id: 'VS-I11', name: 'Savitri-Satyavan (Illustration)', desc: 'Stylised illustration of Savitri holding Satyavan, banyan tree behind, mythological art style.', archs: 'A1, A2' },
+        { id: 'VS-I12', name: 'Banyan Leaf (Close-up)', desc: 'Single large heart-shaped banyan leaf with visible veins, sacred natural.', archs: 'A1, A2' },
+        { id: 'VS-I13', name: 'Women at Banyan Tree', desc: 'Group of women in red/green sarees performing parikrama around banyan tree.', archs: 'B1' },
+        { id: 'VS-I14', name: 'Incense & Flowers at Tree Base', desc: 'Agarbatti, flowers, kumkum at base of banyan trunk, devotional offering.', archs: 'A1, A2, B1' },
+        { id: 'VS-I15', name: 'Red & Green Saree Drape', desc: 'Draped red/green fabric (saree pallu) with gold border, suhag colour.', archs: 'A1, A2' },
+        { id: 'VS-I16', name: 'Coconut & Banana Offering', desc: 'Whole coconut on banana leaf with flowers and turmeric, vrat offering.', archs: 'A1, A2' },
+        { id: 'VS-I17', name: 'Turmeric & Kumkum', desc: 'Small bowls of bright yellow turmeric and red kumkum powder side by side.', archs: 'A1, A2' },
+      ]},
+    ],
+    motifs: {
+      A: [
+        { id: 'VS-MT-A1', name: 'Gold Banyan Leaf', promptPhrase: 'ornate gold banyan leaf with vein detail, embossed metallic feel' },
+        { id: 'VS-MT-A2', name: 'Red Bangle Cluster', promptPhrase: 'stack of shiny red and gold bangles as repeating frame accent' },
+        { id: 'VS-MT-A3', name: 'Mauli Thread Garland', promptPhrase: 'sacred red-yellow thread woven along frame edge with gold knots' },
+        { id: 'VS-MT-A4', name: 'Gold Sindoor Dot', promptPhrase: 'small round kumkum sindoor dot motifs in gold, scattered like bindis' },
+        { id: 'VS-MT-A5', name: 'Marigold & Mango Leaf Toran', promptPhrase: 'festival toran along frame top, marigold with mango leaves, gold sparkle accents' },
+      ],
+      B: [
+        { id: 'VS-MT-B1', name: 'Block-Print Banyan Leaf', promptPhrase: 'banyan leaf in traditional block-print, saffron and indigo on cream' },
+        { id: 'VS-MT-B2', name: 'Rangoli Vat Corner', promptPhrase: 'quarter-rangoli at frame corners with banyan leaf motif, geometric' },
+        { id: 'VS-MT-B3', name: 'Modern Bangle Icon', promptPhrase: 'clean minimal bangle circle in 2-colour line art' },
+        { id: 'VS-MT-B4', name: 'Mehendi Pattern Strip', promptPhrase: 'thin strip of henna-style pattern along frame base' },
+        { id: 'VS-MT-B5', name: 'Mango Leaf String', promptPhrase: 'simple mango leaf string along edge, modern illustration' },
+      ],
+      C: [
+        { id: 'VS-MT-C0', name: 'None', promptPhrase: 'no decorative motifs, completely clean' },
+        { id: 'VS-MT-C1', name: 'Minimal Leaf Outline', promptPhrase: 'single banyan leaf drawn with one continuous line, no fill' },
+        { id: 'VS-MT-C2', name: 'Thin Thread Line', promptPhrase: 'single fine red-gold line along frame edge, suggesting sacred thread' },
+        { id: 'VS-MT-C3', name: 'Dot Bindi Accent', promptPhrase: 'one or two small dots at corner, minimal sindoor reference' },
+      ],
+      E: [
+        { id: 'VS-MT-E0', name: 'None', promptPhrase: 'no decorative motifs, completely clean' },
+        { id: 'VS-MT-E1', name: 'Watercolour Banyan Leaf', promptPhrase: 'soft-edge leaf in warm green watercolour wash' },
+        { id: 'VS-MT-E2', name: 'Pastel Bangles', promptPhrase: 'gentle pastel bangle outlines, no hard edges' },
+        { id: 'VS-MT-E3', name: 'Soft Marigold Wash', promptPhrase: 'loose watercolour marigold, warm orange bleed' },
+      ],
+    },
+    atmosphere: {
+      atmosphereInline: 'Vat Savitri vrat celebration, sacred banyan tree ritual',
+      atmosphereSentenceCase: 'Vat Savitri vrat celebration, sacred banyan tree ritual',
+      sceneAuthenticity: "real Indian Vat Savitri celebration, married women's festival",
+      gemSettingContext: 'a Vat Savitri vrat scene with banyan tree and pooja',
+      lightTimeContext: 'natural warm morning light, devotional and festive',
+      stylePhMoodWord: 'devotional',
+    },
+    negatives: ['funeral', 'mourning', 'dark mood', 'horror', 'cartoon', 'doodle', 'playful', 'comic', 'modern urban', 'neon', 'nightclub', 'widow', 'white saree', 'barren'],
+    fireflyAtm: 'Vat Savitri vrat, sacred banyan tree, suhag',
+    fireflyMood: 'devotional, auspicious, blessed, sacred',
+    fireflyB1Scene: 'banyan tree with thread, women in red saree, pooja',
+    layoutBias: { L5: 'best', L2: 'best', L6: 'works', L1: 'works', L3: 'caution', L4: 'caution' },
+  },
+
+  'fathers_day': {
+    id: 'fathers_day', name: "Father's Day", icon: '👨‍👧',
+    desc: "Warm celebration of fathers — emotional bonds, dad's objects, cricket-with-dad nostalgia.",
+    heroText: "Happy Father's Day",
+    heroLangVariants: ["Happy Father's Day", 'पापा, आपको सलाम', 'पिता दिवस की शुभकामनाएं'],
+    customText: false,
+    blockedTracks: [],
+    appliesOverlays: ['OV-SUM', 'OV-CRK'],
+    carryoverIds: ['GM-I1-01', 'GM-I6-01'],
+    illusCats: [
+      { id: 'FD-MOMENTS', name: 'Father-Child Moments', icon: '👨‍👦', items: [
+        { id: 'FD-I01', name: 'Father & Child (Silhouette)', desc: "Father holding child's hand walking, backlit silhouette against sunset/dawn, universal no face.", archs: 'A1, A2, B1' },
+        { id: 'FD-I02', name: 'Father Lifting Child', desc: 'Dad lifting small child overhead, joyful motion, silhouette or back-view.', archs: 'B1' },
+        { id: 'FD-I03', name: 'Father & Child on Shoulders', desc: "Child sitting on father's shoulders, both looking forward, back view warm lighting.", archs: 'B1' },
+        { id: 'FD-I04', name: 'Father & Daughter', desc: 'Father and young daughter, hand-holding or reading together, warm intimate.', archs: 'B1' },
+        { id: 'FD-I05', name: 'Father Teaching (Cycle/Cricket)', desc: 'Dad teaching child to ride bicycle or play cricket, Indian outdoor setting.', archs: 'B1' },
+        { id: 'FD-I06', name: 'Old Hands Holding Young Hands', desc: "Close-up of weathered father's hands holding child's small hands, emotional textural.", archs: 'A1, A2, B1' },
+      ]},
+      { id: 'FD-OBJECTS', name: "Dad's Objects & Symbols", icon: '⌚', items: [
+        { id: 'FD-I07', name: 'Wristwatch (Classic)', desc: "Classic leather-strap analogue wristwatch, dad's timepiece — heritage reliability.", archs: 'A1, A2' },
+        { id: 'FD-I08', name: 'Spectacles / Reading Glasses', desc: 'Wire-frame or classic reading glasses, folded or slightly open, wisdom care.', archs: 'A1, A2' },
+        { id: 'FD-I09', name: 'Necktie', desc: 'Neatly tied or loosely draped necktie, professional dad provider, warm tones.', archs: 'A1, A2' },
+        { id: 'FD-I10', name: 'Shoes (Pair)', desc: "Father's large shoes beside tiny child's shoes, scale contrast — emotional.", archs: 'A1, A2, B1' },
+        { id: 'FD-I11', name: 'Briefcase / Bag', desc: 'Classic leather briefcase or office bag, provider symbol.', archs: 'A1, A2' },
+        { id: 'FD-I12', name: 'Toolbox / Spanner', desc: 'Simple toolbox or spanner — "Dad fixes everything" practical love.', archs: 'A1, A2' },
+        { id: 'FD-I13', name: 'Newspaper & Chai', desc: 'Newspaper folded with chai cup beside it, classic Indian dad morning ritual.', archs: 'A1, A2, B1' },
+        { id: 'FD-I14', name: 'Cricket Bat (Old / Worn)', desc: 'Well-used cricket bat, tape on handle, nostalgic passed down.', archs: 'A1, A2' },
+      ]},
+      { id: 'FD-EMOTIONAL', name: 'Emotional & Atmospheric', icon: '❤️', items: [
+        { id: 'FD-I15', name: 'Trophy / #1 Dad', desc: '"Best Dad" trophy or #1 badge, playful celebratory.', archs: 'A1, A2' },
+        { id: 'FD-I16', name: 'Heart (Simple)', desc: 'Clean heart shape — standalone or in hands, universal love.', archs: 'A1, A2' },
+        { id: 'FD-I17', name: 'Family Tree (Simple)', desc: 'Stylised tree with roots (father) and branches (children), growth metaphor.', archs: 'A1, A2' },
+        { id: 'FD-I18', name: 'Star / Shield', desc: 'Star or shield emblem — "Dad is my hero" protective strong.', archs: 'A1, A2' },
+        { id: 'FD-I19', name: 'Moustache (Fun)', desc: 'Classic moustache icon — fun playful dad symbol, especially for Track D.', archs: 'A1, A2' },
+        { id: 'FD-I20', name: 'Crown (King Dad)', desc: 'Simple crown — "King of our house" playful celebration.', archs: 'A1, A2' },
+        { id: 'FD-I21', name: 'Garden / Plant in Pot', desc: 'Small potted plant — nurturing patient growth, dad as gardener.', archs: 'A1, A2' },
+        { id: 'FD-I22', name: 'Sunset / Park Bench', desc: 'Park bench at sunset — peaceful reflective father-figure moment.', archs: 'B1' },
+      ]},
+    ],
+    motifs: {
+      A: [
+        { id: 'FD-MT-A1', name: 'Gold Crown', promptPhrase: 'small ornate gold crown motifs, repeating as corner accents, embossed' },
+        { id: 'FD-MT-A2', name: 'Gold Star Cluster', promptPhrase: 'scattered 5-pointed gold stars with sparkle highlights' },
+        { id: 'FD-MT-A3', name: 'Ornate Heart', promptPhrase: 'gold-foil heart with decorative scrollwork, embossed feel' },
+        { id: 'FD-MT-A4', name: 'Trophy Accent', promptPhrase: 'small golden trophy cup motif at frame corners' },
+        { id: 'FD-MT-A5', name: 'Confetti & Sparkle', promptPhrase: 'celebration confetti with gold sparkle, festive frame energy' },
+      ],
+      B: [
+        { id: 'FD-MT-B1', name: 'Block-Print Heart', promptPhrase: 'heart shape with traditional block-print fill pattern' },
+        { id: 'FD-MT-B2', name: 'Modern Moustache Icon', promptPhrase: 'clean 2-colour moustache icon, playful but restrained' },
+        { id: 'FD-MT-B3', name: 'Tie Stripe Pattern', promptPhrase: 'diagonal tie-stripe pattern as border accent, modern' },
+        { id: 'FD-MT-B4', name: 'Simple Star Accent', promptPhrase: 'clean star shapes at frame corners, warm tones' },
+      ],
+      C: [
+        { id: 'FD-MT-C0', name: 'None', promptPhrase: 'no decorative motifs, completely clean' },
+        { id: 'FD-MT-C1', name: 'Minimal Heart Line', promptPhrase: 'heart drawn with single continuous line, thin stroke' },
+        { id: 'FD-MT-C2', name: 'Thin Star Outline', promptPhrase: 'single star outline at corner, barely-there gold' },
+        { id: 'FD-MT-C3', name: 'Dot Trail', promptPhrase: 'minimal dot trail suggesting sparkle, muted gold' },
+      ],
+      D: [
+        { id: 'FD-MT-D1', name: 'Doodle Heart', promptPhrase: 'hand-drawn wobbly heart, crayon style, bright colour' },
+        { id: 'FD-MT-D2', name: 'Doodle Crown', promptPhrase: 'hand-drawn crown with uneven points, playful King Dad' },
+        { id: 'FD-MT-D3', name: 'Doodle Star Burst', promptPhrase: 'hand-drawn stars with radiating lines, fun scribble style' },
+        { id: 'FD-MT-D4', name: 'Sticker Moustache', promptPhrase: 'puffy 3D moustache sticker, slightly tilted, fun' },
+        { id: 'FD-MT-D5', name: 'Doodle Trophy', promptPhrase: 'hand-drawn #1 Dad trophy, wobbly outlines' },
+      ],
+      E: [
+        { id: 'FD-MT-E0', name: 'None', promptPhrase: 'no decorative motifs, completely clean' },
+        { id: 'FD-MT-E1', name: 'Watercolour Heart', promptPhrase: 'soft-edge heart in warm rose blush watercolour wash' },
+        { id: 'FD-MT-E2', name: 'Pastel Star', promptPhrase: 'gentle pastel star shape, no hard edges' },
+        { id: 'FD-MT-E3', name: 'Soft Leaf Wreath', promptPhrase: 'delicate botanical wreath arc, watercolour, framing text' },
+      ],
+    },
+    atmosphere: {
+      atmosphereInline: "Father's Day celebration, warm emotional family setting",
+      atmosphereSentenceCase: "Father's Day celebration, warm emotional family setting",
+      sceneAuthenticity: 'real warm Indian family moment, father-child bond',
+      gemSettingContext: "a warm Father's Day scene — home, park, or family setting",
+      lightTimeContext: 'natural warm golden light, emotional and intimate',
+      stylePhMoodWord: 'family',
+    },
+    negatives: ['funeral', 'mourning', 'sad', 'dark mood', 'horror', 'lonely', 'abandoned', 'cold', 'harsh', 'angry', 'violent', 'broken'],
+    fireflyAtm: "Father's Day warmth, family bond, proud",
+    fireflyMood: 'warm, proud, loving, nostalgic, grateful',
+    fireflyB1Scene: 'father and child moment, warm golden home or park',
+    layoutBias: { L5: 'best', L2: 'best', L1: 'works', L6: 'works', L3: 'works', L4: 'works' },
+  },
+
+  'shivji': {
+    id: 'shivji', name: 'Devotional — Shivji', icon: '🔱',
+    desc: 'Lord Shiva — Mahadev devotional, Sawan, Maha Shivratri, daily Shiv bhakti.',
+    heroText: 'ॐ नमः शिवाय',
+    heroLangVariants: ['ॐ नमः शिवाय', 'हर हर महादेव', 'Om Namah Shivaya'],
+    customText: true,
+    blockedTracks: ['D'],
+    appliesOverlays: ['OV-DEV', 'OV-RAIN'],
+    carryoverIds: ['GM-I3-02', 'GM-I4-01'],
+    illusCats: [
+      { id: 'SH-FORMS', name: 'Shiva — Iconic Forms', icon: '🔱', items: [
+        { id: 'SH-I01', name: 'Shiva Lingam', desc: 'Smooth black/grey Shiva lingam with bilva leaves and flowers on top, water drops (abhishek), warm stone texture.', archs: 'A1, A2, B1' },
+        { id: 'SH-I02', name: 'Trishul (Trident)', desc: "Shiva's trident vertical with damru drum at shaft, iron silver metallic, powerful.", archs: 'A1, A2' },
+        { id: 'SH-I03', name: 'Damru (Drum)', desc: "Small hourglass drum with string tassels, Shiva's instrument, warm wood tones.", archs: 'A1, A2' },
+        { id: 'SH-I04', name: 'Nandi (Bull)', desc: 'Sacred bull Nandi seated facing forward, stone carved or naturalistic, serene strong.', archs: 'A1, A2, B1' },
+        { id: 'SH-I05', name: 'Third Eye (Stylised)', desc: 'Vertical third eye with radiating energy, sacred symbol, warm golden saffron glow.', archs: 'A1, A2' },
+        { id: 'SH-I06', name: 'Rudraksha Mala', desc: 'Rudraksha prayer beads in gentle coil or draped, deep brown beads visible texture.', archs: 'A1, A2' },
+        { id: 'SH-I07', name: 'Crescent Moon', desc: "Thin crescent moon (Shiva's head ornament), silver-white against dark or warm sky.", archs: 'A1, A2' },
+        { id: 'SH-I08', name: 'Snake (Vasuki)', desc: 'Sacred cobra coiled or hooded on Shiva lingam or standalone, mythical not threatening.', archs: 'A1, A2' },
+      ]},
+      { id: 'SH-SCENES', name: 'Shiva — Scenes & Settings', icon: '🏔️', items: [
+        { id: 'SH-I09', name: 'Mount Kailash', desc: 'Snow-capped Kailash peak against blue or dawn sky, sacred mountain majestic.', archs: 'A2, B1' },
+        { id: 'SH-I10', name: 'Ganga Flowing', desc: 'River Ganga flowing from mountain rocks, white water, lush green banks, sacred river.', archs: 'B1' },
+        { id: 'SH-I11', name: 'Shiva Temple (Silhouette)', desc: 'Temple gopuram silhouette against dawn sky with trishul flag on top.', archs: 'A1, A2, B1' },
+        { id: 'SH-I12', name: 'Meditation Cave', desc: "Rocky cave entrance with soft light inside, Himalayan setting, Shiva's meditation space.", archs: 'B1' },
+        { id: 'SH-I13', name: 'Bel / Bilva Tree', desc: "Sacred bilva tree with three-leaf clusters, Shiva's favourite tree, green natural.", archs: 'A1, A2' },
+        { id: 'SH-I14', name: 'Burning Pyre / Sacred Fire', desc: 'Sacred dhuni fire with rising smoke, Shiva as the ascetic, warm amber tones.', archs: 'A1, A2, B1' },
+      ]},
+      { id: 'SH-POOJA', name: 'Pooja & Devotional', icon: '🪔', items: [
+        { id: 'SH-I15', name: 'Bilva Leaves on Lingam', desc: 'Three-leaf bilva clusters placed atop Shiva lingam, close-up devotional act.', archs: 'A1, A2' },
+        { id: 'SH-I16', name: 'Abhishek (Water Pour)', desc: 'Water or milk poured over Shiva lingam from brass vessel, ritual sacred.', archs: 'A1, A2, B1' },
+        { id: 'SH-I17', name: 'Shiva Pooja Thali', desc: 'Brass thali with bilva leaves, flowers, kumkum, vibhuti, diya, water vessel.', archs: 'A1, A2' },
+        { id: 'SH-I18', name: 'Vibhuti (Ash Lines)', desc: "Three horizontal ash lines (tripundra) — Shiva's forehead mark, standalone symbol.", archs: 'A1, A2' },
+        { id: 'SH-I19', name: 'Kanwar (Water Pot on Pole)', desc: 'Decorated kanwar — bamboo pole with water pots hung on either side, Sawan pilgrimage symbol.', archs: 'A1, A2' },
+        { id: 'SH-I20', name: 'Ganga Aarti', desc: 'Row of diyas floating on river water at dusk, Ganga aarti scene, sacred warm glow.', archs: 'B1' },
+      ]},
+    ],
+    motifs: {
+      A: [
+        { id: 'SH-MT-A1', name: 'Gold Trishul', promptPhrase: 'ornate gold trident motif, embossed raised, repeating at frame top' },
+        { id: 'SH-MT-A2', name: 'Damru with Gold Bells', promptPhrase: 'small damru drums with tiny gold bells, frame corner accents' },
+        { id: 'SH-MT-A3', name: 'Rudraksha String', promptPhrase: 'rudraksha bead garland running along frame edge, gold thread' },
+        { id: 'SH-MT-A4', name: 'Snake (Ornate)', promptPhrase: 'stylised ornate cobra in gold, coiled at frame corners' },
+        { id: 'SH-MT-A5', name: 'Om with Trishul Halo', promptPhrase: 'Om symbol with trishul radiating behind, gold foil sacred' },
+      ],
+      B: [
+        { id: 'SH-MT-B1', name: 'Block-Print Trishul', promptPhrase: 'trishul in block-print pattern fill, indigo saffron on cream' },
+        { id: 'SH-MT-B2', name: 'Modern Damru Icon', promptPhrase: 'clean 2-colour damru icon, geometric modern rendering' },
+        { id: 'SH-MT-B3', name: 'Bilva Leaf Trio', promptPhrase: 'three-leaf bilva cluster, clean modern illustration' },
+        { id: 'SH-MT-B4', name: 'Crescent Moon (Line)', promptPhrase: 'thin crescent moon, modern clean rendering, silver-gold' },
+      ],
+      C: [
+        { id: 'SH-MT-C0', name: 'None', promptPhrase: 'no decorative motifs, completely clean' },
+        { id: 'SH-MT-C1', name: 'Minimal Trishul Line', promptPhrase: 'trishul drawn with single continuous line, thin stroke' },
+        { id: 'SH-MT-C2', name: 'Dot Tripundra', promptPhrase: "three subtle horizontal dots suggesting Shiva's ash lines" },
+      ],
+      E: [
+        { id: 'SH-MT-E0', name: 'None', promptPhrase: 'no decorative motifs, completely clean' },
+        { id: 'SH-MT-E1', name: 'Watercolour Trishul', promptPhrase: 'soft-edge trishul in warm saffron watercolour wash' },
+        { id: 'SH-MT-E2', name: 'Pastel Bilva Leaf', promptPhrase: 'gentle pastel bilva three-leaf, soft green wash' },
+        { id: 'SH-MT-E3', name: 'Soft Rudraksha Wash', promptPhrase: 'watercolour rudraksha beads, warm brown, diffused edges' },
+      ],
+    },
+    atmosphere: {
+      atmosphereInline: 'Shiva devotional setting, sacred Mahadev worship atmosphere',
+      atmosphereSentenceCase: 'Shiva devotional setting, sacred Mahadev worship atmosphere',
+      sceneAuthenticity: 'real Shiva temple or Himalayan sacred setting',
+      gemSettingContext: 'a Shiva devotional scene — temple, Kailash, or river ghats',
+      lightTimeContext: 'natural sacred light, dawn or dusk, divine glow',
+      stylePhMoodWord: 'devotional',
+    },
+    negatives: ['funeral', 'dark mood', 'horror', 'cartoon', 'doodle', 'playful', 'comic', 'modern urban', 'neon', 'nightclub', 'party', 'alcohol', 'other deities', 'cross-faith symbols'],
+    fireflyAtm: 'Shiva devotional, sacred Mahadev, temple glow',
+    fireflyMood: 'reverent, powerful, meditative, sacred',
+    fireflyB1Scene: 'Shiva temple at dawn, Kailash, lingam pooja',
+    layoutBias: { L2: 'best', L5: 'best', L6: 'works', L1: 'works', L3: 'works', L4: 'works' },
+  },
+
+  'ganeshji': {
+    id: 'ganeshji', name: 'Devotional — Ganeshji', icon: '🐘',
+    desc: 'Lord Ganesha — Ganpati bhakti, Ganesh Chaturthi, Wednesday devotional.',
+    heroText: 'गणपति बप्पा मोरया',
+    heroLangVariants: ['गणपति बप्पा मोरया', 'श्री गणेशाय नमः', 'Jai Ganesh'],
+    customText: true,
+    blockedTracks: ['D'],
+    appliesOverlays: ['OV-DEV', 'OV-RAIN'],
+    carryoverIds: ['GM-I3-01', 'GM-I4-01', 'GM-I3-02'],
+    illusCats: [
+      { id: 'GN-FORMS', name: 'Ganesh — Iconic Forms', icon: '🐘', items: [
+        { id: 'GN-I01', name: 'Ganesh Idol (Seated)', desc: 'Traditional Ganesh murti — seated, trunk curved left, blessing hand, holding modak, ornate golden red.', archs: 'A1, A2, B1' },
+        { id: 'GN-I02', name: 'Ganesh Face (Close-up)', desc: 'Elephant face with large ears, gentle eyes, curved trunk, small tusk, warm benevolent expression.', archs: 'A1, A2' },
+        { id: 'GN-I03', name: 'Modak (Sweet)', desc: "Single or pile of modak — Ganesh's favourite sweet, round pleated steaming, warm brown white.", archs: 'A1, A2' },
+        { id: 'GN-I04', name: 'Mouse (Mushak)', desc: "Small mouse, Ganesh's vehicle, sitting alert with a modak, charming gentle.", archs: 'A1, A2' },
+        { id: 'GN-I05', name: 'Om / Ganesha Om', desc: "Om symbol stylised with Ganesh's trunk forming the curve, sacred iconic.", archs: 'A1, A2' },
+        { id: 'GN-I06', name: 'Ganesh Silhouette', desc: 'Elegant silhouette of Ganesh in seated pose against warm background, clean outline.', archs: 'A1, A2, B1' },
+        { id: 'GN-I07', name: 'Broken Tusk', desc: "Ganesh's single tusk — standalone sacred symbol, gold or ivory tone.", archs: 'A1, A2' },
+        { id: 'GN-I08', name: 'Lotus Seat (with Ganesh)', desc: 'Open lotus with small Ganesh silhouette seated on it, sacred elevated.', archs: 'A1, A2' },
+      ]},
+      { id: 'GN-SCENE', name: 'Setting & Scene', icon: '🏛️', items: [
+        { id: 'GN-I09', name: 'Ganesh Mandal (Pandal)', desc: 'Decorated Ganesh Chaturthi pandal with lights, marigold, idol inside, festival energy.', archs: 'B1' },
+        { id: 'GN-I10', name: 'Ganesh Visarjan (Procession)', desc: 'Devotees carrying Ganesh idol through streets for immersion, dhol drums energy.', archs: 'B1' },
+        { id: 'GN-I11', name: 'Ganesh Temple Doorway', desc: 'Ornate temple entrance with Ganesh carved above, stone warm light sacred.', archs: 'B1' },
+        { id: 'GN-I12', name: 'Home Pooja Setup', desc: 'Small Ganesh murti on decorated platform — flowers, diya, modak, coconut, intimate setting.', archs: 'A1, A2, B1' },
+      ]},
+      { id: 'GN-POOJA', name: 'Pooja & Devotional', icon: '🪔', items: [
+        { id: 'GN-I13', name: 'Ganesh Pooja Thali', desc: 'Brass thali with modak, durva grass, red flowers, kumkum, rice, diya, Ganesh-specific set.', archs: 'A1, A2' },
+        { id: 'GN-I14', name: 'Durva Grass Bundle', desc: 'Bundle of 3-blade durva grass — sacred to Ganesh, fresh green tied with red thread.', archs: 'A1, A2' },
+        { id: 'GN-I15', name: 'Coconut (Whole)', desc: 'Whole coconut with husk — Ganesh offering, sits on brass stand or banana leaf.', archs: 'A1, A2' },
+        { id: 'GN-I16', name: 'Red Hibiscus Flowers', desc: "Red hibiscus (jasvand) — Ganesh's sacred flower, 2-3 blooms vivid red fresh.", archs: 'A1, A2' },
+        { id: 'GN-I17', name: 'Dhol / Drum', desc: 'Large dhol drum — played during Ganesh Chaturthi processions, festive rhythmic energy.', archs: 'A1, A2' },
+        { id: 'GN-I18', name: 'Rangoli (Ganesh)', desc: "Floor rangoli pattern with Ganesh motif — coloured powder bird's-eye view.", archs: 'A2, B1' },
+        { id: 'GN-I19', name: 'Mango Leaf Toran with Marigold', desc: 'Door-hanging toran with mango leaves and marigold garland, festive welcome.', archs: 'A1, A2' },
+      ]},
+    ],
+    motifs: {
+      A: [
+        { id: 'GN-MT-A1', name: 'Gold Ganesh Silhouette', promptPhrase: 'small ornate Ganesh seated silhouette in gold foil, repeating' },
+        { id: 'GN-MT-A2', name: 'Modak String', promptPhrase: 'row of modak sweets with gold detailing along frame edge' },
+        { id: 'GN-MT-A3', name: 'Marigold & Durva Garland', promptPhrase: 'marigold toran with durva grass, gold accents' },
+        { id: 'GN-MT-A4', name: 'Om with Ganesh Trunk', promptPhrase: 'Om symbol where the curve is formed by a small trunk, gold foil' },
+        { id: 'GN-MT-A5', name: 'Sparkle Cluster', promptPhrase: 'standard celebration sparkle with warm golden tone' },
+      ],
+      B: [
+        { id: 'GN-MT-B1', name: 'Block-Print Ganesh', promptPhrase: 'Ganesh silhouette in block-print style fill, saffron red on cream' },
+        { id: 'GN-MT-B2', name: 'Rangoli Corner (Ganesh)', promptPhrase: 'quarter-rangoli pattern with Ganesh motif at corners' },
+        { id: 'GN-MT-B3', name: 'Modern Modak Icon', promptPhrase: 'clean 2-colour modak icon, simple geometric' },
+        { id: 'GN-MT-B4', name: 'Durva Grass Line', promptPhrase: 'simple row of three-blade durva grass along frame base' },
+      ],
+      C: [
+        { id: 'GN-MT-C0', name: 'None', promptPhrase: 'no decorative motifs, completely clean' },
+        { id: 'GN-MT-C1', name: 'Minimal Ganesh Line', promptPhrase: 'Ganesh silhouette drawn with single continuous line' },
+        { id: 'GN-MT-C2', name: 'Single Modak Outline', promptPhrase: 'one modak outline, no fill, warm grey' },
+      ],
+      E: [
+        { id: 'GN-MT-E0', name: 'None', promptPhrase: 'no decorative motifs, completely clean' },
+        { id: 'GN-MT-E1', name: 'Watercolour Ganesh', promptPhrase: 'soft-edge Ganesh silhouette in warm saffron watercolour' },
+        { id: 'GN-MT-E2', name: 'Pastel Hibiscus', promptPhrase: 'gentle pastel red hibiscus, soft edges' },
+        { id: 'GN-MT-E3', name: 'Soft Marigold Wash', promptPhrase: 'watercolour marigold bloom, warm orange bleed' },
+      ],
+    },
+    atmosphere: {
+      atmosphereInline: 'Ganesh devotional setting, Ganpati worship atmosphere',
+      atmosphereSentenceCase: 'Ganesh devotional setting, Ganpati worship atmosphere',
+      sceneAuthenticity: 'real Ganesh pooja or Chaturthi celebration setting',
+      gemSettingContext: 'a Ganesh devotional scene — home pooja, temple, or mandal',
+      lightTimeContext: 'natural warm sacred light, festive diya glow',
+      stylePhMoodWord: 'devotional',
+    },
+    negatives: ['funeral', 'dark mood', 'horror', 'cartoon', 'doodle', 'playful', 'comic', 'modern urban', 'neon', 'nightclub', 'party', 'alcohol', 'other deities', 'cross-faith symbols'],
+    fireflyAtm: 'Ganesh devotional, Ganpati pooja, sacred',
+    fireflyMood: 'auspicious, joyful, blessed, sacred',
+    fireflyB1Scene: 'Ganesh idol home pooja, mandal decoration, festive',
+    layoutBias: { L2: 'best', L5: 'best', L6: 'works', L1: 'works', L3: 'works', L4: 'works' },
+  },
+
+  'jesus': {
+    id: 'jesus', name: 'Devotional — Jesus', icon: '✝️',
+    desc: 'Christian devotional — Sunday blessings, Christmas, Easter, faith inspiration.',
+    heroText: 'God Bless You',
+    heroLangVariants: ['God Bless You', 'Praise the Lord', 'प्रभु आपको आशीर्वाद दें'],
+    customText: true,
+    blockedTracks: ['D'],
+    appliesOverlays: ['OV-DEV'],
+    carryoverIds: ['GM-I4-01', 'GM-I3-02'],
+    illusCats: [
+      { id: 'JE-SYMBOLS', name: 'Sacred Symbols', icon: '✝️', items: [
+        { id: 'JE-I01', name: 'Cross (Wooden)', desc: 'Simple wooden cross, warm brown, natural grain texture, clean dignified.', archs: 'A1, A2, B1' },
+        { id: 'JE-I02', name: 'Cross (Golden / Ornate)', desc: 'Gold ornate cross with scrollwork detail, celebratory Christmas Easter energy.', archs: 'A1, A2' },
+        { id: 'JE-I03', name: 'Rosary Beads', desc: 'String of rosary beads with crucifix, draped gently, warm wood or pearl tones.', archs: 'A1, A2' },
+        { id: 'JE-I04', name: 'Dove (Peace)', desc: 'White dove in flight, wings spread, carrying olive branch, peace Holy Spirit.', archs: 'A1, A2, B1' },
+        { id: 'JE-I05', name: 'Bible (Open)', desc: 'Open Bible with visible pages, warm light falling on it, leather cover gold-edge pages.', archs: 'A1, A2, B1' },
+        { id: 'JE-I06', name: 'Praying Hands', desc: 'Two hands clasped in prayer, warm side-lighting, reverent universal.', archs: 'A1, A2, B1' },
+        { id: 'JE-I07', name: 'Fish (Ichthys)', desc: 'Simple Christian fish symbol, clean line or gold, ancient symbolic.', archs: 'A1, A2' },
+        { id: 'JE-I08', name: 'Crown of Thorns', desc: 'Woven thorn crown, laid on cloth or wood surface, solemn powerful.', archs: 'A1, A2' },
+      ]},
+      { id: 'JE-CHURCH', name: 'Church & Setting', icon: '⛪', items: [
+        { id: 'JE-I09', name: 'Church (Exterior)', desc: 'Indian church building — white walls, cross on steeple, warm morning light, Goa/Kerala/CNI style.', archs: 'A1, A2, B1' },
+        { id: 'JE-I10', name: 'Church Interior (Aisle)', desc: 'Church interior with pews, stained glass light, candles, warm peaceful.', archs: 'B1' },
+        { id: 'JE-I11', name: 'Stained Glass Window', desc: 'Colourful stained glass window with light streaming through, sacred warm colours.', archs: 'A1, A2' },
+        { id: 'JE-I12', name: 'Church Bell', desc: 'Single church bell, brass, warm tones, Sunday morning call.', archs: 'A1, A2' },
+        { id: 'JE-I13', name: 'Sunset Cross (Hilltop)', desc: 'Cross silhouette on hilltop against golden sunset, iconic dramatic hopeful.', archs: 'A2, B1' },
+      ]},
+      { id: 'JE-DEVOTIONAL', name: 'Devotional & Atmosphere', icon: '🕯️', items: [
+        { id: 'JE-I14', name: 'Candle Row (Vigil)', desc: 'Row of lit prayer candles in glass holders, church setting, warm glow devotional.', archs: 'A1, A2, B1' },
+        { id: 'JE-I15', name: 'Olive Branch', desc: 'Single olive branch with small green olives, peace reconciliation.', archs: 'A1, A2' },
+        { id: 'JE-I16', name: 'Light Rays (Divine)', desc: 'Dramatic god-rays streaming through clouds or window, divine light hope.', archs: 'A2, B1' },
+        { id: 'JE-I17', name: 'Lily / White Flowers', desc: 'White Easter lily or white flowers, purity resurrection celebration.', archs: 'A1, A2' },
+        { id: 'JE-I18', name: 'Bread & Wine', desc: 'Simple bread loaf and wine chalice, communion fellowship, warm still-life.', archs: 'A1, A2, B1' },
+      ]},
+    ],
+    motifs: {
+      A: [
+        { id: 'JE-MT-A1', name: 'Gold Cross', promptPhrase: 'ornate gold cross motif, embossed, repeating at frame corners' },
+        { id: 'JE-MT-A2', name: 'Dove with Rays', promptPhrase: 'small gold dove with radiating light lines, sacred energy' },
+        { id: 'JE-MT-A3', name: 'Lily & Vine Garland', promptPhrase: 'white lily and green vine running along frame edge, gold highlights' },
+        { id: 'JE-MT-A4', name: 'Rosary Loop', promptPhrase: 'small rosary bead loop motif in gold, corner accent' },
+        { id: 'JE-MT-A5', name: 'Stained Glass Border', promptPhrase: 'abstract stained-glass colour pattern along frame edge' },
+      ],
+      B: [
+        { id: 'JE-MT-B1', name: 'Modern Cross Icon', promptPhrase: 'clean 2-colour cross, minimal geometric rendering' },
+        { id: 'JE-MT-B2', name: 'Olive Branch Strip', promptPhrase: 'simple olive branch running along frame base, modern illustration' },
+        { id: 'JE-MT-B3', name: 'Dove (Line Art)', promptPhrase: 'clean minimal dove outline, modern style' },
+        { id: 'JE-MT-B4', name: 'Candle Icon Row', promptPhrase: 'simple candle silhouettes at frame base, warm' },
+      ],
+      C: [
+        { id: 'JE-MT-C0', name: 'None', promptPhrase: 'no decorative motifs, completely clean' },
+        { id: 'JE-MT-C1', name: 'Minimal Cross Line', promptPhrase: 'cross drawn with single thin lines, no fill, muted gold' },
+        { id: 'JE-MT-C2', name: 'Single Dove Outline', promptPhrase: 'one dove outline, barely-there, elegant' },
+      ],
+      E: [
+        { id: 'JE-MT-E0', name: 'None', promptPhrase: 'no decorative motifs, completely clean' },
+        { id: 'JE-MT-E1', name: 'Watercolour Cross', promptPhrase: 'soft-edge cross in warm gold cream watercolour wash' },
+        { id: 'JE-MT-E2', name: 'Pastel Lily', promptPhrase: 'gentle pastel white lily, soft green leaf, no hard edges' },
+        { id: 'JE-MT-E3', name: 'Soft Candle Glow', promptPhrase: 'watercolour candle with warm light bloom' },
+      ],
+    },
+    atmosphere: {
+      atmosphereInline: 'Christian devotional setting, peaceful church or prayer atmosphere',
+      atmosphereSentenceCase: 'Christian devotional setting, peaceful church or prayer atmosphere',
+      sceneAuthenticity: 'real Indian church or Christian home prayer setting',
+      gemSettingContext: 'a Christian devotional scene — church, prayer room, or countryside with cross',
+      lightTimeContext: 'natural warm light, divine rays, peaceful morning or golden hour',
+      stylePhMoodWord: 'devotional',
+    },
+    negatives: ['funeral', 'horror', 'dark mood', 'cartoon', 'doodle', 'playful', 'comic', 'neon', 'nightclub', 'party', 'alcohol', 'Hindu deities', 'Islamic symbols', 'temple', 'mosque'],
+    fireflyAtm: 'Christian devotional, peaceful church, divine light',
+    fireflyMood: 'blessed, peaceful, hopeful, serene',
+    fireflyB1Scene: 'Indian church morning, cross sunrise, prayer candles',
+    layoutBias: { L2: 'best', L5: 'best', L1: 'works', L6: 'works', L3: 'works', L4: 'works' },
+  },
+
+  'islamic': {
+    id: 'islamic', name: 'Devotional — Islamic', icon: '☪️',
+    desc: 'Islamic devotional — Jumma Mubarak, Ramadan, Eid, Salam blessings.',
+    heroText: 'Jumma Mubarak',
+    heroLangVariants: ['Jumma Mubarak', 'Assalamu Alaikum', 'بسم الله الرحمن الرحیم', 'अल्लाह की रहमत'],
+    customText: true,
+    blockedTracks: ['D'],
+    appliesOverlays: ['OV-DEV'],
+    carryoverIds: ['GM-I4-01'],
+    illusCats: [
+      { id: 'IS-SYMBOLS', name: 'Sacred Symbols', icon: '☪️', items: [
+        { id: 'IS-I01', name: 'Crescent Moon & Star', desc: 'Islamic crescent moon with five-pointed star, gold or silver on dark green background, iconic.', archs: 'A1, A2' },
+        { id: 'IS-I02', name: 'Mosque Silhouette', desc: 'Mosque with dome and minarets, silhouette against dawn/dusk sky, clean outline universal.', archs: 'A1, A2, B1' },
+        { id: 'IS-I03', name: 'Quran (Open)', desc: 'Open Holy Quran on wooden rehal (book stand), warm light falling on pages, reverent sacred.', archs: 'A1, A2, B1' },
+        { id: 'IS-I04', name: 'Tasbih (Prayer Beads)', desc: 'String of 33/99 prayer beads, usually green or dark wood, with tassel, draped gently.', archs: 'A1, A2' },
+        { id: 'IS-I05', name: 'Arabic Calligraphy (Bismillah)', desc: 'Beautiful Arabic calligraphy of "Bismillah" in decorative script, gold or dark ink.', archs: 'A1, A2' },
+        { id: 'IS-I06', name: 'Praying Hands (Dua)', desc: 'Hands raised in dua (supplication), palms up, warm light reverent.', archs: 'A1, A2, B1' },
+        { id: 'IS-I07', name: 'Lantern (Fanoos)', desc: 'Traditional Ramadan lantern, lit from inside, ornate metalwork, warm golden glow.', archs: 'A1, A2' },
+        { id: 'IS-I08', name: 'Dates (Khajoor)', desc: 'Bowl or plate of dates — iftar essential, warm brown natural.', archs: 'A1, A2' },
+      ]},
+      { id: 'IS-MOSQUE', name: 'Mosque & Setting', icon: '🕌', items: [
+        { id: 'IS-I09', name: 'Mosque (Grand, Front View)', desc: 'Grand mosque facade with central dome, twin minarets, arched entrance, Indian Mughal/Indo-Saracenic.', archs: 'B1' },
+        { id: 'IS-I10', name: 'Mosque Interior (Mihrab)', desc: 'Interior showing mihrab (prayer niche), arched columns, geometric tile, prayer carpet, peaceful vast.', archs: 'B1' },
+        { id: 'IS-I11', name: 'Minaret (Close-up)', desc: 'Single minaret tower against sky, detailed stonework, call to prayer symbol.', archs: 'A1, A2, B1' },
+        { id: 'IS-I12', name: 'Jali Screen (Geometric)', desc: 'Ornate carved stone jali/lattice screen with geometric Islamic pattern, light filtering through.', archs: 'A1, A2, B1' },
+      ]},
+      { id: 'IS-DEVOTIONAL', name: 'Devotional & Atmosphere', icon: '🕯️', items: [
+        { id: 'IS-I13', name: 'Prayer Cap & Beads', desc: 'White/embroidered prayer cap (topi) with tasbih beads beside it, personal devotional.', archs: 'A1, A2' },
+        { id: 'IS-I14', name: 'Iftar Table', desc: 'Table set for iftar — dates, water, fruit, samosa, warm light family gathering.', archs: 'B1' },
+        { id: 'IS-I15', name: 'Full Moon (Eid Moon)', desc: 'Full or crescent moon in clear sky — Eid moon sighting, silver-gold luminous.', archs: 'A1, A2, B1' },
+        { id: 'IS-I16', name: 'Islamic Geometric Pattern', desc: 'Standalone geometric Islamic art — interlocking stars, hexagons, arabesques, precise beautiful.', archs: 'A1, A2' },
+        { id: 'IS-I17', name: 'Green Dome', desc: 'Green dome (reference to Masjid-an-Nabawi) — iconic reverent, gold crescent on top.', archs: 'A1, A2' },
+        { id: 'IS-I18', name: 'Rosewater & Attar', desc: 'Small bottle of attar (perfume) or rosewater, delicate fragrant devotional ritual.', archs: 'A1, A2' },
+      ]},
+    ],
+    motifs: {
+      A: [
+        { id: 'IS-MT-A1', name: 'Gold Crescent & Star', promptPhrase: 'ornate gold crescent moon with star, embossed, frame corners' },
+        { id: 'IS-MT-A2', name: 'Islamic Geometric Border', promptPhrase: 'interlocking gold geometric pattern running along frame edge' },
+        { id: 'IS-MT-A3', name: 'Lantern (Fanoos) Row', promptPhrase: 'row of small ornate Ramadan lanterns with gold detailing' },
+        { id: 'IS-MT-A4', name: 'Arabic Calligraphy Accent', promptPhrase: 'small decorative Arabic script motif (non-Quranic), gold foil' },
+        { id: 'IS-MT-A5', name: 'Dome & Minaret Silhouette', promptPhrase: 'small mosque dome and minaret silhouettes in gold, frame top edge' },
+      ],
+      B: [
+        { id: 'IS-MT-B1', name: 'Modern Crescent Icon', promptPhrase: 'clean 2-colour crescent and star, geometric modern rendering' },
+        { id: 'IS-MT-B2', name: 'Geometric Star Pattern', promptPhrase: 'simple Islamic 8-pointed star pattern as corner motif' },
+        { id: 'IS-MT-B3', name: 'Lantern (Line Art)', promptPhrase: 'clean minimal lantern outline, modern illustration' },
+        { id: 'IS-MT-B4', name: 'Arabesque Vine', promptPhrase: 'simple curved vine pattern inspired by Islamic arabesque' },
+      ],
+      C: [
+        { id: 'IS-MT-C0', name: 'None', promptPhrase: 'no decorative motifs, completely clean' },
+        { id: 'IS-MT-C1', name: 'Minimal Crescent Line', promptPhrase: 'thin crescent moon arc, single line, muted gold' },
+        { id: 'IS-MT-C2', name: 'Geometric Star (Single)', promptPhrase: 'one 8-pointed star outline, barely-there, elegant' },
+      ],
+      E: [
+        { id: 'IS-MT-E0', name: 'None', promptPhrase: 'no decorative motifs, completely clean' },
+        { id: 'IS-MT-E1', name: 'Watercolour Crescent', promptPhrase: 'soft-edge crescent moon in warm gold watercolour wash' },
+        { id: 'IS-MT-E2', name: 'Pastel Lantern', promptPhrase: 'gentle pastel Ramadan lantern, soft warm glow' },
+        { id: 'IS-MT-E3', name: 'Soft Geometric Wash', promptPhrase: 'watercolour Islamic geometric star pattern, diffused edges' },
+      ],
+    },
+    atmosphere: {
+      atmosphereInline: 'Islamic devotional setting, peaceful mosque or prayer atmosphere',
+      atmosphereSentenceCase: 'Islamic devotional setting, peaceful mosque or prayer atmosphere',
+      sceneAuthenticity: 'real Indian mosque or Muslim home prayer setting',
+      gemSettingContext: 'an Islamic devotional scene — mosque, prayer room, or iftar setting',
+      lightTimeContext: 'natural warm light, fajr dawn or golden hour, sacred glow',
+      stylePhMoodWord: 'devotional',
+    },
+    negatives: ['funeral', 'horror', 'dark mood', 'cartoon', 'doodle', 'playful', 'comic', 'neon', 'nightclub', 'party', 'alcohol', 'Hindu deities', 'cross', 'church', 'temple', 'pork', 'figurative depiction of Prophet'],
+    fireflyAtm: 'Islamic devotional, mosque prayer, sacred',
+    fireflyMood: 'blessed, peaceful, reverent, serene',
+    fireflyB1Scene: 'Indian mosque at fajr dawn, crescent moon, prayer',
+    layoutBias: { L2: 'best', L5: 'best', L6: 'best', L1: 'works', L3: 'works', L4: 'works' },
+  },
+};
+
+// Helper: returns the active CATEGORY_PACKS entry, or null if STATE.category is one of the original 3 (good_morning, suvichar, birthday).
+function getCategoryPack() {
+  return CATEGORY_PACKS[STATE.category] || null;
+}
+
+// ═══════════════════════════════════════════════════════════════
 // B1 PHOTO BACKGROUND — New data structures
 // ═══════════════════════════════════════════════════════════════
 
@@ -1033,14 +1604,59 @@ const OVERLAYS = [
   },
 ];
 
+// ═══════════════════════════════════════════════════════════════
+// SAFE ZONE — bottom 20% personalization band
+// Reserved for the user to composite their own name/signature/branding
+// post-generation. The hero illustration's main subject and the hero text
+// must stay above this band. Background fill, frame border, and small
+// decorative accents (sparkle, scattered motifs) are FREE to extend into
+// it — that's what keeps the zone from looking empty / odd if the user
+// adds nothing. For B1 the photograph extends naturally with a soft
+// gradient fade-out so the bottom reads as a calm area rather than a
+// hard exclusion strip.
+// ═══════════════════════════════════════════════════════════════
+const SAFE_ZONE_PERCENT = 20;
+const SAFE_ZONE_DESC = 'the bottom 20 percent of the canvas is a clean personalization safe zone — the main illustration subject and any hero text must stay above this zone, but the background colour, frame border, and small decorative accents like sparkle particles or scattered motifs may extend naturally into it so the area never looks empty or out of place';
+const SAFE_ZONE_DESC_B1 = 'the bottom 20 percent of the canvas is a personalization safe zone — the photograph extends naturally to the bottom edge, but the main subject of the photo must stay above this zone and the bottom should soft-gradient fade slightly to a calmer area so user-added text or branding sits comfortably without looking out of place';
+const SAFE_ZONE_FIREFLY_AB = 'Bottom 20% is a clean personalization zone, no main subject or hero text in this band, BG and frame extend naturally.';
+const SAFE_ZONE_FIREFLY_B1 = 'Bottom 20% personalization zone, photo soft-fades, main subject above this band.';
+
+// B1 hero-text colour adapter.
+// Heavy overlay → white always works (dark band beneath text).
+// Light overlay → per-track default since white can vanish on bright/airy or
+// muted-earth photos. Returns { name, desc } where `name` is a short label
+// (used in the audit panel + Firefly compact prompt) and `desc` is the full
+// natural-language phrase injected into Leonardo/Gemini/MJ.
+function getB1TextColour() {
+  const strength = STATE.overlayStrength || 'light';
+  if (strength === 'heavy') {
+    return { name: 'white', desc: 'white' };
+  }
+  const map = {
+    'A': { name: 'white',           desc: 'crisp white' },
+    'B': { name: 'warm cream',      desc: 'warm cream off-white (#FFF7E8) for editorial muted readability' },
+    'C': { name: 'dark',            desc: 'very dark grey or near-black for high-contrast minimal readability' },
+    'D': { name: 'dark warm grey',  desc: 'dark warm grey or charcoal (#2A1F1A) so the type is readable on the bright airy photograph' },
+    'E': { name: 'warm dark',       desc: 'soft warm dark or muted maroon so the type stays readable against pastel dreamy tones' },
+  };
+  return map[STATE.track] || { name: 'white', desc: 'white' };
+}
+
 // Helper: returns the active overlay object (or null)
 function getActiveOverlay() {
   if (!STATE.overlay || STATE.overlay === 'OV-NONE') return null;
   return OVERLAYS.find(o => o.id === STATE.overlay) || null;
 }
 
-// Helper: which overlays are valid for a given base category
+// Helper: which overlays are valid for a given base category.
+// For original categories we read overlay.appliesTo. For CATEGORY_PACKS we honour pack.appliesOverlays
+// (which lists overlay IDs the pack composes with). The "OV-NONE" default is always included.
 function getOverlaysForCategory(catId) {
+  const pack = CATEGORY_PACKS[catId];
+  if (pack) {
+    const allowed = new Set(pack.appliesOverlays || []);
+    return OVERLAYS.filter(o => o.id === 'OV-NONE' || allowed.has(o.id));
+  }
   return OVERLAYS.filter(o => o.appliesTo.includes(catId));
 }
 
@@ -1090,6 +1706,10 @@ function getSteps() {
       : ['template', 'style', 'layout', 'track', 'colour_finish', 'visual', 'intensity'];
   }
   if (isSV) steps.push('custom_text');
+  // CATEGORY_PACKS with `customText: true` (Shivji, Ganeshji, Jesus, Islamic) get the same final
+  // Custom Text step as Suvichar — pre-filled with the pack's default hero text and editable.
+  const _pack = getCategoryPack();
+  if (_pack && _pack.customText) steps.push('custom_text');
   return steps;
 }
 
@@ -1146,6 +1766,14 @@ function getIllusItem() {
     const item = cat.items.find(i => i.id === STATE.illusItem);
     if (item) return item;
   }
+  // Active CATEGORY_PACK native illustrations
+  const pack = getCategoryPack();
+  if (pack) {
+    for (const packCat of (pack.illusCats || [])) {
+      const item = packCat.items.find(i => i.id === STATE.illusItem);
+      if (item) return item;
+    }
+  }
   // Overlay illustrations
   const ov = getActiveOverlay();
   if (ov) {
@@ -1167,7 +1795,16 @@ function getIllusRenderOptions() {
 
 function getMotifOptions() {
   let base;
-  if (STATE.category === 'birthday') {
+  const pack = getCategoryPack();
+  if (pack) {
+    // Category packs ship per-track motif arrays in pack.motifs[track].
+    // Falls back to the framework default if a track isn't listed (e.g. Father's Day Track D).
+    base = (pack.motifs && pack.motifs[STATE.track]) || [];
+    if (base.length === 0) {
+      const map = { A: MOTIF_OPTIONS, B: MOTIF_OPTIONS_B, C: MOTIF_OPTIONS_C, D: MOTIF_OPTIONS_D, E: MOTIF_OPTIONS_E };
+      base = map[STATE.track] || [];
+    }
+  } else if (STATE.category === 'birthday') {
     const bd = { A: BIRTHDAY_MOTIF_OPTIONS_A, B: BIRTHDAY_MOTIF_OPTIONS_B, C: BIRTHDAY_MOTIF_OPTIONS_C, D: BIRTHDAY_MOTIF_OPTIONS_D, E: BIRTHDAY_MOTIF_OPTIONS_E };
     base = bd[STATE.track] || [];
   } else {
@@ -1197,14 +1834,24 @@ function getPaletteCountForTrack(track) {
 }
 
 function getCategoryLabel() {
+  const pack = getCategoryPack();
+  if (pack) return pack.name;
   if (STATE.category === 'suvichar') return 'Suvichar / Quote';
   if (STATE.category === 'birthday') return 'Happy Birthday';
   return 'Good Morning';
 }
 
 // Text rendered onto the poster (Firefly with-text + B1 Firefly with-text).
-// GM/Birthday use the literal greeting; Suvichar uses the user-entered quote.
+// - GM/Birthday: literal greeting
+// - Suvichar: user-entered quote
+// - CATEGORY_PACKS without customText: pack.heroText (fixed)
+// - CATEGORY_PACKS with customText: user-entered text or pack.heroText fallback
 function getDisplayText() {
+  const pack = getCategoryPack();
+  if (pack) {
+    if (pack.customText) return ((STATE.customText || '').trim() || pack.heroText);
+    return pack.heroText;
+  }
   if (STATE.category === 'suvichar') return (STATE.customText || '').trim();
   if (STATE.category === 'birthday') return 'Happy Birthday';
   return 'Good Morning';
@@ -1213,6 +1860,8 @@ function getDisplayText() {
 // Category-specific atmosphere strings used by B1 photo prompt builders.
 // GM values are EXACTLY the strings the builders used to hard-code, so GM prompts stay byte-identical.
 function getCategoryAtmosphere() {
+  const pack = getCategoryPack();
+  if (pack) return pack.atmosphere;
   if (STATE.category === 'birthday') {
     return {
       atmosphereInline: 'Indian birthday celebration setting',
@@ -1285,6 +1934,11 @@ function getFilteredTracks() {
     const feeling = SUVICHAR_FEELINGS.find(f => f.id === STATE.feeling);
     if (feeling) tracks = tracks.filter(t => feeling.allowedTracks.includes(t.id));
   }
+  // CATEGORY_PACK track lock — devotional packs block Track D etc.
+  const pack = getCategoryPack();
+  if (pack && pack.blockedTracks.length) {
+    tracks = tracks.filter(t => !pack.blockedTracks.includes(t.id));
+  }
   // Overlay hard-block filter (Devotional → blocks D, Rain → blocks A, Cricket → blocks E)
   const ov = getActiveOverlay();
   if (ov && ov.blockedTracks.length) {
@@ -1341,6 +1995,42 @@ function getSuvicharIllusCats() {
       ...svCat.items.filter(item => nativeOk(item, svCat.id)),
     ];
     if (items.length > 0) cats.push({ ...svCat, items });
+  }
+  return cats;
+}
+
+// Catalogue resolver for the 7 new CATEGORY_PACKS entries.
+// Returns: GM carry-overs (filtered to current archetype) + native pack illustration sub-categories.
+// Mirrors the shape of getBirthdayIllusCats / getSuvicharIllusCats so applyOverlayToCatalogue and
+// the Visual / B1-Scene steps can consume it identically.
+function getPackIllusCats() {
+  const pack = getCategoryPack();
+  if (!pack) return [];
+  const arch = STATE.archetype;
+  const cats = [];
+
+  // 1. GM carry-overs (filtered by archetype)
+  const carryoverItems = [];
+  for (const gmCat of ILLUS_CATS) {
+    for (const item of gmCat.items) {
+      if (!pack.carryoverIds.includes(item.id)) continue;
+      if (arch === 'B1' && item.archs && !item.archs.includes('All') && !item.archs.includes('B1')) continue;
+      if (arch !== 'B1' && item.archs && !item.archs.includes('All') && !item.archs.includes(arch)) continue;
+      carryoverItems.push(item);
+    }
+  }
+  if (carryoverItems.length > 0) cats.push({ id: pack.id + '-GM', name: 'Carry-overs', icon: '🌸', items: carryoverItems });
+
+  // 2. Pack-native categories (filtered by archetype)
+  for (const packCat of (pack.illusCats || [])) {
+    const items = packCat.items.filter(item => {
+      if (item.archs) {
+        if (arch === 'B1' && !item.archs.includes('B1') && !item.archs.includes('All')) return false;
+        if (arch !== 'B1' && !item.archs.includes(arch) && !item.archs.includes('All')) return false;
+      }
+      return true;
+    });
+    if (items.length > 0) cats.push({ ...packCat, items });
   }
   return cats;
 }
@@ -1425,7 +2115,14 @@ function canProceed() {
       return !!STATE.illusSize;
     }
     case 'intensity': return !!STATE.customPreset;
-    case 'custom_text': return !!STATE.customText && STATE.customText.trim().length > 0;
+    case 'custom_text': {
+      // Suvichar requires non-empty input (no default).
+      // CATEGORY_PACK editable-text categories (Shivji etc.) accept empty because the pack's
+      // heroText is the fallback default — the user can leave it untouched and ship.
+      const _p = getCategoryPack();
+      if (_p && _p.customText) return true;
+      return !!STATE.customText && STATE.customText.trim().length > 0;
+    }
     // font_text step removed
     // B1 Photo Background specific steps
     case 'scene_elements': return STATE.sceneElements.length >= 1 && STATE.sceneElements.length <= 3;
@@ -1540,21 +2237,29 @@ function layoutDiagram(layout) {
   const L = LAYOUTS.find(l => l.id === layout);
   if (!L) return '';
   const w = 52, h = 74;
+  // Bottom 20% personalization safe zone — drawn as a dashed band over each layout diagram
+  // so users see the reserved area at a glance. Sits at y = 0.8h, height = 0.2h.
+  const sz = `<rect x="2" y="${h*0.8}" width="${w-4}" height="${h*0.2 - 2}" fill="rgba(248,250,252,0.85)" stroke="#94A3B8" stroke-width="0.7" stroke-dasharray="2 1.5" rx="2"/><text x="${w/2}" y="${h-3.5}" text-anchor="middle" font-size="4.5" fill="#64748B" font-style="italic">safe zone</text>`;
   if (L.type === 'vertical') {
-    const tH = L.textFirst ? 28 : 52, vH = L.textFirst ? 52 : 28;
-    const tY = L.textFirst ? 0 : vH, vY = L.textFirst ? tH : 0;
-    return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="margin-bottom:8px;flex-shrink:0;"><rect width="${w}" height="${h}" rx="4" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/><rect y="${tY}" width="${w}" height="${tH}" fill="#BFDBFE" rx="2"/><text x="${w/2}" y="${tY+tH/2+4}" text-anchor="middle" font-size="7" font-weight="800" fill="#1E40AF">T</text><rect y="${vY}" width="${w}" height="${vH}" fill="#FED7AA" rx="2"/><text x="${w/2}" y="${vY+vH/2+4}" text-anchor="middle" font-size="7" font-weight="800" fill="#92400E">V</text></svg>`;
+    // Cap text/visual rects so they don't visually overlap the safe zone band when L5 (text bottom) is drawn.
+    const safeTop = h * 0.8;
+    let tH = L.textFirst ? 28 : 52, vH = L.textFirst ? 52 : 28;
+    let tY = L.textFirst ? 0 : vH, vY = L.textFirst ? tH : 0;
+    // L5: clamp text band to the strip ABOVE the safe zone (60-80% of height)
+    if (!L.textFirst) { tY = h*0.6; tH = h*0.2; vH = h*0.6; vY = 0; }
+    return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="margin-bottom:8px;flex-shrink:0;"><rect width="${w}" height="${h}" rx="4" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/><rect y="${tY}" width="${w}" height="${tH}" fill="#BFDBFE" rx="2"/><text x="${w/2}" y="${tY+tH/2+4}" text-anchor="middle" font-size="7" font-weight="800" fill="#1E40AF">T</text><rect y="${vY}" width="${w}" height="${vH}" fill="#FED7AA" rx="2"/><text x="${w/2}" y="${vY+vH/2+4}" text-anchor="middle" font-size="7" font-weight="800" fill="#92400E">V</text>${sz}</svg>`;
   }
   if (L.type === 'overlay') {
-    return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="margin-bottom:8px;flex-shrink:0;"><rect width="${w}" height="${h}" rx="4" fill="#FED7AA" stroke="#CBD5E1" stroke-width="1.5"/><rect width="${w}" height="${h}" rx="4" fill="rgba(191,219,254,0.65)"/><text x="${w/2}" y="${h/2-4}" text-anchor="middle" font-size="7" font-weight="800" fill="#1E3A5F">T</text><text x="${w/2}" y="${h/2+10}" text-anchor="middle" font-size="6" font-weight="800" fill="#92400E">V</text></svg>`;
+    return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="margin-bottom:8px;flex-shrink:0;"><rect width="${w}" height="${h}" rx="4" fill="#FED7AA" stroke="#CBD5E1" stroke-width="1.5"/><rect width="${w}" height="${h}" rx="4" fill="rgba(191,219,254,0.65)"/><text x="${w/2}" y="${h*0.4-4}" text-anchor="middle" font-size="7" font-weight="800" fill="#1E3A5F">T</text><text x="${w/2}" y="${h*0.4+10}" text-anchor="middle" font-size="6" font-weight="800" fill="#92400E">V</text>${sz}</svg>`;
   }
   if (L.type === 'horizontal') {
     const tW = 20, vW = w - tW;
     const tX = L.textFirst ? 0 : vW, vX = L.textFirst ? tW : 0;
-    return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="margin-bottom:8px;flex-shrink:0;"><rect width="${w}" height="${h}" rx="4" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/><rect x="${tX}" width="${tW}" height="${h}" fill="#BFDBFE"/><text x="${tX+tW/2}" y="${h/2+4}" text-anchor="middle" font-size="7" font-weight="800" fill="#1E40AF">T</text><rect x="${vX}" width="${vW}" height="${h}" fill="#FED7AA"/><text x="${vX+vW/2}" y="${h/2+4}" text-anchor="middle" font-size="7" font-weight="800" fill="#92400E">V</text></svg>`;
+    // Side layouts: text/visual rects span full height, but the dashed band on top still flags the reserved area.
+    return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="margin-bottom:8px;flex-shrink:0;"><rect width="${w}" height="${h}" rx="4" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/><rect x="${tX}" width="${tW}" height="${h}" fill="#BFDBFE"/><text x="${tX+tW/2}" y="${h*0.45+4}" text-anchor="middle" font-size="7" font-weight="800" fill="#1E40AF">T</text><rect x="${vX}" width="${vW}" height="${h}" fill="#FED7AA"/><text x="${vX+vW/2}" y="${h*0.45+4}" text-anchor="middle" font-size="7" font-weight="800" fill="#92400E">V</text>${sz}</svg>`;
   }
   if (L.type === 'centre-accent') {
-    return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="margin-bottom:8px;flex-shrink:0;"><rect width="${w}" height="${h}" rx="4" fill="#BFDBFE" stroke="#F59E0B" stroke-width="2.5"/><text x="${w/2}" y="${h/2+3}" text-anchor="middle" font-size="8" font-weight="800" fill="#1E40AF">T</text><rect x="${w-16}" y="${h-14}" width="12" height="10" rx="2" fill="#FED7AA"/><text x="${w-10}" y="${h-6}" text-anchor="middle" font-size="5" font-weight="800" fill="#92400E">V</text></svg>`;
+    return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="margin-bottom:8px;flex-shrink:0;"><rect width="${w}" height="${h}" rx="4" fill="#BFDBFE" stroke="#F59E0B" stroke-width="2.5"/><text x="${w/2}" y="${h*0.42+3}" text-anchor="middle" font-size="8" font-weight="800" fill="#1E40AF">T</text><rect x="${w-16}" y="6" width="12" height="10" rx="2" fill="#FED7AA"/><text x="${w-10}" y="14" text-anchor="middle" font-size="5" font-weight="800" fill="#92400E">V</text>${sz}</svg>`;
   }
   return '';
 }
@@ -1657,10 +2362,12 @@ function renderProgress() {
 }
 
 function renderStep1() {
+  // Originals (3) + 7 CATEGORY_PACKS = 10 cards. Pack metadata sourced from CATEGORY_PACKS.
   const categories = [
     { id: 'good_morning', icon: '☀️', name: 'Good Morning', desc: 'Warm, festive poster with sunrise energy. Illustrations, florals, chai — classic morning vibes.' },
     { id: 'suvichar',     icon: '✍️', name: 'Suvichar / Quote', desc: 'Thought-provoking quote cards. Ink, geometry, nature — reflective and meaningful.' },
     { id: 'birthday',     icon: '🎂', name: 'Happy Birthday', desc: 'Celebration-first greeting. Cake, balloons, mithai, sparklers — joyful and festive.' },
+    ...Object.values(CATEGORY_PACKS).map(p => ({ id: p.id, icon: p.icon, name: p.name, desc: p.desc })),
   ];
   let html = `<div class="step-header"><div class="step-eyebrow">Step 1 · Template Selection</div><div class="step-title">Choose Category & Template</div><div class="step-desc">Pick the content category first, then choose a template style.</div></div>`;
 
@@ -1886,8 +2593,13 @@ function renderStep8() {
   let html = `<div class="step-header"><div class="step-eyebrow">Step ${stepNum} · Visual</div><div class="step-title">Illustrations & Details</div><div class="step-desc">First pick your illustration, then choose rendering style and decorative elements.</div></div>`;
   let n = 1;
 
-  // Choose illustration catalogue, then layer overlay (add overlay items, restrict base items)
-  let illusCats = isSV ? getSuvicharIllusCats() : isBD ? getBirthdayIllusCats() : ILLUS_CATS;
+  // Choose illustration catalogue, then layer overlay (add overlay items, restrict base items).
+  // CATEGORY_PACKS (Rath Yatra / Vat Savitri / Father's Day / Shivji / Ganeshji / Jesus / Islamic) take precedence.
+  let illusCats;
+  if (getCategoryPack()) illusCats = getPackIllusCats();
+  else if (isSV) illusCats = getSuvicharIllusCats();
+  else if (isBD) illusCats = getBirthdayIllusCats();
+  else illusCats = ILLUS_CATS;
   illusCats = applyOverlayToCatalogue(illusCats);
 
   // 1. Illustration Category
@@ -1953,12 +2665,36 @@ function renderStep9() {
 // Suvichar — final step: enter the quote text that gets rendered into the poster
 function renderCustomTextStep() {
   const stepNum = getSteps().indexOf('custom_text') + 1;
-  const val = (STATE.customText || '').replace(/"/g, '&quot;');
-  return `<div class="step-header"><div class="step-eyebrow">Step ${stepNum} · Quote Text</div><div class="step-title">Your Quote</div><div class="step-desc">Type the quote / suvichar that should appear on the poster. This text is fed into the image prompt.</div></div>
-    <div class="sub-section"><div class="sub-section-header"><div class="sub-section-num">1</div><div class="sub-section-title">Quote Text</div><div class="sub-section-tag">${(STATE.customText || '').length} chars</div></div>
-    <textarea id="customTextInput" placeholder="e.g. The journey of a thousand miles begins with a single step." oninput="setCustomText(this.value)" style="width:100%;min-height:120px;padding:12px 14px;border:1px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;resize:vertical;line-height:1.5;">${val}</textarea>
+  const pack = getCategoryPack();
+  // For CATEGORY_PACKS with editable text, pre-fill the textarea with the pack's default hero text
+  // (e.g. "ॐ नमः शिवाय") so the user can either keep it or type their own.
+  const isPackEditable = pack && pack.customText;
+  const seeded = STATE.customText || (isPackEditable ? pack.heroText : '');
+  const val = seeded.replace(/"/g, '&quot;');
+  const isSV = STATE.category === 'suvichar';
+  const title = isSV ? 'Your Quote' : 'Your Greeting Text';
+  const eyebrow = isSV ? 'Quote Text' : 'Greeting Text';
+  const desc = isSV
+    ? 'Type the quote / suvichar that should appear on the poster. This text is fed into the image prompt.'
+    : `The default "${pack.heroText}" is pre-filled. Keep it as-is, or type your own ${pack.name} blessing — it will be rendered onto the poster.`;
+  const placeholder = isSV
+    ? 'e.g. The journey of a thousand miles begins with a single step.'
+    : `e.g. ${pack.heroLangVariants ? pack.heroLangVariants.join(' / ') : pack.heroText}`;
+  const variantsRow = isPackEditable && pack.heroLangVariants ? `<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">${pack.heroLangVariants.map(v => `<button type="button" onclick="seedCustomText(${JSON.stringify(v).replace(/"/g, '&quot;')})" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;background:#fff;cursor:pointer;font-size:12px;">${v}</button>`).join('')}</div>` : '';
+  return `<div class="step-header"><div class="step-eyebrow">Step ${stepNum} · ${eyebrow}</div><div class="step-title">${title}</div><div class="step-desc">${desc}</div></div>
+    <div class="sub-section"><div class="sub-section-header"><div class="sub-section-num">1</div><div class="sub-section-title">${title}</div><div class="sub-section-tag">${seeded.length} chars</div></div>
+    <textarea id="customTextInput" placeholder="${placeholder}" oninput="setCustomText(this.value)" style="width:100%;min-height:120px;padding:12px 14px;border:1px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;resize:vertical;line-height:1.5;">${val}</textarea>
+    ${variantsRow}
     <div style="font-size:12px;color:var(--muted);margin-top:8px;">Tip: keep it short (under ~120 chars) so it stays legible on the poster. Long quotes may be truncated by some image models.</div>
     </div>`;
+}
+
+// Helper for the variant chip-row buttons in renderCustomTextStep — re-seeds the textarea + STATE.
+function seedCustomText(v) {
+  STATE.customText = v;
+  const ta = document.querySelector('#customTextInput');
+  if (ta) ta.value = v;
+  setCustomText(v);
 }
 
 function setCustomText(v) {
@@ -2151,7 +2887,11 @@ function renderB1SceneElements() {
 
   // ── Sub-section 1: Main Element ──
   html += `<div class="sub-section"><div class="sub-section-header"><div class="sub-section-num">1</div><div class="sub-section-title">Main Subject</div><div class="sub-section-tag">${mainEl ? '✓ Selected' : 'Pick one'}</div></div>`;
-  const b1CatsBase = STATE.category === 'suvichar' ? getSuvicharIllusCats() : STATE.category === 'birthday' ? getBirthdayIllusCats() : ILLUS_CATS;
+  let b1CatsBase;
+  if (getCategoryPack()) b1CatsBase = getPackIllusCats();
+  else if (STATE.category === 'suvichar') b1CatsBase = getSuvicharIllusCats();
+  else if (STATE.category === 'birthday') b1CatsBase = getBirthdayIllusCats();
+  else b1CatsBase = ILLUS_CATS;
   const b1Cats = applyOverlayToCatalogue(b1CatsBase);
   b1Cats.forEach(cat => {
     html += `<div style="margin-bottom:12px;"><div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px;">${cat.icon} ${cat.name}</div><div class="options-grid cols-4">${cat.items.map(i => {
@@ -2315,6 +3055,9 @@ function buildNegatives() {
   if (STATE.category === 'birthday') {
     negs.push('funeral', 'mourning', 'sad', 'wilted', 'dark mood', 'horror');
   }
+  // CATEGORY_PACK negatives (Rath Yatra, Vat Savitri, Father's Day, Shivji, Ganeshji, Jesus, Islamic)
+  const pack = getCategoryPack();
+  if (pack) negs.push(...pack.negatives);
 
   return negs;
 }
@@ -2397,27 +3140,30 @@ function gatherPromptData() {
     if (accPhrases.length > 0) a2AccentPh = accPhrases.join(', ');
   }
 
-  // Layout text zone phrase
+  // Layout text zone + illustration position phrases
+  // (Updated for the bottom-20% personalization safe zone — see SAFE_ZONE_DESC near the
+  // top of the script. Hero text and main illustration are clamped above the bottom 20%;
+  // BG/frame/accents may extend into the zone.)
   let textZonePh = '';
   let illusPositionPh = '';
   if (layout.id === 'L1') {
     textZonePh = 'text overlay zone in the upper 25 percent of the canvas with no decorative elements in this area';
-    illusPositionPh = 'positioned in the lower portion of the canvas below the text area';
+    illusPositionPh = 'positioned in the centre band of the canvas below the text area, with the main subject staying above the bottom 20 percent personalization safe zone';
   } else if (layout.id === 'L2') {
-    textZonePh = 'text overlay centred on the canvas with semi-transparent breathing space behind it';
-    illusPositionPh = 'positioned centrally on the canvas behind the text overlay';
+    textZonePh = 'text overlay centred at roughly 40 to 50 percent from the top of the canvas with semi-transparent breathing space behind it, never overlapping the bottom 20 percent personalization safe zone';
+    illusPositionPh = 'positioned centrally on the canvas behind the text overlay, main subject above the bottom 20 percent personalization safe zone';
   } else if (layout.id === 'L3') {
-    textZonePh = 'left half reserved for text overlay, right half anchors the visual';
-    illusPositionPh = 'positioned on the right half of the canvas anchoring the visual weight';
+    textZonePh = 'left column reserved for text overlay, text stays above the bottom 20 percent personalization safe zone, right column anchors the visual';
+    illusPositionPh = 'positioned on the right half of the canvas anchoring the visual weight, main subject above the bottom 20 percent personalization safe zone';
   } else if (layout.id === 'L4') {
-    textZonePh = 'right half reserved for text overlay, left half anchors the visual';
-    illusPositionPh = 'positioned on the left half of the canvas anchoring the visual weight';
+    textZonePh = 'right column reserved for text overlay, text stays above the bottom 20 percent personalization safe zone, left column anchors the visual';
+    illusPositionPh = 'positioned on the left half of the canvas anchoring the visual weight, main subject above the bottom 20 percent personalization safe zone';
   } else if (layout.id === 'L5') {
-    textZonePh = 'text overlay zone in the lower 25 percent of the canvas with no decorative elements in this area';
-    illusPositionPh = 'positioned in the upper portion of the canvas above the text area';
+    textZonePh = 'text overlay zone in the band between 60 and 80 percent from the top of the canvas with no decorative elements in this band, leaving the bottom 20 percent clean as a personalization safe zone';
+    illusPositionPh = 'positioned in the upper 60 percent of the canvas above the text band';
   } else if (layout.id === 'L6') {
-    textZonePh = 'text occupies the central 60 percent of the canvas as the dominant element';
-    illusPositionPh = 'placed at a corner of the canvas not overlapping the central text';
+    textZonePh = 'text occupies the central 60 percent of the canvas as the dominant element, kept above the bottom 20 percent personalization safe zone';
+    illusPositionPh = 'placed at an upper corner of the canvas not overlapping the central text and not entering the bottom 20 percent personalization safe zone';
   }
 
   // Colour phrases
@@ -2534,6 +3280,14 @@ function gatherB1PromptData() {
       const item = cat.items.find(i => i.id === id);
       if (item) return { ...item, photoDesc: getB1PhotoDesc(id) || item.desc };
     }
+    // CATEGORY_PACK native items (Rath Yatra etc.)
+    const pack = getCategoryPack();
+    if (pack) {
+      for (const packCat of (pack.illusCats || [])) {
+        const item = packCat.items.find(i => i.id === id);
+        if (item) return { ...item, photoDesc: item.desc };
+      }
+    }
     // Check overlay illustrations
     const ov = getActiveOverlay();
     if (ov) {
@@ -2560,12 +3314,14 @@ function gatherB1PromptData() {
 
   // Layout text zone
   let textZonePh = '';
+  // B1 text zones — text always stays above the bottom 20% personalization safe zone.
+  // L5 text band sits at 60-80% from top so it doesn't enter the safe zone.
   if (layout.id === 'L1') textZonePh = 'text overlay zone at the top of the image';
-  else if (layout.id === 'L2') textZonePh = 'text overlay zone centred on the image';
-  else if (layout.id === 'L3') textZonePh = 'text overlay zone on the left half of the image';
-  else if (layout.id === 'L4') textZonePh = 'text overlay zone on the right half of the image';
-  else if (layout.id === 'L5') textZonePh = 'text overlay zone at the bottom of the image';
-  else if (layout.id === 'L6') textZonePh = 'text overlay zone centred occupying the central area';
+  else if (layout.id === 'L2') textZonePh = 'text overlay zone centred at roughly 40 to 50 percent from the top of the image, kept above the bottom 20 percent personalization zone';
+  else if (layout.id === 'L3') textZonePh = 'text overlay zone on the left half of the image, kept above the bottom 20 percent personalization zone';
+  else if (layout.id === 'L4') textZonePh = 'text overlay zone on the right half of the image, kept above the bottom 20 percent personalization zone';
+  else if (layout.id === 'L5') textZonePh = 'text overlay zone in the band between 60 and 80 percent from the top of the image, leaving the bottom 20 percent clean as a personalization zone';
+  else if (layout.id === 'L6') textZonePh = 'text overlay zone centred at roughly 40 to 50 percent from the top, kept above the bottom 20 percent personalization zone';
 
   // B1 negatives
   let negs = ['text', 'letters', 'words', 'numbers', 'typography', 'illustration', 'cartoon', 'painting', 'drawing', 'sketch', 'vector', 'clipart', 'frame', 'border', 'decorative pattern', 'motif', 'ornamental', 'watermarks', 'logos', 'blurry', 'low quality', 'artificial', 'CGI', 'rendered'];
@@ -2578,6 +3334,9 @@ function gatherB1PromptData() {
   if (STATE.category === 'birthday') {
     negs.push('funeral', 'mourning', 'sad', 'wilted', 'dark mood', 'horror', 'illustrated elements', 'graphic design', 'decorative overlay');
   }
+  // CATEGORY_PACK B1 negatives — pack negatives + B1 illustration guards
+  const _packB1 = getCategoryPack();
+  if (_packB1) negs.push(..._packB1.negatives, 'illustrated elements', 'graphic design');
 
   // Overlay negatives appended last (overlay can only ADD negatives, never remove base/track ones)
   const ov = getActiveOverlay();
@@ -2631,6 +3390,9 @@ function buildB1MJPrompt(d) {
   // Overlay with strength
   if (d.overlayPh) parts.push(d.overlayPh);
 
+  // Personalization safe zone (bottom 20%) — photo soft-fades, main subject above this band.
+  parts.push(SAFE_ZONE_DESC_B1);
+
   // Technical quality
   parts.push('9:16 portrait format, professional DSLR photography, sharp focus on subject, high dynamic range, natural bokeh where appropriate');
 
@@ -2654,9 +3416,12 @@ function buildB1LeonardoPrompt(d) {
   }
   lines.push(`Aesthetic: ${d.photoTrack.promptPhrase}.`);
   if (d.intensity) lines.push(`Camera: ${d.intensity.promptPhrase}.`);
-  // Overlay with strength context
+  // Overlay with strength context + adaptive text colour (Heavy → white; Light → track-tuned)
   const strengthWord = d.overlayStrength === 'heavy' ? 'strong dark' : 'subtle light';
-  lines.push(`Text zone: ${d.textZonePh}. Overlay: ${strengthWord} ${d.overlayPh}. Keep this area darker for white text readability.`);
+  const txtColour = getB1TextColour();
+  lines.push(`Text zone: ${d.textZonePh}. Overlay: ${strengthWord} ${d.overlayPh}. Keep this area readable for ${txtColour.desc} text overlay.`);
+  // Personalization safe zone — bottom 20% reserved
+  lines.push(`Safe zone: ${SAFE_ZONE_DESC_B1}.`);
   lines.push(`Quality: DSLR, sharp focus on subject, natural depth of field.`);
   const coreNegs = ['illustration', 'cartoon', 'painting', 'vector', 'frame', 'border', 'pattern', 'text', 'watermark', 'blurry', 'low quality', 'CGI'];
   if (STATE.category === 'birthday') {
@@ -2687,9 +3452,12 @@ function buildB1FireflyWithTextPrompt(d) {
   if (d.intensity) parts.push(`${trunc(d.intensity.promptPhrase, 80)}.`);
   const strengthHint = d.overlayStrength === 'heavy' ? 'strong dark' : 'subtle';
   parts.push(`${trunc(d.textZonePh, 60)}, ${strengthHint} ${trunc(d.overlayPh, 50)}.`);
+  // Bottom 20% personalization safe zone (compact)
+  parts.push(SAFE_ZONE_FIREFLY_B1);
   const txt = getDisplayText();
-  if (txt) parts.push(`"${txt}" text in white decorative font in the text zone, legible. DSLR quality, sharp focus.`);
-  else parts.push(`Decorative text in white in the text zone, legible. DSLR quality, sharp focus.`);
+  const txtColour = getB1TextColour();
+  if (txt) parts.push(`"${txt}" text in ${txtColour.name} decorative font in the text zone, legible. DSLR quality, sharp focus.`);
+  else parts.push(`Decorative text in ${txtColour.name} in the text zone, legible. DSLR quality, sharp focus.`);
   let result = parts.join(' ');
   if (result.length > 950) result = result.substring(0, 950).replace(/\s+\S*$/, '');
   return result;
@@ -2713,6 +3481,8 @@ function buildB1FireflyNoTextPrompt(d) {
   if (d.intensity) parts.push(`${trunc(d.intensity.promptPhrase, 80)}.`);
   const strengthHint = d.overlayStrength === 'heavy' ? 'strong dark' : 'subtle';
   parts.push(`${trunc(d.textZonePh, 60)} ${strengthHint} overlay for text zone, ${trunc(d.overlayPh, 50)}.`);
+  // Bottom 20% personalization safe zone (compact)
+  parts.push(SAFE_ZONE_FIREFLY_B1);
   parts.push(`DSLR quality, sharp focus on subject. Purely visual, no text, no letters, no typography.`);
   let result = parts.join(' ');
   if (result.length > 950) result = result.substring(0, 950).replace(/\s+\S*$/, '');
@@ -2750,9 +3520,13 @@ function buildB1GeminiPrompt(d) {
   const colourTempMap = { 'MD-1': 'Warm colour temperature around 4500K — amber sunrise warmth.', 'MD-2': 'Neutral colour temperature around 5500K — true-to-life morning tones.', 'MD-3': 'Daylight white balance 5600K — clean bright colours.', 'MD-4': 'Warm dramatic temperature 4200K — emphasise the light-shadow contrast.', 'MD-5': 'Warm analog temperature 4800K — slight colour fade and lifted blacks.', 'MD-6': 'Cool colour temperature 6200K — blue-teal undertones, airy freshness.' };
   if (d.mood && colourTempMap[d.mood.id]) lines.push(`\nColour Temperature: ${colourTempMap[d.mood.id]}`);
 
-  // Layout + Overlay with strength
+  // Layout + Overlay with strength + adaptive text colour
   const strengthDesc = d.overlayStrength === 'heavy' ? 'a strong, clearly visible dark overlay' : 'a subtle, light semi-transparent overlay';
-  lines.push(`\nComposition & Text Zone: The image has ${strengthDesc} — ${d.overlayPh}. The ${d.textZonePh} — this area should be ${d.overlayStrength === 'heavy' ? 'distinctly' : 'slightly'} darker or muted to ensure white text overlay is legible and readable against the photograph.`);
+  const txtColour = getB1TextColour();
+  lines.push(`\nComposition & Text Zone: The image has ${strengthDesc} — ${d.overlayPh}. The ${d.textZonePh} — this area should be ${d.overlayStrength === 'heavy' ? 'distinctly' : 'slightly'} darker or muted to ensure ${txtColour.desc} text overlay is legible and readable against the photograph.`);
+
+  // Personalization safe zone (bottom 20%)
+  lines.push(`\nPersonalization Safe Zone: ${SAFE_ZONE_DESC_B1}.`);
 
   // Technical quality
   lines.push(`\nTechnical Quality: Professional DSLR quality, sharp focus on the main subject, high dynamic range, natural bokeh where the depth of field creates it. The image should look like it was shot by a skilled photographer, not AI-generated.`);
@@ -2803,6 +3577,8 @@ function buildMJPrompt(d) {
   // [Overlay] Atmosphere + mood appended after track style so they layer on top of base aesthetic
   if (d.overlayAtm) parts.push(d.overlayAtm);
   if (d.overlayMood) parts.push(d.overlayMood);
+  // Personalization safe zone (bottom 20%)
+  parts.push(SAFE_ZONE_DESC);
   parts.push('9:16 portrait format');
 
   const mainPrompt = parts.filter(p => p).join(', ');
@@ -2865,6 +3641,9 @@ function buildLeonardoPrompt(d) {
     if (d.overlayMood) lines.push(`Mood: ${d.overlayMood}.`);
   }
 
+  // Personalization safe zone (bottom 20%)
+  lines.push(`Safe zone: ${SAFE_ZONE_DESC}.`);
+
   const coreNegs = buildLeonardoNegatives(d);
   if (d.overlayNegs && d.overlayNegs.length) coreNegs.push(...d.overlayNegs);
   lines.push(`Negative: ${coreNegs.join(', ')}`);
@@ -2924,6 +3703,8 @@ function buildFireflyWithTextPrompt(d) {
   if (d.track.id === 'A') parts.push('Sparkle particles.');
   // Overlay compact atmosphere — bounded ≤50 chars per Section 6.4 of overlay spec
   if (d.overlayFireflyAtm) parts.push(`${trunc(d.overlayFireflyAtm, 50)}.`);
+  // Bottom 20% personalization safe zone (compact)
+  parts.push(SAFE_ZONE_FIREFLY_AB);
   {
     const txt = getDisplayText();
     const guard = d.overlayFireflyNegGuard ? `, ${d.overlayFireflyNegGuard}` : '';
@@ -2962,6 +3743,8 @@ function buildFireflyNoTextPrompt(d) {
   if (d.track.id === 'A') parts.push('Sparkle particles.');
   // Overlay compact atmosphere
   if (d.overlayFireflyAtm) parts.push(`${trunc(d.overlayFireflyAtm, 50)}.`);
+  // Bottom 20% personalization safe zone (compact)
+  parts.push(SAFE_ZONE_FIREFLY_AB);
   const guard2 = d.overlayFireflyNegGuard ? ` Do not include ${d.overlayFireflyNegGuard}.` : '';
   parts.push(`Purely visual, no text, no letters, no typography.${guard2}`);
   let result = parts.join(' ');
@@ -3024,6 +3807,9 @@ function buildGeminiPrompt(d) {
   if (d.overlay) {
     lines.push(`\nOverlay flavour (${d.overlay.name}): The poster carries an additional ${d.overlay.name.toLowerCase()} atmosphere — ${d.overlayAtm}. The mood is ${d.overlayMood}.`);
   }
+
+  // Personalization safe zone (bottom 20%)
+  lines.push(`\nPersonalization Safe Zone: ${SAFE_ZONE_DESC}.`);
 
   // Do not include
   const negs = buildNegatives();
@@ -3108,6 +3894,8 @@ function generatePrompts() {
       { step: '6e', label: 'Motif', value: motifOpt ? motifOpt.name : '—', section: 'Motif:' },
       { step: '7', label: 'Intensity', value: presetOpt ? presetOpt.name : '—', section: 'Decoration intensity:' },
       ...(STATE.category === 'suvichar' && STATE.customText ? [{ step: '8', label: 'Quote Text', value: STATE.customText.length > 60 ? STATE.customText.substring(0, 57) + '…' : STATE.customText, section: 'Rendered text' }] : []),
+      // CATEGORY_PACK editable greeting text (Shivji/Ganeshji/Jesus/Islamic)
+      ...((() => { const _p = getCategoryPack(); if (_p && _p.customText) { const t = getDisplayText(); return [{ step: '8', label: 'Greeting Text', value: t.length > 60 ? t.substring(0, 57) + '…' : t, section: 'Rendered text' }]; } return []; })()),
     ];
   }
 
