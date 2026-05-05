@@ -452,30 +452,30 @@ const SV_B1_PHOTO_DESC = {
 
 // B1 sub-elements for Suvichar items
 const SV_B1_SUB_ELEMENTS = {
-  'SV-I05': ['ACC-09', 'ACC-10', 'ACC-07'],
-  'SV-I06': ['ACC-09', 'ACC-10', 'ACC-07'],
-  'SV-I07': ['ACC-12', 'ACC-07', 'ACC-10'],
-  'SV-I11': ['ACC-27', 'ACC-26', 'ACC-07'],
-  'SV-I13': ['ACC-09', 'ACC-10', 'ACC-07'],
-  'SV-I14': ['ACC-18', 'ACC-02', 'ACC-29'],
-  'SV-I17': ['ACC-02', 'ACC-18', 'ACC-29'],
-  'SV-I27': ['ACC-09', 'ACC-10', 'ACC-07'],
-  'SV-I28': ['ACC-09', 'ACC-22', 'ACC-07'],
-  'SV-I29': ['ACC-12', 'ACC-09', 'ACC-10'],
-  'SV-I30': ['ACC-12', 'ACC-10', 'ACC-09'],
+  'SV-I05': ['ACC-10', 'SV-ACC-01', 'ACC-08'],      // Lone Tree → distant birds, scattered leaves, fallen petals
+  'SV-I06': ['ACC-10', 'ACC-11', 'SV-ACC-04'],       // Mountain → distant birds, wet leaves, smooth pebbles
+  'SV-I07': ['ACC-12', 'ACC-10', 'SV-ACC-01'],       // Winding Path → cobblestone, distant birds, scattered leaves
+  'SV-I11': ['ACC-27', 'ACC-08', 'ACC-26'],           // Sunrays Through Trees → butterfly, fallen petals, spider web
+  'SV-I13': ['ACC-10', 'SV-ACC-04', 'ACC-28'],       // Ocean Waves → distant birds, smooth pebbles, dragonfly
+  'SV-I14': ['ACC-18', 'SV-ACC-02', 'SV-ACC-03'],   // Open Book → reading glasses, bookmark, pen nib
+  'SV-I17': ['ACC-18', 'SV-ACC-02', 'ACC-19'],       // Coffee/Tea Cup → reading glasses, bookmark, potted plant
+  'SV-I27': ['ACC-10', 'SV-ACC-01', 'ACC-08'],       // Arms Raised — Victory → distant birds, scattered leaves, fallen petals
+  'SV-I28': ['SV-ACC-04', 'ACC-08', 'SV-ACC-05'],   // Seated/Meditating → smooth pebbles, fallen petals, dried flower
+  'SV-I29': ['ACC-12', 'SV-ACC-01', 'ACC-10'],       // Walking Alone → cobblestone, scattered leaves, distant birds
+  'SV-I30': ['ACC-10', 'SV-ACC-01', 'ACC-12'],       // Running/Sprinting → distant birds, scattered leaves, cobblestone
 };
 
 // A2 sub-elements for Suvichar items
 const SV_A2_SUB_ELEMENTS = {
-  'SV-I05': ['ACC-09', 'ACC-08', 'ACC-10'],
-  'SV-I06': ['ACC-09', 'ACC-10', 'ACC-07'],
-  'SV-I08': ['ACC-27', 'ACC-08', 'ACC-11'],
-  'SV-I12': ['ACC-09', 'ACC-08', 'ACC-10'],
-  'SV-I13': ['ACC-09', 'ACC-28', 'ACC-07'],
-  'SV-I14': ['ACC-18', 'ACC-02', 'ACC-29'],
-  'SV-I15': ['ACC-09', 'ACC-07', 'ACC-08'],
-  'SV-I19': ['ACC-30', 'ACC-14', 'ACC-08'],
-  'SV-I23': ['ACC-07', 'ACC-08', 'ACC-24'],
+  'SV-I05': ['SV-ACC-01', 'ACC-08', 'ACC-10'],       // Lone Tree → scattered leaves, fallen petals, distant birds
+  'SV-I06': ['SV-ACC-04', 'ACC-10', 'ACC-11'],       // Mountain → smooth pebbles, distant birds, wet leaves
+  'SV-I08': ['SV-ACC-01', 'ACC-08', 'ACC-27'],       // Falling Leaves → scattered leaves, fallen petals, butterfly
+  'SV-I12': ['SV-ACC-06', 'SV-ACC-05', 'ACC-08'],   // Crescent Moon & Stars → candle stub, dried flower, fallen petals
+  'SV-I13': ['ACC-10', 'SV-ACC-04', 'ACC-28'],       // Ocean Waves → distant birds, smooth pebbles, dragonfly
+  'SV-I14': ['ACC-18', 'SV-ACC-02', 'SV-ACC-03'],   // Open Book → reading glasses, bookmark, pen nib
+  'SV-I15': ['SV-ACC-04', 'SV-ACC-05', 'ACC-08'],   // Hourglass → smooth pebbles, dried flower, fallen petals
+  'SV-I19': ['SV-ACC-06', 'SV-ACC-05', 'ACC-08'],   // Lantern → candle stub, dried flower, fallen petals
+  'SV-I23': ['SV-ACC-04', 'ACC-08', 'ACC-27'],       // Seed/Sapling → smooth pebbles, fallen petals, butterfly
 };
 
 // ═══════════════════════════════════════════════════════════════
@@ -589,45 +589,45 @@ const BD_B1_PHOTO_DESC = {
 
 // B1 sub-elements (accent props) for Birthday items
 const BD_B1_SUB_ELEMENTS = {
-  'BD-I01': ['ACC-01', 'ACC-13', 'ACC-14'],
-  'BD-I06': ['ACC-13', 'ACC-14', 'ACC-29'],
-  'BD-I14': ['ACC-13', 'ACC-14', 'ACC-30'],
-  'BD-I17': ['ACC-13', 'ACC-30', 'ACC-09'],
-  'BD-I19': ['ACC-09', 'ACC-13', 'ACC-30'],
-  'BD-I20': ['ACC-13', 'ACC-30', 'ACC-09'],
-  'BD-I27': ['ACC-01', 'ACC-13', 'ACC-14'],
-  'BD-I28': ['ACC-13', 'ACC-30', 'ACC-14'],
-  'BD-I29': ['ACC-01', 'ACC-13', 'ACC-14'],
-  'BD-I30': ['ACC-13', 'ACC-30', 'ACC-09'],
+  'BD-I01': ['BD-ACC-01', 'BD-ACC-03', 'BD-ACC-05'],  // Birthday Cake → confetti, candles, sprinkles
+  'BD-I06': ['BD-ACC-02', 'BD-ACC-01', 'BD-ACC-06'],  // Gift Box → ribbon, confetti, gift tag
+  'BD-I14': ['ACC-08', 'BD-ACC-01', 'BD-ACC-02'],     // Rangoli → fallen petals, confetti, ribbon
+  'BD-I17': ['BD-ACC-01', 'BD-ACC-04', 'BD-ACC-02'],  // Fairy Lights → confetti, foil star, ribbon
+  'BD-I19': ['BD-ACC-01', 'BD-ACC-04', 'BD-ACC-02'],  // Fireworks → confetti, foil star, ribbon
+  'BD-I20': ['BD-ACC-01', 'BD-ACC-04', 'BD-ACC-05'],  // Sparkler → confetti, foil star, sprinkles
+  'BD-I27': ['BD-ACC-01', 'BD-ACC-03', 'BD-ACC-05'],  // Hands Holding Cake → confetti, candles, sprinkles
+  'BD-I28': ['BD-ACC-01', 'BD-ACC-03', 'BD-ACC-04'],  // Blowing Candles → confetti, candles, foil star
+  'BD-I29': ['BD-ACC-01', 'BD-ACC-02', 'BD-ACC-04'],  // Group Celebration → confetti, ribbon, foil star
+  'BD-I30': ['BD-ACC-01', 'BD-ACC-04', 'BD-ACC-02'],  // Child with Balloon → confetti, foil star, ribbon
 };
 
 // A2 sub-elements for Birthday items
 const BD_A2_SUB_ELEMENTS = {
-  'BD-I01': ['ACC-13', 'ACC-14', 'ACC-30'],
-  'BD-I02': ['ACC-13', 'ACC-14', 'ACC-30'],
-  'BD-I03': ['ACC-13', 'ACC-14', 'ACC-30'],
-  'BD-I04': ['ACC-13', 'ACC-14', 'ACC-30'],
-  'BD-I05': ['ACC-13', 'ACC-30', 'ACC-09'],
-  'BD-I06': ['ACC-13', 'ACC-14', 'ACC-30'],
-  'BD-I07': ['ACC-13', 'ACC-14', 'ACC-30'],
-  'BD-I08': ['ACC-13', 'ACC-14', 'ACC-30'],
-  'BD-I09': ['ACC-13', 'ACC-14', 'ACC-30'],
-  'BD-I10': ['ACC-13', 'ACC-14', 'ACC-30'],
-  'BD-I11': ['ACC-30', 'ACC-14', 'ACC-13'],
-  'BD-I12': ['ACC-13', 'ACC-14', 'ACC-30'],
-  'BD-I13': ['ACC-30', 'ACC-14', 'ACC-13'],
-  'BD-I14': ['ACC-30', 'ACC-13', 'ACC-14'],
-  'BD-I15': ['ACC-30', 'ACC-14', 'ACC-13'],
-  'BD-I16': ['ACC-13', 'ACC-14', 'ACC-30'],
-  'BD-I17': ['ACC-13', 'ACC-30', 'ACC-09'],
-  'BD-I18': ['ACC-13', 'ACC-14', 'ACC-30'],
-  'BD-I20': ['ACC-13', 'ACC-30', 'ACC-09'],
-  'BD-I21': ['ACC-08', 'ACC-13', 'ACC-14'],
-  'BD-I22': ['ACC-13', 'ACC-14', 'ACC-30'],
-  'BD-I23': ['ACC-13', 'ACC-14', 'ACC-30'],
-  'BD-I24': ['ACC-13', 'ACC-14', 'ACC-30'],
-  'BD-I25': ['ACC-13', 'ACC-14', 'ACC-30'],
-  'BD-I26': ['ACC-13', 'ACC-14', 'ACC-30'],
+  'BD-I01': ['BD-ACC-01', 'BD-ACC-03', 'BD-ACC-05'],  // Birthday Cake → confetti, candles, sprinkles
+  'BD-I02': ['BD-ACC-05', 'BD-ACC-01', 'BD-ACC-03'],  // Cake Slice → sprinkles, confetti, candles
+  'BD-I03': ['BD-ACC-03', 'BD-ACC-05', 'BD-ACC-01'],  // Cupcake → candles, sprinkles, confetti
+  'BD-I04': ['BD-ACC-04', 'BD-ACC-02', 'BD-ACC-01'],  // Balloon Bunch → foil star, ribbon, confetti
+  'BD-I05': ['BD-ACC-04', 'BD-ACC-02', 'BD-ACC-01'],  // Single Balloon → foil star, ribbon, confetti
+  'BD-I06': ['BD-ACC-02', 'BD-ACC-06', 'BD-ACC-01'],  // Gift Box → ribbon, gift tag, confetti
+  'BD-I07': ['BD-ACC-02', 'BD-ACC-06', 'BD-ACC-01'],  // Gift Stack → ribbon, gift tag, confetti
+  'BD-I08': ['BD-ACC-01', 'BD-ACC-04', 'BD-ACC-03'],  // Party Hat → confetti, foil star, candles
+  'BD-I09': ['BD-ACC-05', 'BD-ACC-01', 'BD-ACC-02'],  // Birthday Candles Row → sprinkles, confetti, ribbon
+  'BD-I10': ['BD-ACC-01', 'BD-ACC-04', 'BD-ACC-02'],  // Confetti Popper → confetti, foil star, ribbon
+  'BD-I11': ['ACC-08', 'BD-ACC-01', 'BD-ACC-02'],     // Marigold Toran → fallen petals, confetti, ribbon
+  'BD-I12': ['BD-ACC-05', 'BD-ACC-01', 'BD-ACC-02'],  // Mithai Box → sprinkles, confetti, ribbon
+  'BD-I13': ['ACC-08', 'BD-ACC-01', 'BD-ACC-03'],     // Diya Cluster → fallen petals, confetti, candles
+  'BD-I14': ['ACC-08', 'BD-ACC-01', 'BD-ACC-02'],     // Rangoli → fallen petals, confetti, ribbon
+  'BD-I15': ['ACC-08', 'BD-ACC-01', 'BD-ACC-02'],     // Puja Thali → fallen petals, confetti, ribbon
+  'BD-I16': ['BD-ACC-01', 'BD-ACC-04', 'BD-ACC-02'],  // Bunting/Banner → confetti, foil star, ribbon
+  'BD-I17': ['BD-ACC-04', 'BD-ACC-01', 'BD-ACC-02'],  // Fairy Lights → foil star, confetti, ribbon
+  'BD-I18': ['BD-ACC-01', 'BD-ACC-04', 'BD-ACC-02'],  // Streamers → confetti, foil star, ribbon
+  'BD-I20': ['BD-ACC-01', 'BD-ACC-04', 'BD-ACC-05'],  // Sparkler → confetti, foil star, sprinkles
+  'BD-I21': ['ACC-08', 'BD-ACC-02', 'BD-ACC-01'],     // Flower Bouquet → fallen petals, ribbon, confetti
+  'BD-I22': ['BD-ACC-04', 'BD-ACC-01', 'BD-ACC-02'],  // Star Scatter → foil star, confetti, ribbon
+  'BD-I23': ['BD-ACC-04', 'BD-ACC-02', 'BD-ACC-01'],  // Crown/Tiara → foil star, ribbon, confetti
+  'BD-I24': ['BD-ACC-03', 'BD-ACC-05', 'BD-ACC-01'],  // Number Candle → candles, sprinkles, confetti
+  'BD-I25': ['BD-ACC-02', 'BD-ACC-01', 'BD-ACC-06'],  // Ribbon Bow → ribbon, confetti, gift tag
+  'BD-I26': ['BD-ACC-06', 'BD-ACC-02', 'BD-ACC-01'],  // Wish Card/Envelope → gift tag, ribbon, confetti
 };
 
 // ═══════════════════════════════════════════════════════════════
@@ -1024,38 +1024,49 @@ function getSuvicharIllusCats() {
   const arch = STATE.archetype;
   const feelingId = STATE.feeling;
 
-  const cats = [];
-  // GM carry-overs: filter by archetype and feeling
-  const carryoverItems = [];
+  // Map each GM carry-over to its semantic SV category (no "Carry-overs" bucket)
+  const CARRYOVER_TO_SV_CAT = {
+    'GM-I2-01': 'SV-IN', 'GM-I2-04': 'SV-IN', 'GM-I2-05': 'SV-IN',
+    'GM-I2-06': 'SV-IN', 'GM-I2-08': 'SV-IN',
+    'GM-I3-01': 'SV-IN', 'GM-I3-02': 'SV-IN', 'GM-I6-01': 'SV-IN',
+    'GM-I4-01': 'SV-IO', 'GM-I1-01': 'SV-IO',
+  };
+
+  function carryoverOk(item) {
+    if (arch === 'B1') {
+      if (item.archs && !item.archs.includes('All') && !item.archs.includes('B1')) return false;
+    }
+    const rule = SUVICHAR_ITEM_FEELINGS[item.id];
+    if (rule !== 'U' && feelingId && Array.isArray(rule) && !rule.includes(feelingId)) return false;
+    return true;
+  }
+
+  function nativeOk(item, catId) {
+    if (catId === 'SV-IH' && arch !== 'B1') return false;
+    if (item.archs && item.archs === 'B1' && arch !== 'B1') return false;
+    const rule = SUVICHAR_ITEM_FEELINGS[item.id];
+    if (!rule || rule === 'U') return true;
+    if (Array.isArray(rule) && feelingId && !rule.includes(feelingId)) return false;
+    return true;
+  }
+
+  // Collect carry-overs grouped by target SV category
+  const carryoverByCat = {};
   for (const gmCat of ILLUS_CATS) {
     for (const item of gmCat.items) {
-      if (!SUVICHAR_GM_CARRYOVER_IDS.includes(item.id)) continue;
-      // Archetype filter
-      if (arch === 'B1' && !['All', 'B1'].some(a => item.archs && item.archs.includes(a))) {
-        if (!item.archs || (!item.archs.includes('All') && !item.archs.includes('B1'))) continue;
-      }
-      // Feeling filter
-      const feelingRule = SUVICHAR_ITEM_FEELINGS[item.id];
-      if (feelingRule !== 'U' && feelingId && Array.isArray(feelingRule) && !feelingRule.includes(feelingId)) continue;
-      carryoverItems.push(item);
+      const svCatId = CARRYOVER_TO_SV_CAT[item.id];
+      if (!svCatId || !carryoverOk(item)) continue;
+      if (!carryoverByCat[svCatId]) carryoverByCat[svCatId] = [];
+      carryoverByCat[svCatId].push(item);
     }
   }
-  if (carryoverItems.length > 0) cats.push({ id: 'SV-GM', name: 'Carry-overs', icon: '🌅', items: carryoverItems });
 
-  // SV categories
+  const cats = [];
   for (const svCat of SUVICHAR_ILLUS_CATS) {
-    const items = svCat.items.filter(item => {
-      // B1-only silhouettes
-      if (svCat.id === 'SV-IH' && arch !== 'B1') return false;
-      // Archetype filter for non-B1 items marked as B1 only
-      if (item.archs && item.archs === 'B1' && arch !== 'B1') return false;
-      // Feeling filter
-      const feelingRule = SUVICHAR_ITEM_FEELINGS[item.id];
-      if (!feelingRule) return true;
-      if (feelingRule === 'U') return true;
-      if (Array.isArray(feelingRule) && feelingId && !feelingRule.includes(feelingId)) return false;
-      return true;
-    });
+    const items = [
+      ...(carryoverByCat[svCat.id] || []),
+      ...svCat.items.filter(item => nativeOk(item, svCat.id)),
+    ];
     if (items.length > 0) cats.push({ ...svCat, items });
   }
   return cats;
@@ -1641,6 +1652,20 @@ const ACCENT_ITEMS = {
   // Steam / smoke (illustration-friendly)
   'ACC-29': { name: 'Curl of Steam', photoDesc: 'a visible curl of steam rising', illusDesc: 'a decorative illustrated curl of steam rising' },
   'ACC-30': { name: 'Incense Smoke Wisp', photoDesc: 'a thin trail of incense smoke curling upward', illusDesc: 'a thin illustrated incense smoke trail curling upward' },
+  // Suvichar / quote-card accents
+  'SV-ACC-01': { name: 'Scattered Autumn Leaves', photoDesc: 'a few scattered dried autumn leaves on the ground', illusDesc: 'a few small illustrated autumn leaves scattered nearby' },
+  'SV-ACC-02': { name: 'Bookmark', photoDesc: 'a slim ribbon bookmark peeking out from a book', illusDesc: 'a small illustrated ribbon bookmark tucked into the scene' },
+  'SV-ACC-03': { name: 'Pen Nib / Ink Drop', photoDesc: 'a calligraphy pen nib or small ink drop on the surface', illusDesc: 'a tiny illustrated pen nib or ink drop accent' },
+  'SV-ACC-04': { name: 'Smooth River Pebbles', photoDesc: 'two or three smooth rounded river pebbles on the surface', illusDesc: 'two or three small illustrated smooth pebbles' },
+  'SV-ACC-05': { name: 'Dried Pressed Flower', photoDesc: 'a single dried pressed flower or botanical sprig on the surface', illusDesc: 'a small illustrated dried pressed botanical' },
+  'SV-ACC-06': { name: 'Simple Candle Stub', photoDesc: 'a short unadorned candle with a small gentle flame', illusDesc: 'a small illustrated slim candle with a tiny flame' },
+  // Birthday / celebration accents
+  'BD-ACC-01': { name: 'Confetti Scatter', photoDesc: 'small scattered confetti pieces in bright colours on the surface', illusDesc: 'small illustrated confetti pieces scattered nearby' },
+  'BD-ACC-02': { name: 'Ribbon Curl Accent', photoDesc: 'a short curled satin ribbon in a festive colour', illusDesc: 'a small illustrated curled ribbon accent nearby' },
+  'BD-ACC-03': { name: 'Thin Birthday Candles', photoDesc: 'one or two slim colourful birthday candles with lit flames', illusDesc: 'one or two small illustrated thin birthday candles' },
+  'BD-ACC-04': { name: 'Foil Star Accent', photoDesc: 'a metallic foil star or a trailing balloon string accent', illusDesc: 'a small illustrated metallic star or balloon string' },
+  'BD-ACC-05': { name: 'Sprinkles / Sugar Pearls', photoDesc: 'scattered cake sprinkles or small sugar pearl beads', illusDesc: 'small illustrated cake sprinkles scattered nearby' },
+  'BD-ACC-06': { name: 'Gift Tag', photoDesc: 'a small blank gift tag with a ribbon loop', illusDesc: 'a tiny illustrated gift tag with a ribbon loop' },
 };
 // Backward compat alias
 const B1_ACCENT_ITEMS = ACCENT_ITEMS;
