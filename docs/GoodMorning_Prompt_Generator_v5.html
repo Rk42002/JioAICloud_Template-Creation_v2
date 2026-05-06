@@ -2447,9 +2447,15 @@ function renderStep1() {
     html += `<div class="sub-section" style="margin-top:24px;"><div class="sub-section-header"><div class="sub-section-num">2</div><div class="sub-section-title">Overlay Pack</div><div class="sub-section-tag">Optional flavour layer</div></div>`;
     html += `<div style="font-size:12px;color:var(--muted);margin-bottom:10px;">An overlay adds a contextual flavour (devotional, summer, rain, cricket) on top of the base category — it filters tracks, swaps motifs, and adds themed illustrations. "No overlay" keeps things standard.</div>`;
     const cols = Math.min(validOverlays.length, 5);
+    // Overlay pools pending re-curation — only "No overlay" is selectable for now.
+    // Temporary; remove the OV-NONE-only gate once overlay pools are curated.
     html += `<div class="options-grid cols-${cols}">${validOverlays.map(o => {
       const isSel = STATE.overlay === o.id;
       const blockTxt = o.blockedTracks.length ? `Blocks Track ${o.blockedTracks.join(', ')}` : 'All tracks available';
+      const isParked = o.id !== 'OV-NONE';
+      if (isParked) {
+        return `<div class="opt-card" style="position:relative;opacity:0.4;cursor:not-allowed;pointer-events:none;"><div style="position:absolute;top:8px;right:8px;background:#F59E0B;color:#fff;font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;letter-spacing:0.3px;text-transform:uppercase;">Coming soon</div><div class="opt-icon">${o.icon}</div><div class="opt-name">${o.name}</div><div class="opt-desc">${o.desc}</div><div style="margin-top:8px;font-size:10px;color:#94A3B8;">${blockTxt}</div></div>`;
+      }
       return `<div class="opt-card ${isSel ? 'selected' : ''}" onclick="select('overlay','${o.id}')"><div class="opt-icon">${o.icon}</div><div class="opt-name">${o.name}</div><div class="opt-desc">${o.desc}</div><div style="margin-top:8px;font-size:10px;color:#94A3B8;">${blockTxt}</div></div>`;
     }).join('')}</div></div>`;
   }

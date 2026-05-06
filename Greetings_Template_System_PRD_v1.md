@@ -4157,6 +4157,30 @@ function compactLayoutPhFirefly(layoutId) {
 | Curate 6 deferred categories (Father's Day, Vat Savitri, Shivji, Ganeshji, Jesus, Islamic) | ⏳ Pending |
 | Curate 4 overlay pools (Devotional, Summer, Rain, Cricket) | ⏳ Pending |
 
+### 62. Step-1 Picker UX — Dim Parked Categories + Overlays (Temporary)
+
+**Decision.** Until pending pools are curated, the Step 1 picker visually disables anything not yet ready so users can't pick into a half-finished state. Implemented in `renderStep1()` only — wizard logic and downstream code untouched.
+
+**Parked categories (6):** Father's Day, Vat Savitri, Shivji, Ganeshji, Jesus, Islamic. Rath Yatra is **not** parked (curated in commit 3e07c8e).
+
+**Parked overlays (4):** Devotional (OV-DEV), Summer (OV-SUM), Rain (OV-RAIN), Cricket (OV-CRI). Only "No overlay" (OV-NONE) is selectable.
+
+**Visual treatment.** Both groups use the same pattern:
+- Card opacity 0.4 (translucent).
+- Top-right amber badge: small pill, `#F59E0B` background, white uppercase text, "COMING SOON" label.
+- `cursor: not-allowed` and `pointer-events: none` so clicks are absorbed.
+- Card content (icon, name, desc, blockTxt) still rendered for context — users see what's coming.
+
+**Implementation.**
+- Categories: `PARKED_CATEGORIES = new Set(['fathers_day', 'vat_savitri', 'shivji', 'ganeshji', 'jesus', 'islamic'])` in `renderStep1()`. Map branches on `PARKED_CATEGORIES.has(c.id)`.
+- Overlays: inline check `o.id !== 'OV-NONE'` — every non-OV-NONE overlay is parked.
+
+**Removal plan.** Both gates live in `renderStep1()` only. To unpark:
+- Categories: empty the `PARKED_CATEGORIES` Set (or remove specific IDs as they get curated).
+- Overlays: replace the inline `o.id !== 'OV-NONE'` check with a parked Set, or remove the parked branch entirely once all 4 overlay pools are curated.
+
+No data-shape changes; no PRD body edits to overlay sections; no smoke-test changes (the underlying logic is unaffected — these items just can't be reached via Step 1).
+
 ---
 
 *End of PRD v1.1.*
