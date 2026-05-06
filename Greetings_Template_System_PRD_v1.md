@@ -4101,6 +4101,62 @@ function compactLayoutPhFirefly(layoutId) {
 | 16/16 runtime smoke tests pass | ✅ Verified |
 | F6 spec removed from main PRD body | ⏳ Pending (fold during next merge) |
 
+### 60. Illustration Pool Curation — GM, Suvichar, Birthday, Rath Yatra
+
+**Architectural decision.** Each base category and each V2 pack now owns a **self-contained illustration pool** — no GM carryovers, no per-overlay item subtraction (`restrictByCategory` left in place but no longer used by curated categories). The accent (`A2_SUB_ELEMENTS` / `B1_SUB_ELEMENTS`) tables stay namespaced per category (GM, SV, BD, RY) and are merged via `getA2SubElements` / `getB1SubElements` lookups. **Why:** simplifies the mental model — "category X has these N illustrations + (overlay applicable ? its M items : 0)" — and makes review tractable. **How to apply:** when adding new illustrations, add to the relevant pool only; do not carry over items from other pools.
+
+**Decisions taken in this round (applied to 4 categories; 6 V2 packs deferred):**
+
+#### Good Morning · 41 → 37 items
+- **Drops (5):** GM-I4-03 Hands in Namaste, GM-I4-04 Agarbatti Smoke, GM-I4-05 Tulsi in Brass Pot, GM-I4-06 Temple Bell, GM-I4-07 Shankh — all moved to Devotional overlay (one pool per overlay, no duplication).
+- **Add (1):** GM-I5-07 Newspaper & Chai (folded paper beside steaming chai cup; quintessential Indian doorstep ritual).
+- **Sub-category rename:** GM-I4 from "Spiritual & Devotional" → **"Cultural"**. Now contains only Diya, Rangoli, Peacock Feather (broadly cultural, not strictly devotional).
+
+#### Suvichar · 30 → 25 items (self-contained)
+- **Drops (9):** Abstract sub-category dropped entirely (SV-I01 Ink Brush + SV-I04 Splatter); plus weak/clichéd items SV-I02 Geometric Shards, SV-I03 Gradient Orb, SV-I07 Winding Path, SV-I10 Stormy Sky, SV-I20 Trophy/Medal, SV-I22 Magnifying Glass, SV-I30 Running.
+- **Adds (4):** SV-I31 Rain-streaked Window, SV-I32 Footprints in Sand, SV-I33 Empty Park Bench, SV-I34 Stack of Old Books.
+- **Carryovers dropped:** `SUVICHAR_GM_CARRYOVER_IDS = []`. Items that previously came from GM (Sunrise Hills, Lotus, Diya, etc.) no longer appear in the Suvichar picker.
+- **`SUVICHAR_ITEM_FEELINGS` rebuilt** to cover only the new 25-item pool.
+
+#### Birthday · 30 → 26 items (self-contained)
+- **Drops (4):** BD-I05 Single Balloon (variant of Balloon Bunch), BD-I07 Gift Stack (variant of Gift Box), BD-I18 Streamers (overlap with Bunting + Confetti Popper), BD-I22 Star Scatter (generic).
+- **Carryovers dropped:** `BIRTHDAY_GM_CARRYOVER_IDS = []`.
+
+#### Rath Yatra · 19 → 15 items (self-contained)
+- **Drops (4):** RY-I03 Three Chariots (variant of Rath Full), RY-I09 Neela Chakra (too specific silhouette), RY-I11 Grand Road (overlaps with Procession Crowd), RY-I15 Rath Yatra Flag (weak as standalone main).
+- **Carryovers dropped:** `carryoverIds: []`.
+- **New tables:** `RY_A2_SUB_ELEMENTS` and `RY_B1_SUB_ELEMENTS` added; `getA2SubElements` / `getB1SubElements` lookup chain extended to include them.
+
+#### Scene Accent pool · 30 → 35 items
+- **Drops (3):** ACC-13 Kumkum Tilak Mark, ACC-16 Match Sticks, ACC-21 Curtain with Light.
+- **Adds (5):** ACC-31 Orange Halves (for OJ), ACC-32 Half Coconut Shell (for Tender Coconut Water), ACC-33 Sparks / Embers (energy/celebration), ACC-34 Star Cluster (night/wonder), ACC-35 Crumpled Paper Edge (writer's process).
+- **Existing namespaced accents preserved** (SV-ACC-01..06, BD-ACC-01..06) — used contextually by Suvichar and Birthday mappings.
+- **Mapping shape:** mostly 3 accents per main; 2 accents for items where 3 felt forced (GM-I1-08 Tender Coconut, GM-I4-09 Peacock Feather, SV-I19 Lantern, SV-I24 Flame, BD-I09 Birthday Candles, BD-I24 Number Candle, all 15 RY items).
+
+**Deferred (parked) categories** — unchanged in this round; will be re-curated in a later session:
+- Father's Day, Vat Savitri (V2 packs)
+- 4 Devotional V2 packs: Shivji, Ganeshji, Jesus, Islamic
+- 4 Overlays: Devotional (OV-DEV), Summer (OV-SUM), Rain (OV-RAIN), Cricket (OV-CRI) — these still hold their current illustration pools
+
+### 61. 6-May (Part 3) Implementation Status
+
+| Change | Status |
+|---|---|
+| ACCENT_ITEMS: drop 3, add 5 (pool 30 → 35) | ✅ Implemented |
+| GM curated to 37 items (rename GM-I4 → Cultural; +Newspaper & Chai) | ✅ Implemented |
+| GM `B1_SUB_ELEMENTS` / `A2_SUB_ELEMENTS` rebuilt | ✅ Implemented |
+| Suvichar curated to 25 items (drop Abstract, +4 new) | ✅ Implemented |
+| `SUVICHAR_GM_CARRYOVER_IDS` emptied; `SUVICHAR_ITEM_FEELINGS` rebuilt | ✅ Implemented |
+| `SV_B1_PHOTO_DESC` / `SV_B1_SUB_ELEMENTS` / `SV_A2_SUB_ELEMENTS` rebuilt | ✅ Implemented |
+| Birthday curated to 26 items; `BIRTHDAY_GM_CARRYOVER_IDS` emptied | ✅ Implemented |
+| `BD_B1_SUB_ELEMENTS` / `BD_A2_SUB_ELEMENTS` rebuilt | ✅ Implemented |
+| Rath Yatra curated to 15 items; carryovers emptied | ✅ Implemented |
+| `RY_A2_SUB_ELEMENTS` / `RY_B1_SUB_ELEMENTS` added; lookup chain extended | ✅ Implemented |
+| Synced to `docs/` GitHub Pages files | ✅ Done |
+| 47/47 curation assertions pass; 10/10 e2e prompt builds pass; worst-case Firefly = 950 chars | ✅ Verified |
+| Curate 6 deferred categories (Father's Day, Vat Savitri, Shivji, Ganeshji, Jesus, Islamic) | ⏳ Pending |
+| Curate 4 overlay pools (Devotional, Summer, Rain, Cricket) | ⏳ Pending |
+
 ---
 
 *End of PRD v1.1.*

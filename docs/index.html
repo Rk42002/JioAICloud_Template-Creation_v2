@@ -365,24 +365,21 @@ const SUVICHAR_FEELINGS = [
   { id: 'SV-F5', name: 'Fire & Drive', icon: '⚡', tagline: 'Bold, high contrast, kinetic', desc: 'Pure ambition — "Go." Fierce, competitive, zero sentimentality.', examples: 'Startup grind, sports, hustle, bold declarations', allowedTracks: ['A', 'C', 'D'] },
 ];
 
-// Illustration items specific to Suvichar (not in Good Morning catalogue)
+// Illustration items specific to Suvichar (self-contained pool — 25 items, no GM carryovers).
+// Updated 6 May: dropped Abstract sub-category (Ink Brush, Geometric Shards, Gradient Orb,
+// Splatter), dropped weak items (Winding Path, Stormy Sky, Trophy, Magnifying Glass, Running).
+// Added: Rain-streaked Window, Footprints in Sand, Empty Park Bench, Stack of Old Books.
 const SUVICHAR_ILLUS_CATS = [
-  { id: 'SV-IA', name: 'Abstract', icon: '🖌️', items: [
-    { id: 'SV-I01', name: 'Ink Brush Stroke', desc: 'Single bold sumi-e brushstroke, black or deep colour on neutral.', archs: 'A1, A2' },
-    { id: 'SV-I02', name: 'Geometric Shards', desc: 'Fragmented low-poly angular shapes, sharp and bold.', archs: 'A1, A2' },
-    { id: 'SV-I03', name: 'Gradient Orb', desc: 'Blurred radial light bloom as a placed accent element.', archs: 'A1, A2' },
-    { id: 'SV-I04', name: 'Splatter / Paint Burst', desc: 'Dynamic ink or paint splatter, energy and expression.', archs: 'A1, A2' },
-  ]},
   { id: 'SV-IN', name: 'Nature & Landscape', icon: '🌿', items: [
     { id: 'SV-I05', name: 'Lone Tree (Silhouette)', desc: 'Single bare or leafy tree against empty horizon.', archs: 'A1, A2, B1' },
     { id: 'SV-I06', name: 'Mountain Range (Minimal)', desc: 'Layered mountain silhouette, clean and minimal.', archs: 'A1, A2, B1' },
-    { id: 'SV-I07', name: 'Winding Path / Road', desc: 'Path disappearing into distance, journey metaphor.', archs: 'B1' },
     { id: 'SV-I08', name: 'Falling Leaves', desc: 'Scattered autumn leaves in gentle drift.', archs: 'A1, A2' },
     { id: 'SV-I09', name: 'Desert Dunes', desc: 'Smooth sand dunes, minimalist, warm tones.', archs: 'A1, A2, B1' },
-    { id: 'SV-I10', name: 'Stormy Sky', desc: 'Dramatic sky, heavy clouds, high contrast.', archs: 'B1' },
     { id: 'SV-I11', name: 'Sunrays Through Trees', desc: 'God rays filtering through a forest canopy.', archs: 'B1' },
     { id: 'SV-I12', name: 'Crescent Moon & Stars', desc: 'Delicate crescent moon with scattered stars, night sky.', archs: 'A1, A2' },
     { id: 'SV-I13', name: 'Ocean Waves (Minimal)', desc: 'Simple rolling wave silhouette or horizon line.', archs: 'A1, A2, B1' },
+    { id: 'SV-I31', name: 'Rain-streaked Window', desc: 'Drops on glass with a blurry world beyond — bittersweet, contemplative.', archs: 'A1, A2, B1' },
+    { id: 'SV-I32', name: 'Footprints in Sand', desc: 'A trail of footprints leading away — journey metaphor.', archs: 'A1, A2, B1' },
   ]},
   { id: 'SV-IO', name: 'Objects & Still Life', icon: '📖', items: [
     { id: 'SV-I14', name: 'Open Book / Pages', desc: 'Book open flat, pages in soft light.', archs: 'A1, A2, B1' },
@@ -391,10 +388,10 @@ const SUVICHAR_ILLUS_CATS = [
     { id: 'SV-I17', name: 'Coffee / Tea Cup (Desk)', desc: 'Cup on desk beside a notebook — daily ritual.', archs: 'A2, B1' },
     { id: 'SV-I18', name: 'Quill Pen & Inkwell', desc: 'Writer\'s tool — knowledge, craft, expression.', archs: 'A1, A2' },
     { id: 'SV-I19', name: 'Lantern (Glowing)', desc: 'Single glowing lantern, warm light in darkness.', archs: 'A1, A2' },
-    { id: 'SV-I20', name: 'Trophy / Medal', desc: 'Clean minimal trophy silhouette.', archs: 'A1, A2' },
     { id: 'SV-I21', name: 'Key (Ornate / Minimal)', desc: 'A key — metaphor for opportunity, unlocking.', archs: 'A1, A2' },
-    { id: 'SV-I22', name: 'Magnifying Glass', desc: 'Curiosity, discovery, looking closer.', archs: 'A1, A2' },
     { id: 'SV-I23', name: 'Seed / Sapling', desc: 'Small plant emerging from soil — growth, beginnings.', archs: 'A1, A2' },
+    { id: 'SV-I33', name: 'Empty Park Bench', desc: 'A weathered bench under a tree — solitude, reflection.', archs: 'A1, A2, B1' },
+    { id: 'SV-I34', name: 'Stack of Old Books', desc: 'Pile of well-worn books — wisdom, depth, reading life.', archs: 'A1, A2, B1' },
   ]},
   { id: 'SV-IF', name: 'Fire & Energy', icon: '🔥', items: [
     { id: 'SV-I24', name: 'Flame / Fire', desc: 'Single clean flame — ambition, passion.', archs: 'A1, A2' },
@@ -405,41 +402,38 @@ const SUVICHAR_ILLUS_CATS = [
     { id: 'SV-I27', name: 'Arms Raised — Victory', desc: 'Figure arms raised against sky, freedom and triumph.', archs: 'B1' },
     { id: 'SV-I28', name: 'Seated / Meditating', desc: 'Person in stillness, introspective and calm.', archs: 'B1' },
     { id: 'SV-I29', name: 'Walking Alone', desc: 'Figure walking on road or beach, solitary journey.', archs: 'B1' },
-    { id: 'SV-I30', name: 'Running / Sprinting', desc: 'Dynamic running figure, motion and drive.', archs: 'B1' },
   ]},
 ];
 
 // Feeling filter per item — 'U' = Universal (all feelings), or array of allowed feeling IDs
 const SUVICHAR_ITEM_FEELINGS = {
-  'GM-I2-01': 'U', 'GM-I3-02': 'U', 'GM-I6-01': 'U', 'GM-I3-01': 'U', 'GM-I2-04': 'U',
-  'GM-I2-05': 'U',
-  'GM-I2-08': ['SV-F1', 'SV-F4'],
-  'GM-I4-01': ['SV-F2', 'SV-F3', 'SV-F4'],
-  'GM-I2-06': ['SV-F1', 'SV-F2', 'SV-F4'],
-  'GM-I1-01': ['SV-F4'],
-  'SV-I01': ['SV-F2', 'SV-F3', 'SV-F5'], 'SV-I02': ['SV-F5'], 'SV-I03': 'U', 'SV-I04': ['SV-F1', 'SV-F5'],
-  'SV-I05': ['SV-F2', 'SV-F3', 'SV-F4'], 'SV-I06': 'U', 'SV-I07': 'U',
+  // Self-contained 25-item pool (6 May): GM carryovers and Abstract sub-cat dropped.
+  // Nature & Landscape
+  'SV-I05': ['SV-F2', 'SV-F3', 'SV-F4'], 'SV-I06': 'U',
   'SV-I08': ['SV-F2', 'SV-F3', 'SV-F4'], 'SV-I09': ['SV-F2', 'SV-F4'],
-  'SV-I10': ['SV-F3', 'SV-F5'], 'SV-I11': 'U', 'SV-I12': ['SV-F2', 'SV-F3'], 'SV-I13': 'U',
+  'SV-I11': 'U', 'SV-I12': ['SV-F2', 'SV-F3'], 'SV-I13': 'U',
+  'SV-I31': ['SV-F2', 'SV-F3'], 'SV-I32': ['SV-F2', 'SV-F3', 'SV-F4'],
+  // Objects & Still Life
   'SV-I14': 'U', 'SV-I15': ['SV-F2', 'SV-F4'], 'SV-I16': 'U', 'SV-I17': ['SV-F4'],
   'SV-I18': ['SV-F2', 'SV-F4'], 'SV-I19': ['SV-F2', 'SV-F3', 'SV-F4'],
-  'SV-I20': ['SV-F1', 'SV-F5'], 'SV-I21': 'U', 'SV-I22': ['SV-F2', 'SV-F4'],
-  'SV-I23': ['SV-F1', 'SV-F4'], 'SV-I24': ['SV-F1', 'SV-F5'], 'SV-I25': ['SV-F5'],
-  'SV-I26': ['SV-F1', 'SV-F5'], 'SV-I27': ['SV-F1', 'SV-F5'],
+  'SV-I21': 'U', 'SV-I23': ['SV-F1', 'SV-F4'],
+  'SV-I33': ['SV-F2', 'SV-F3'], 'SV-I34': ['SV-F2', 'SV-F4'],
+  // Fire & Energy
+  'SV-I24': ['SV-F1', 'SV-F5'], 'SV-I25': ['SV-F5'], 'SV-I26': ['SV-F1', 'SV-F5'],
+  // Silhouettes (B1)
+  'SV-I27': ['SV-F1', 'SV-F5'],
   'SV-I28': ['SV-F2', 'SV-F3', 'SV-F4'], 'SV-I29': ['SV-F2', 'SV-F3'],
-  'SV-I30': ['SV-F1', 'SV-F5'],
 };
 
 // GM items shown as carry-overs in Suvichar catalogue
-const SUVICHAR_GM_CARRYOVER_IDS = ['GM-I2-01', 'GM-I3-02', 'GM-I6-01', 'GM-I3-01', 'GM-I2-04', 'GM-I2-05', 'GM-I2-08', 'GM-I4-01', 'GM-I2-06', 'GM-I1-01'];
+// Self-contained pool: no GM carryovers (was 10 items pre-6-May).
+const SUVICHAR_GM_CARRYOVER_IDS = [];
 
-// B1 photo descriptions for Suvichar-specific items
+// B1 photo descriptions for Suvichar-specific items (25-item pool, 6 May)
 const SV_B1_PHOTO_DESC = {
   'SV-I05': 'a lone tree silhouette standing against an open sky, minimal and contemplative',
   'SV-I06': 'layered mountain silhouettes in misty distance, clean minimal landscape',
-  'SV-I07': 'a winding path or road disappearing into the distance, symbolic of a journey',
   'SV-I09': 'smooth golden sand dunes with gentle curved ridges, minimal desert landscape',
-  'SV-I10': 'a dramatic stormy sky with heavy dark clouds and high contrast light',
   'SV-I11': 'god rays of sunlight filtering through a forest canopy, golden volumetric light',
   'SV-I13': 'a minimal ocean horizon with a single rolling wave silhouette',
   'SV-I14': 'an open book with soft light falling on its pages, placed on a simple surface',
@@ -447,35 +441,61 @@ const SV_B1_PHOTO_DESC = {
   'SV-I27': 'a silhouette of a person with arms raised triumphantly against a dramatic open sky',
   'SV-I28': 'a silhouette of a person seated in meditation against a calm horizon',
   'SV-I29': 'a silhouette of a lone person walking along a road or beach, contemplative',
-  'SV-I30': 'a silhouette of a person running or sprinting forward with energy',
+  'SV-I31': 'a window with rain droplets streaking down the glass, blurry world beyond, melancholic morning light',
+  'SV-I32': 'a trail of footprints leading away across smooth wet sand at dawn, soft golden light',
+  'SV-I33': 'a weathered wooden park bench under a tree in soft autumn light, no people, contemplative emptiness',
+  'SV-I34': 'a tall stack of well-worn old hardback books on a wooden surface, soft warm reading-corner light',
 };
 
 // B1 sub-elements for Suvichar items
 const SV_B1_SUB_ELEMENTS = {
-  'SV-I05': ['ACC-10', 'SV-ACC-01', 'ACC-08'],      // Lone Tree → distant birds, scattered leaves, fallen petals
-  'SV-I06': ['ACC-10', 'ACC-11', 'SV-ACC-04'],       // Mountain → distant birds, wet leaves, smooth pebbles
-  'SV-I07': ['ACC-12', 'ACC-10', 'SV-ACC-01'],       // Winding Path → cobblestone, distant birds, scattered leaves
-  'SV-I11': ['ACC-27', 'ACC-08', 'ACC-26'],           // Sunrays Through Trees → butterfly, fallen petals, spider web
-  'SV-I13': ['ACC-10', 'SV-ACC-04', 'ACC-28'],       // Ocean Waves → distant birds, smooth pebbles, dragonfly
-  'SV-I14': ['ACC-18', 'SV-ACC-02', 'SV-ACC-03'],   // Open Book → reading glasses, bookmark, pen nib
-  'SV-I17': ['ACC-18', 'SV-ACC-02', 'ACC-19'],       // Coffee/Tea Cup → reading glasses, bookmark, potted plant
-  'SV-I27': ['ACC-10', 'SV-ACC-01', 'ACC-08'],       // Arms Raised — Victory → distant birds, scattered leaves, fallen petals
-  'SV-I28': ['SV-ACC-04', 'ACC-08', 'SV-ACC-05'],   // Seated/Meditating → smooth pebbles, fallen petals, dried flower
-  'SV-I29': ['ACC-12', 'SV-ACC-01', 'ACC-10'],       // Walking Alone → cobblestone, scattered leaves, distant birds
-  'SV-I30': ['ACC-10', 'SV-ACC-01', 'ACC-12'],       // Running/Sprinting → distant birds, scattered leaves, cobblestone
+  'SV-I05': ['ACC-09', 'ACC-10', 'ACC-08'],          // Lone Tree → fog, distant birds, fallen petals
+  'SV-I06': ['ACC-09', 'ACC-10', 'ACC-07'],          // Mountain → fog, distant birds, dew
+  'SV-I09': ['ACC-09', 'ACC-10', 'ACC-26'],          // Desert Dunes → fog, distant birds, dewy spider web
+  'SV-I11': ['ACC-07', 'ACC-11', 'ACC-27'],          // Sunrays Through Trees → dew, wet leaves, butterfly
+  'SV-I13': ['ACC-10', 'ACC-09', 'ACC-08'],          // Ocean Waves → distant birds, fog, fallen petals
+  'SV-I14': ['ACC-18', 'ACC-29', 'SV-ACC-03'],       // Open Book → reading glasses, curl of steam, ink drop
+  'SV-I17': ['ACC-18', 'ACC-29', 'ACC-02'],          // Coffee/Tea Cup → reading glasses, steam, newspaper
+  'SV-I27': ['ACC-10', 'ACC-09', 'ACC-33'],          // Arms Raised → distant birds, fog, sparks/embers
+  'SV-I28': ['ACC-30', 'ACC-22', 'ACC-08'],          // Seated/Meditating → incense smoke, yoga mat, fallen petals
+  'SV-I29': ['ACC-12', 'ACC-10', 'ACC-09'],          // Walking Alone → cobblestone, distant birds, fog
+  'SV-I31': ['ACC-11', 'ACC-29', 'ACC-09'],          // Rain-streaked Window → wet leaves, curl of steam, fog
+  'SV-I32': ['ACC-09', 'ACC-10', 'ACC-34'],          // Footprints in Sand → fog, distant birds, star cluster
+  'SV-I33': ['ACC-08', 'ACC-11', 'ACC-12'],          // Empty Park Bench → fallen petals, wet leaves, cobblestone
+  'SV-I34': ['ACC-18', 'ACC-29', 'ACC-35'],          // Stack of Old Books → reading glasses, steam, crumpled paper
 };
 
-// A2 sub-elements for Suvichar items
+// A2 sub-elements for Suvichar items (25-item pool, 3 accents each — 6 May)
 const SV_A2_SUB_ELEMENTS = {
-  'SV-I05': ['SV-ACC-01', 'ACC-08', 'ACC-10'],       // Lone Tree → scattered leaves, fallen petals, distant birds
-  'SV-I06': ['SV-ACC-04', 'ACC-10', 'ACC-11'],       // Mountain → smooth pebbles, distant birds, wet leaves
-  'SV-I08': ['SV-ACC-01', 'ACC-08', 'ACC-27'],       // Falling Leaves → scattered leaves, fallen petals, butterfly
-  'SV-I12': ['SV-ACC-06', 'SV-ACC-05', 'ACC-08'],   // Crescent Moon & Stars → candle stub, dried flower, fallen petals
-  'SV-I13': ['ACC-10', 'SV-ACC-04', 'ACC-28'],       // Ocean Waves → distant birds, smooth pebbles, dragonfly
-  'SV-I14': ['ACC-18', 'SV-ACC-02', 'SV-ACC-03'],   // Open Book → reading glasses, bookmark, pen nib
-  'SV-I15': ['SV-ACC-04', 'SV-ACC-05', 'ACC-08'],   // Hourglass → smooth pebbles, dried flower, fallen petals
-  'SV-I19': ['SV-ACC-06', 'SV-ACC-05', 'ACC-08'],   // Lantern → candle stub, dried flower, fallen petals
-  'SV-I23': ['SV-ACC-04', 'ACC-08', 'ACC-27'],       // Seed/Sapling → smooth pebbles, fallen petals, butterfly
+  // Nature & Landscape
+  'SV-I05': ['ACC-09', 'ACC-10', 'ACC-08'],          // Lone Tree → fog, distant birds, fallen petals
+  'SV-I06': ['ACC-09', 'ACC-10', 'ACC-07'],          // Mountain → fog, distant birds, dew
+  'SV-I08': ['ACC-09', 'ACC-07', 'ACC-12'],          // Falling Leaves → fog, dew, cobblestone path
+  'SV-I09': ['ACC-09', 'ACC-10', 'ACC-26'],          // Desert Dunes → fog, distant birds, dewy spider web
+  'SV-I11': ['ACC-07', 'ACC-11', 'ACC-27'],          // Sunrays Through Trees → dew, wet leaves, butterfly
+  'SV-I12': ['ACC-34', 'ACC-09', 'ACC-26'],          // Crescent Moon → star cluster, fog, dewy spider web
+  'SV-I13': ['ACC-10', 'ACC-09', 'ACC-08'],          // Ocean Waves → distant birds, fog, fallen petals
+  'SV-I31': ['ACC-11', 'ACC-29', 'ACC-09'],          // Rain-streaked Window → wet leaves, curl of steam, fog
+  'SV-I32': ['ACC-09', 'ACC-10', 'ACC-34'],          // Footprints in Sand → fog, distant birds, star cluster
+  // Objects & Still Life
+  'SV-I14': ['ACC-18', 'ACC-29', 'SV-ACC-03'],       // Open Book → reading glasses, curl of steam, ink drop
+  'SV-I15': ['ACC-35', 'ACC-18', 'ACC-29'],          // Hourglass → crumpled paper, reading glasses, steam
+  'SV-I16': ['ACC-18', 'ACC-35', 'ACC-09'],          // Compass → reading glasses, crumpled paper, fog
+  'SV-I17': ['ACC-18', 'ACC-29', 'ACC-02'],          // Coffee/Tea Cup → reading glasses, steam, folded newspaper
+  'SV-I18': ['SV-ACC-03', 'ACC-35', 'ACC-18'],       // Quill & Inkwell → ink drops, crumpled paper, reading glasses
+  'SV-I19': ['ACC-09', 'ACC-34'],                    // Lantern → fog, star cluster (Match Sticks dropped)
+  'SV-I21': ['ACC-35', 'ACC-18', 'SV-ACC-03'],       // Key → crumpled paper, reading glasses, ink drops
+  'SV-I23': ['ACC-07', 'ACC-24', 'ACC-11'],          // Seed/Sapling → dew, terracotta pot, wet leaves
+  'SV-I33': ['ACC-08', 'ACC-11', 'ACC-12'],          // Empty Park Bench → fallen petals, wet leaves, cobblestone
+  'SV-I34': ['ACC-18', 'ACC-29', 'ACC-35'],          // Stack of Old Books → reading glasses, steam, crumpled paper
+  // Fire & Energy
+  'SV-I24': ['ACC-33', 'ACC-29'],                    // Flame → sparks/embers, curl of steam (Match Sticks dropped)
+  'SV-I25': ['ACC-33', 'ACC-09', 'ACC-11'],          // Lightning Bolt → sparks, fog, wet leaves
+  'SV-I26': ['ACC-10', 'ACC-09', 'ACC-33'],          // Rising Sun → distant birds, fog, sparks/embers
+  // Silhouettes (B1)
+  'SV-I27': ['ACC-10', 'ACC-09', 'ACC-33'],          // Arms Raised → distant birds, fog, sparks/embers
+  'SV-I28': ['ACC-30', 'ACC-22', 'ACC-08'],          // Seated/Meditating → incense smoke, yoga mat, fallen petals
+  'SV-I29': ['ACC-12', 'ACC-10', 'ACC-09'],          // Walking Alone → cobblestone, distant birds, fog
 };
 
 // ═══════════════════════════════════════════════════════════════
@@ -527,8 +547,8 @@ const BIRTHDAY_MOTIF_OPTIONS_E = [
   { id: 'BD-MT-E6', name: 'Ribbon Curl (Soft)', promptPhrase: 'gentle satin ribbon curl in pastel tone, no hard edges, soft accent' },
 ];
 
-// Birthday illustration catalogue (30 new + 4 GM carry-overs)
-const BIRTHDAY_GM_CARRYOVER_IDS = ['GM-I3-01', 'GM-I3-02', 'GM-I4-01', 'GM-I6-01'];
+// Birthday illustration catalogue (26 self-contained items, no GM carryovers — 6 May)
+const BIRTHDAY_GM_CARRYOVER_IDS = [];
 
 const BIRTHDAY_ILLUS_CATS = [
   { id: 'BD-IP', name: 'Party Essentials', icon: '🎂', items: [
@@ -536,9 +556,7 @@ const BIRTHDAY_ILLUS_CATS = [
     { id: 'BD-I02', name: 'Cake Slice (Plated)', desc: 'Single plated slice, frosting layers visible, side angle.', archs: 'A1, A2' },
     { id: 'BD-I03', name: 'Cupcake (Single)', desc: 'Decorated cupcake with swirl frosting and a single candle.', archs: 'A1, A2' },
     { id: 'BD-I04', name: 'Balloon Bunch', desc: 'Cluster of 5–7 balloons (mix latex and foil), strings trailing.', archs: 'A1, A2' },
-    { id: 'BD-I05', name: 'Single Balloon', desc: 'One balloon with long string, elegant and minimal.', archs: 'A1, A2' },
     { id: 'BD-I06', name: 'Gift Box (Wrapped)', desc: 'Neatly wrapped present with ribbon bow, 3/4 angle.', archs: 'A1, A2, B1' },
-    { id: 'BD-I07', name: 'Gift Stack', desc: 'Two or three stacked gifts with different sizes and wrapping.', archs: 'A1, A2' },
     { id: 'BD-I08', name: 'Party Hat', desc: 'Classic cone party hat with elastic string and pom-pom.', archs: 'A1, A2' },
     { id: 'BD-I09', name: 'Birthday Candles (Row)', desc: 'Row of colourful thin birthday candles with lit flames.', archs: 'A1, A2' },
     { id: 'BD-I10', name: 'Confetti Popper', desc: 'Party popper mid-burst, confetti and streamers shooting out.', archs: 'A1, A2' },
@@ -553,11 +571,9 @@ const BIRTHDAY_ILLUS_CATS = [
   { id: 'BD-IA', name: 'Decorative & Atmosphere', icon: '✨', items: [
     { id: 'BD-I16', name: 'Bunting / Banner', desc: 'Triangular flag bunting string, "Happy Birthday" or plain.', archs: 'A1, A2' },
     { id: 'BD-I17', name: 'Fairy Lights (String)', desc: 'Warm fairy light string, soft bokeh glow, draped or straight.', archs: 'A1, A2, B1' },
-    { id: 'BD-I18', name: 'Streamers (Hanging)', desc: 'Colourful paper streamers hanging from top of frame.', archs: 'A1, A2' },
     { id: 'BD-I19', name: 'Fireworks (Sky)', desc: 'Firework burst against dark sky, celebration energy.', archs: 'A2, B1' },
     { id: 'BD-I20', name: 'Sparkler (Handheld)', desc: 'Lit sparkler with bright white sparks radiating.', archs: 'A1, A2, B1' },
     { id: 'BD-I21', name: 'Flower Bouquet', desc: 'Mixed flower bouquet, wrapped or in vase, gift style.', archs: 'A1, A2' },
-    { id: 'BD-I22', name: 'Star Scatter', desc: 'Scattered decorative stars, mixed sizes, metallic.', archs: 'A1, A2' },
   ]},
   { id: 'BD-IO', name: 'Objects & Symbols', icon: '🎁', items: [
     { id: 'BD-I23', name: 'Crown / Tiara', desc: 'Birthday crown or tiara, gold with gem accents.', archs: 'A1, A2' },
@@ -587,48 +603,84 @@ const BD_B1_PHOTO_DESC = {
   'BD-I30': 'a small child holding a single balloon with a long string, back view or silhouette, warm light',
 };
 
-// B1 sub-elements (accent props) for Birthday items
+// B1 sub-elements (accent props) for Birthday items (26-item pool — 6 May)
 const BD_B1_SUB_ELEMENTS = {
-  'BD-I01': ['BD-ACC-01', 'BD-ACC-03', 'BD-ACC-05'],  // Birthday Cake → confetti, candles, sprinkles
-  'BD-I06': ['BD-ACC-02', 'BD-ACC-01', 'BD-ACC-06'],  // Gift Box → ribbon, confetti, gift tag
-  'BD-I14': ['ACC-08', 'BD-ACC-01', 'BD-ACC-02'],     // Rangoli → fallen petals, confetti, ribbon
-  'BD-I17': ['BD-ACC-01', 'BD-ACC-04', 'BD-ACC-02'],  // Fairy Lights → confetti, foil star, ribbon
-  'BD-I19': ['BD-ACC-01', 'BD-ACC-04', 'BD-ACC-02'],  // Fireworks → confetti, foil star, ribbon
-  'BD-I20': ['BD-ACC-01', 'BD-ACC-04', 'BD-ACC-05'],  // Sparkler → confetti, foil star, sprinkles
-  'BD-I27': ['BD-ACC-01', 'BD-ACC-03', 'BD-ACC-05'],  // Hands Holding Cake → confetti, candles, sprinkles
-  'BD-I28': ['BD-ACC-01', 'BD-ACC-03', 'BD-ACC-04'],  // Blowing Candles → confetti, candles, foil star
-  'BD-I29': ['BD-ACC-01', 'BD-ACC-02', 'BD-ACC-04'],  // Group Celebration → confetti, ribbon, foil star
-  'BD-I30': ['BD-ACC-01', 'BD-ACC-04', 'BD-ACC-02'],  // Child with Balloon → confetti, foil star, ribbon
+  'BD-I01': ['BD-ACC-01', 'BD-ACC-02', 'ACC-33'],     // Birthday Cake → confetti, ribbon, sparks
+  'BD-I06': ['BD-ACC-02', 'BD-ACC-01', 'ACC-34'],     // Gift Box → ribbon, confetti, star cluster
+  'BD-I14': ['ACC-14', 'ACC-17', 'ACC-15'],           // Rangoli → loose petals, rice, brass bell
+  'BD-I17': ['ACC-33', 'ACC-34', 'ACC-09'],           // Fairy Lights → sparks, star cluster, fog
+  'BD-I19': ['ACC-33', 'ACC-34', 'ACC-09'],           // Fireworks → sparks, star cluster, fog
+  'BD-I20': ['ACC-33', 'BD-ACC-01', 'ACC-34'],        // Sparkler → sparks, confetti, star cluster
+  'BD-I27': ['ACC-33', 'BD-ACC-01', 'ACC-34'],        // Hands Holding Cake → sparks, confetti, star cluster
+  'BD-I28': ['ACC-33', 'ACC-09', 'BD-ACC-01'],        // Blowing Candles → sparks, fog (smoke), confetti
+  'BD-I29': ['BD-ACC-01', 'ACC-33', 'BD-ACC-02'],     // Group Celebration → confetti, sparks, ribbon
+  'BD-I30': ['BD-ACC-01', 'BD-ACC-02', 'ACC-08'],     // Child with Balloon → confetti, ribbon, fallen petals
 };
 
-// A2 sub-elements for Birthday items
+// A2 sub-elements for Birthday items (26-item self-contained pool — 6 May)
+// Updated 6 May: Match Sticks (ACC-16) removed → Birthday Candles Row + Number Candle drop to 2.
 const BD_A2_SUB_ELEMENTS = {
-  'BD-I01': ['BD-ACC-01', 'BD-ACC-03', 'BD-ACC-05'],  // Birthday Cake → confetti, candles, sprinkles
-  'BD-I02': ['BD-ACC-05', 'BD-ACC-01', 'BD-ACC-03'],  // Cake Slice → sprinkles, confetti, candles
-  'BD-I03': ['BD-ACC-03', 'BD-ACC-05', 'BD-ACC-01'],  // Cupcake → candles, sprinkles, confetti
-  'BD-I04': ['BD-ACC-04', 'BD-ACC-02', 'BD-ACC-01'],  // Balloon Bunch → foil star, ribbon, confetti
-  'BD-I05': ['BD-ACC-04', 'BD-ACC-02', 'BD-ACC-01'],  // Single Balloon → foil star, ribbon, confetti
-  'BD-I06': ['BD-ACC-02', 'BD-ACC-06', 'BD-ACC-01'],  // Gift Box → ribbon, gift tag, confetti
-  'BD-I07': ['BD-ACC-02', 'BD-ACC-06', 'BD-ACC-01'],  // Gift Stack → ribbon, gift tag, confetti
-  'BD-I08': ['BD-ACC-01', 'BD-ACC-04', 'BD-ACC-03'],  // Party Hat → confetti, foil star, candles
-  'BD-I09': ['BD-ACC-05', 'BD-ACC-01', 'BD-ACC-02'],  // Birthday Candles Row → sprinkles, confetti, ribbon
-  'BD-I10': ['BD-ACC-01', 'BD-ACC-04', 'BD-ACC-02'],  // Confetti Popper → confetti, foil star, ribbon
-  'BD-I11': ['ACC-08', 'BD-ACC-01', 'BD-ACC-02'],     // Marigold Toran → fallen petals, confetti, ribbon
-  'BD-I12': ['BD-ACC-05', 'BD-ACC-01', 'BD-ACC-02'],  // Mithai Box → sprinkles, confetti, ribbon
-  'BD-I13': ['ACC-08', 'BD-ACC-01', 'BD-ACC-03'],     // Diya Cluster → fallen petals, confetti, candles
-  'BD-I14': ['ACC-08', 'BD-ACC-01', 'BD-ACC-02'],     // Rangoli → fallen petals, confetti, ribbon
-  'BD-I15': ['ACC-08', 'BD-ACC-01', 'BD-ACC-02'],     // Puja Thali → fallen petals, confetti, ribbon
-  'BD-I16': ['BD-ACC-01', 'BD-ACC-04', 'BD-ACC-02'],  // Bunting/Banner → confetti, foil star, ribbon
-  'BD-I17': ['BD-ACC-04', 'BD-ACC-01', 'BD-ACC-02'],  // Fairy Lights → foil star, confetti, ribbon
-  'BD-I18': ['BD-ACC-01', 'BD-ACC-04', 'BD-ACC-02'],  // Streamers → confetti, foil star, ribbon
-  'BD-I20': ['BD-ACC-01', 'BD-ACC-04', 'BD-ACC-05'],  // Sparkler → confetti, foil star, sprinkles
+  // Party Essentials (8)
+  'BD-I01': ['BD-ACC-01', 'BD-ACC-02', 'ACC-33'],     // Birthday Cake → confetti, ribbon curls, sparks/embers
+  'BD-I02': ['BD-ACC-01', 'BD-ACC-02', 'ACC-08'],     // Cake Slice → confetti, ribbon, fallen petals
+  'BD-I03': ['BD-ACC-01', 'ACC-33', 'BD-ACC-02'],     // Cupcake → confetti, sparks, ribbon
+  'BD-I04': ['BD-ACC-01', 'BD-ACC-02', 'ACC-34'],     // Balloon Bunch → confetti, ribbon, star cluster
+  'BD-I06': ['BD-ACC-02', 'BD-ACC-01', 'ACC-34'],     // Gift Box → ribbon, confetti, star cluster
+  'BD-I08': ['BD-ACC-01', 'BD-ACC-02', 'ACC-34'],     // Party Hat → confetti, ribbon, star cluster
+  'BD-I09': ['ACC-33', 'BD-ACC-01'],                  // Birthday Candles Row → sparks/embers, confetti
+  'BD-I10': ['ACC-33', 'ACC-34', 'BD-ACC-02'],        // Confetti Popper → sparks, star cluster, ribbon
+  // Indian Festive (5)
+  'BD-I11': ['ACC-14', 'ACC-30', 'ACC-15'],           // Marigold Toran → loose petals, incense, brass bell
+  'BD-I12': ['ACC-14', 'ACC-17', 'ACC-15'],           // Mithai Box → loose petals, rice, brass bell
+  'BD-I13': ['ACC-14', 'ACC-30', 'ACC-17'],           // Diya Cluster → loose petals, incense, rice
+  'BD-I14': ['ACC-14', 'ACC-17', 'ACC-15'],           // Rangoli → loose petals, rice, brass bell
+  'BD-I15': ['ACC-14', 'ACC-17', 'ACC-30'],           // Puja Thali → loose petals, rice, incense
+  // Decorative & Atmosphere (5)
+  'BD-I16': ['BD-ACC-01', 'ACC-34', 'ACC-33'],        // Bunting/Banner → confetti, star cluster, sparks
+  'BD-I17': ['ACC-33', 'ACC-34', 'ACC-09'],           // Fairy Lights → sparks, star cluster, fog
+  'BD-I19': ['ACC-33', 'ACC-34', 'ACC-09'],           // Fireworks → sparks, star cluster, fog
+  'BD-I20': ['ACC-33', 'BD-ACC-01', 'ACC-34'],        // Sparkler → sparks, confetti, star cluster
   'BD-I21': ['ACC-08', 'BD-ACC-02', 'BD-ACC-01'],     // Flower Bouquet → fallen petals, ribbon, confetti
-  'BD-I22': ['BD-ACC-04', 'BD-ACC-01', 'BD-ACC-02'],  // Star Scatter → foil star, confetti, ribbon
-  'BD-I23': ['BD-ACC-04', 'BD-ACC-02', 'BD-ACC-01'],  // Crown/Tiara → foil star, ribbon, confetti
-  'BD-I24': ['BD-ACC-03', 'BD-ACC-05', 'BD-ACC-01'],  // Number Candle → candles, sprinkles, confetti
-  'BD-I25': ['BD-ACC-02', 'BD-ACC-01', 'BD-ACC-06'],  // Ribbon Bow → ribbon, confetti, gift tag
-  'BD-I26': ['BD-ACC-06', 'BD-ACC-02', 'BD-ACC-01'],  // Wish Card/Envelope → gift tag, ribbon, confetti
+  // Objects & Symbols (4)
+  'BD-I23': ['ACC-34', 'BD-ACC-01', 'BD-ACC-02'],     // Crown/Tiara → star cluster, confetti, ribbon
+  'BD-I24': ['ACC-33', 'BD-ACC-01'],                  // Number Candle → sparks/embers, confetti
+  'BD-I25': ['BD-ACC-01', 'BD-ACC-02', 'ACC-34'],     // Ribbon Bow → confetti, ribbon, star cluster
+  'BD-I26': ['BD-ACC-02', 'BD-ACC-01', 'ACC-08'],     // Wish Card/Envelope → ribbon, confetti, fallen petals
+  // Human/Figurative B1 (4)
+  'BD-I27': ['ACC-33', 'BD-ACC-01', 'ACC-34'],        // Hands Holding Cake → sparks, confetti, star cluster
+  'BD-I28': ['ACC-33', 'ACC-09', 'BD-ACC-01'],        // Blowing Candles → sparks, fog (smoke), confetti
+  'BD-I29': ['BD-ACC-01', 'ACC-33', 'BD-ACC-02'],     // Group Celebration → confetti, sparks, ribbon
+  'BD-I30': ['BD-ACC-01', 'BD-ACC-02', 'ACC-08'],     // Child with Balloon → confetti, ribbon, fallen petals
 };
+
+// ═══════════════════════════════════════════════════════════════
+// V2 PACK SUB-ELEMENTS — accent mappings for V2 category packs
+// (curated 6 May; only Rath Yatra populated for now, other packs deferred)
+// ═══════════════════════════════════════════════════════════════
+// A2 (illustrated) accent mapping for Rath Yatra — 2 accents per main item
+const RY_A2_SUB_ELEMENTS = {
+  // Chariot & Procession (4)
+  'RY-I01': ['ACC-14', 'ACC-10'],     // Rath Full → loose marigold petals, distant birds
+  'RY-I02': ['ACC-14', 'ACC-09'],     // Chariot Wheel → loose marigold petals, fog
+  'RY-I04': ['ACC-14', 'ACC-10'],     // Procession Crowd → loose marigold petals, distant birds
+  'RY-I05': ['ACC-14', 'ACC-09'],     // Chariot Rope → loose marigold petals, fog
+  // Deities & Sacred (3)
+  'RY-I06': ['ACC-14', 'ACC-30'],     // Jagannath Face → loose petals, incense smoke
+  'RY-I07': ['ACC-14', 'ACC-30'],     // Trio → loose petals, incense smoke
+  'RY-I08': ['ACC-14', 'ACC-15'],     // Sudarshan Chakra → loose petals, brass bell
+  // Temple & Setting (2)
+  'RY-I10': ['ACC-10', 'ACC-09'],     // Jagannath Temple → distant birds, fog
+  'RY-I12': ['ACC-15', 'ACC-30'],     // Temple Doorway → brass bell, incense smoke
+  // Decorative & Festive (6)
+  'RY-I13': ['ACC-15', 'ACC-30'],     // Marigold Toran with Mango Leaves → brass bell, incense smoke
+  'RY-I14': ['ACC-17', 'ACC-30'],     // Coconut & Banana Offering → rice grains, incense smoke
+  'RY-I16': ['ACC-14', 'ACC-17'],     // Conch Shell → loose petals, rice grains
+  'RY-I17': ['ACC-10', 'ACC-09'],     // Puri Beach at Sunrise → distant birds, fog
+  'RY-I18': ['ACC-17', 'ACC-14'],     // Prasad Thali → rice grains, loose petals
+  'RY-I19': ['ACC-14', 'ACC-17'],     // Odia Rangoli → loose petals, rice grains
+};
+// B1 (photo) accent mapping for Rath Yatra — same accents as A2 (the accents themselves are scene-agnostic)
+const RY_B1_SUB_ELEMENTS = RY_A2_SUB_ELEMENTS;
 
 // ═══════════════════════════════════════════════════════════════
 // CATEGORY PACKS — 7 new categories (New_Category_Packs_v1.md)
@@ -650,12 +702,12 @@ const CATEGORY_PACKS = {
     customText: false,
     blockedTracks: ['D'],
     appliesOverlays: ['OV-DEV', 'OV-SUM', 'OV-RAIN'],
-    carryoverIds: ['GM-I3-01', 'GM-I4-01', 'GM-I3-02'],
+    // Self-contained 15-item pool (6 May): GM carryovers dropped, RY-I03/I09/I11/I15 dropped.
+    carryoverIds: [],
     illusCats: [
       { id: 'RY-CHARIOT', name: 'Chariot & Procession', icon: '🛕', items: [
         { id: 'RY-I01', name: 'Rath (Chariot) — Full', desc: 'Grand decorated wooden chariot with canopy, wheels, flag, bright yellow/red cloth.', archs: 'A1, A2, B1' },
         { id: 'RY-I02', name: 'Chariot Wheel (Close-up)', desc: 'Iconic large wooden wheel with spokes and hub detail, Konark or Puri style.', archs: 'A1, A2' },
-        { id: 'RY-I03', name: 'Three Chariots (Procession)', desc: 'Nandighosa, Taladhwaja, Darpadalana in a row — distant procession view.', archs: 'A2, B1' },
         { id: 'RY-I04', name: 'Procession Crowd', desc: 'Devotees pulling chariot with thick ropes, dense festival crowd.', archs: 'B1' },
         { id: 'RY-I05', name: 'Chariot Rope (Pulling)', desc: 'Close-up of thick rope being pulled by many hands, collective devotion.', archs: 'B1' },
       ]},
@@ -663,17 +715,14 @@ const CATEGORY_PACKS = {
         { id: 'RY-I06', name: 'Jagannath Face (Iconic)', desc: 'Stylised round face — large eyes, no nose, flat mouth, Puri form, bold black/white/red/yellow.', archs: 'A1, A2' },
         { id: 'RY-I07', name: 'Jagannath-Balabhadra-Subhadra Trio', desc: 'All three deity faces side by side, classic Puri art arrangement.', archs: 'A1, A2' },
         { id: 'RY-I08', name: 'Sudarshan Chakra', desc: 'Sacred disc weapon — circular with radiating flame edges, gold or bright red.', archs: 'A1, A2' },
-        { id: 'RY-I09', name: 'Neela Chakra (Blue Wheel)', desc: 'Sacred blue wheel atop Jagannath Temple, silhouette against sky.', archs: 'A1, A2, B1' },
       ]},
       { id: 'RY-TEMPLE', name: 'Temple & Setting', icon: '🛕', items: [
         { id: 'RY-I10', name: 'Jagannath Temple (Puri)', desc: 'Iconic white temple gopuram of Puri Mandir, front view or silhouette against dawn sky.', archs: 'A1, A2, B1' },
-        { id: 'RY-I11', name: 'Grand Road (Bada Danda)', desc: 'Wide road of Puri with chariot in distance, temple spire behind, festival atmosphere.', archs: 'B1' },
         { id: 'RY-I12', name: 'Temple Doorway (Singha Dwara)', desc: 'Lion Gate entrance of Puri temple, carved stone, devotional grandeur.', archs: 'B1' },
       ]},
       { id: 'RY-FESTIVE', name: 'Decorative & Festive', icon: '🌼', items: [
         { id: 'RY-I13', name: 'Marigold Toran with Mango Leaves', desc: 'Festival door decoration — marigold garland with fresh mango leaf strand.', archs: 'A1, A2' },
         { id: 'RY-I14', name: 'Coconut & Banana Offering', desc: 'Whole coconut on banana leaf with flowers and kumkum, pooja offering set.', archs: 'A1, A2' },
-        { id: 'RY-I15', name: 'Rath Yatra Flag', desc: 'Triangular festival flag with Jagannath emblem, fluttering, bright cloth.', archs: 'A1, A2' },
         { id: 'RY-I16', name: 'Conch Shell (Shankh)', desc: 'Sacred conch shell — blown during procession, white with golden mouth.', archs: 'A1, A2' },
         { id: 'RY-I17', name: 'Puri Beach at Sunrise', desc: 'Golden sunrise over Puri beach with temple silhouette in distance, serene dawn.', archs: 'B1' },
         { id: 'RY-I18', name: 'Prasad Thali (Mahaprasad)', desc: 'Plate of Jagannath temple prasad — rice, dal, sabzi on sal leaf, sacred food.', archs: 'A1, A2' },
@@ -1252,11 +1301,6 @@ const B1_PHOTO_DESC = {
   'GM-I3-08': 'rose and marigold petals floating gently on clear water surface',
   'GM-I3-09': 'soft pink cherry blossom branches in gentle morning light',
   'GM-I4-01': 'a single lit earthen diya with a warm golden flickering flame',
-  'GM-I4-03': 'hands joined in namaste prayer gesture in warm light',
-  'GM-I4-04': 'delicate incense agarbatti smoke curling upward in a beam of morning light',
-  'GM-I4-05': 'a sacred tulsi plant in a traditional brass vrindavan planter',
-  'GM-I4-06': 'a polished brass temple bell (ghanti) hanging in golden light',
-  'GM-I4-07': 'a polished conch shell (shankh) in warm dawn light',
   'GM-I4-08': 'a colourful rangoli pattern on a stone floor with morning light',
   'GM-I4-09': 'an iridescent peacock feather with detailed eye-motif in soft warm light',
   'GM-I5-01': 'a silhouette performing surya namaskar sun salutation against a vivid sunrise sky',
@@ -1265,6 +1309,7 @@ const B1_PHOTO_DESC = {
   'GM-I5-04': 'an open book and a steaming cup of chai on a wooden desk in morning light',
   'GM-I5-05': 'a person on a morning walk along a tree-lined path in early golden light',
   'GM-I5-06': 'a person watering plants on a sunlit balcony in the morning',
+  'GM-I5-07': 'a folded newspaper lying beside a steaming ceramic cup of chai on a doorstep, soft morning sun, classic Indian routine',
   'GM-I6-01': 'a flock of birds in V-formation against a colourful sunrise sky',
   'GM-I6-02': 'a small sparrow perched on a blossoming branch in warm morning light',
   'GM-I6-03': 'a majestic peacock with fully fanned tail feathers in golden light',
@@ -1329,23 +1374,19 @@ const ILLUS_CATS = [
     { id: 'GM-I3-08', name: 'Petals Floating on Water', desc: 'Rose and marigold petals.', archs: 'B1, A2' },
     { id: 'GM-I3-09', name: 'Cherry Blossom Branches', desc: 'Soft pink blossoms.', archs: 'A1, A2' },
   ]},
-  { id: 'GM-I4', name: 'Spiritual & Devotional', icon: '🙏', count: 9, items: [
+  { id: 'GM-I4', name: 'Cultural', icon: '🙏', count: 3, items: [
     { id: 'GM-I4-01', name: 'Lit Diya with Warm Glow', desc: 'Single diya with halo.', archs: 'All' },
-    { id: 'GM-I4-03', name: 'Hands in Namaste', desc: 'Joined palms.', archs: 'A2' },
-    { id: 'GM-I4-04', name: 'Agarbatti Smoke', desc: 'Incense smoke curl.', archs: 'A1, A2, B1' },
-    { id: 'GM-I4-05', name: 'Tulsi in Brass Pot', desc: 'Sacred tulsi in traditional planter.', archs: 'A1, A2' },
-    { id: 'GM-I4-06', name: 'Temple Bell (Ghanti)', desc: 'Brass temple bell.', archs: 'A1, A2' },
-    { id: 'GM-I4-07', name: 'Shankh (Conch Shell)', desc: 'Conch blown at dawn.', archs: 'A1, A2' },
     { id: 'GM-I4-08', name: 'Rangoli at Dawn', desc: 'Colourful rangoli with morning light.', archs: 'A1, A2' },
     { id: 'GM-I4-09', name: 'Peacock Feather', desc: 'Associated with Krishna.', archs: 'A1, A2' },
   ]},
-  { id: 'GM-I5', name: 'Lifestyle & People', icon: '🧘', count: 8, items: [
+  { id: 'GM-I5', name: 'Lifestyle & People', icon: '🧘', count: 7, items: [
     { id: 'GM-I5-01', name: 'Surya Namaskar Silhouette', desc: 'Sun salutation at sunrise.', archs: 'A2, B1' },
     { id: 'GM-I5-02', name: 'Meditating Figure at Sunrise', desc: 'Seated meditation silhouette.', archs: 'A2, B1' },
     { id: 'GM-I5-03', name: 'Open Window with Sunrise', desc: 'Interior frame looking at golden morning sky.', archs: 'A1, A2, B1' },
     { id: 'GM-I5-04', name: 'Book and Chai on Desk', desc: 'Morning reading setup.', archs: 'A2, B1' },
     { id: 'GM-I5-05', name: 'Morning Walk in Park', desc: 'Figure on tree-lined path in early light.', archs: 'B1, A2' },
     { id: 'GM-I5-06', name: 'Watering Plants on Balcony', desc: 'Morning plant routine with soft sunlight.', archs: 'A2, B1' },
+    { id: 'GM-I5-07', name: 'Newspaper & Chai', desc: 'Folded newspaper beside a steaming chai cup, doorstep morning ritual.', archs: 'A1, A2, B1' },
   ]},
   { id: 'GM-I6', name: 'Birds & Wildlife', icon: '🦅', count: 6, items: [
     { id: 'GM-I6-01', name: 'Bird Flock at Sunrise', desc: 'V-formation in morning sky.', archs: 'B1, A2' },
@@ -2098,14 +2139,14 @@ function getB1PhotoDesc(itemId) {
   return B1_PHOTO_DESC[itemId] || SV_B1_PHOTO_DESC[itemId] || BD_B1_PHOTO_DESC[itemId] || null;
 }
 
-// Merged sub-element lookup (GM + SV + BD)
+// Merged sub-element lookup (GM + SV + BD + V2 packs)
 function getB1SubElements(itemId) {
-  return B1_SUB_ELEMENTS[itemId] || SV_B1_SUB_ELEMENTS[itemId] || BD_B1_SUB_ELEMENTS[itemId] || [];
+  return B1_SUB_ELEMENTS[itemId] || SV_B1_SUB_ELEMENTS[itemId] || BD_B1_SUB_ELEMENTS[itemId] || RY_B1_SUB_ELEMENTS[itemId] || [];
 }
 
-// Merged A2 sub-element lookup (GM + SV + BD)
+// Merged A2 sub-element lookup (GM + SV + BD + V2 packs)
 function getA2SubElements(itemId) {
-  return A2_SUB_ELEMENTS[itemId] || SV_A2_SUB_ELEMENTS[itemId] || BD_A2_SUB_ELEMENTS[itemId] || [];
+  return A2_SUB_ELEMENTS[itemId] || SV_A2_SUB_ELEMENTS[itemId] || BD_A2_SUB_ELEMENTS[itemId] || RY_A2_SUB_ELEMENTS[itemId] || [];
 }
 
 function canProceed() {
@@ -2760,16 +2801,13 @@ const ACCENT_ITEMS = {
   'ACC-11': { name: 'Wet Leaves', photoDesc: 'rain-washed leaves with water droplets catching light', illusDesc: 'a few illustrated wet leaves with dewdrops' },
   'ACC-12': { name: 'Cobblestone / Path', photoDesc: 'a textured stone or brick path in the foreground', illusDesc: 'an illustrated cobblestone path texture in the foreground' },
   // Devotional / puja accents
-  'ACC-13': { name: 'Kumkum Tilak Mark', photoDesc: 'a small kumkum mark or sindoor dot on a brass plate', illusDesc: 'a tiny illustrated kumkum mark on a small plate' },
   'ACC-14': { name: 'Loose Flower Petals', photoDesc: 'a handful of loose marigold petals around the base', illusDesc: 'scattered illustrated marigold petals around the base' },
   'ACC-15': { name: 'Brass Bell (small)', photoDesc: 'a tiny brass puja bell lying beside the arrangement', illusDesc: 'a small illustrated brass puja bell nearby' },
-  'ACC-16': { name: 'Match Sticks', photoDesc: 'a matchbox with a burnt matchstick nearby', illusDesc: 'a tiny illustrated matchbox with a burnt match' },
   'ACC-17': { name: 'Rice Grains', photoDesc: 'a few scattered uncooked rice grains on the surface', illusDesc: 'a few illustrated rice grains scattered on the surface' },
   // Lifestyle / cozy accents
   'ACC-18': { name: 'Reading Glasses', photoDesc: 'a pair of reading glasses resting near the book', illusDesc: 'small illustrated reading glasses beside the book' },
   'ACC-19': { name: 'Potted Plant (small)', photoDesc: 'a small potted succulent or money plant in the background', illusDesc: 'a tiny illustrated potted plant in the corner' },
   'ACC-20': { name: 'Woven Basket', photoDesc: 'a small woven cane basket in the background', illusDesc: 'a small illustrated woven basket nearby' },
-  'ACC-21': { name: 'Curtain with Light', photoDesc: 'a sheer curtain with soft morning sunlight filtering through', illusDesc: 'illustrated soft curtain with morning light streaming through' },
   'ACC-22': { name: 'Yoga Mat Edge', photoDesc: 'the rolled edge of a yoga mat visible in the corner', illusDesc: 'the illustrated edge of a rolled yoga mat in the corner' },
   // Window / architectural accents
   'ACC-23': { name: 'Window Grille Shadow', photoDesc: 'geometric shadow patterns from a window grille on the surface', illusDesc: 'illustrated geometric window shadow patterns' },
@@ -2782,6 +2820,13 @@ const ACCENT_ITEMS = {
   // Steam / smoke (illustration-friendly)
   'ACC-29': { name: 'Curl of Steam', photoDesc: 'a visible curl of steam rising', illusDesc: 'a decorative illustrated curl of steam rising' },
   'ACC-30': { name: 'Incense Smoke Wisp', photoDesc: 'a thin trail of incense smoke curling upward', illusDesc: 'a thin illustrated incense smoke trail curling upward' },
+  // Fruit / tropical accents (added 6 May)
+  'ACC-31': { name: 'Orange Halves', photoDesc: 'a sliced orange showing pulp and a whole orange beside the glass', illusDesc: 'a small illustrated orange slice with a whole orange beside' },
+  'ACC-32': { name: 'Half Coconut Shell', photoDesc: 'split brown coconut shell halves on a small tray nearby', illusDesc: 'small illustrated split coconut shell halves nearby' },
+  // Energy / atmospheric accents (added 6 May)
+  'ACC-33': { name: 'Sparks / Embers', photoDesc: 'tiny glowing sparks or warm embers drifting in the air', illusDesc: 'a few small illustrated glowing sparks or embers drifting' },
+  'ACC-34': { name: 'Star Cluster', photoDesc: 'a small cluster of distant stars in a deep night sky', illusDesc: 'a small illustrated cluster of tiny stars in the sky' },
+  'ACC-35': { name: 'Crumpled Paper Edge', photoDesc: 'the edge of a crumpled or torn paper note nearby', illusDesc: 'a small illustrated edge of a crumpled paper note' },
   // Suvichar / quote-card accents
   'SV-ACC-01': { name: 'Scattered Autumn Leaves', photoDesc: 'a few scattered dried autumn leaves on the ground', illusDesc: 'a few small illustrated autumn leaves scattered nearby' },
   'SV-ACC-02': { name: 'Bookmark', photoDesc: 'a slim ribbon bookmark peeking out from a book', illusDesc: 'a small illustrated ribbon bookmark tucked into the scene' },
@@ -2801,105 +2846,102 @@ const ACCENT_ITEMS = {
 const B1_ACCENT_ITEMS = ACCENT_ITEMS;
 
 // Curated sub-elements per main item — only small, scene-appropriate accent props
+// Updated 6 May: aligned with curated 37-item GM pool. 5 devotional GM-I4 items (Namaste,
+// Agarbatti, Tulsi, Temple Bell, Shankh) moved to Devotional overlay; new GM-I5-07
+// (Newspaper & Chai) added; ACC-13/16/21 dropped from pool.
 const B1_SUB_ELEMENTS = {
   // ── Beverages ──
-  'GM-I1-01': ['ACC-01', 'ACC-02', 'ACC-06', 'ACC-03'],  // Chai → biscuits, newspaper, napkin, spice scatter
-  'GM-I1-02': ['ACC-01', 'ACC-05', 'ACC-03', 'ACC-06'],  // Kulhad → biscuits, steel tray, spices, napkin
+  'GM-I1-01': ['ACC-01', 'ACC-02', 'ACC-03'],             // Chai → biscuits, newspaper, spice scatter
+  'GM-I1-02': ['ACC-01', 'ACC-04', 'ACC-06'],             // Kulhad → biscuits, sugar bowl, napkin
   'GM-I1-04': ['ACC-03', 'ACC-05', 'ACC-01'],             // Masala Chai → spice scatter, steel tray, biscuits
-  'GM-I1-05': ['ACC-19', 'ACC-21', 'ACC-02'],             // OJ → small plant, curtain light, newspaper
-  'GM-I1-07': ['ACC-01', 'ACC-06', 'ACC-21'],             // Teapot → biscuits, cloth napkin, curtain light
-  'GM-I1-08': ['ACC-07', 'ACC-19', 'ACC-12'],             // Coconut → dew drops, small plant, path
+  'GM-I1-05': ['ACC-19', 'ACC-31', 'ACC-02'],             // OJ → small plant, orange halves, newspaper
+  'GM-I1-07': ['ACC-01', 'ACC-06', 'ACC-29'],             // Teapot → biscuits, cloth napkin, curl of steam
+  'GM-I1-08': ['ACC-08', 'ACC-32'],                       // Coconut → fallen petals, half coconut shell
   // ── Nature & Sky ──
-  'GM-I2-01': ['ACC-10', 'ACC-09', 'ACC-07'],             // Sunrise hills → distant birds, fog wisps, dew
+  'GM-I2-01': ['ACC-10', 'ACC-09', 'ACC-07'],             // Sunrise hills → distant birds, fog, dew
   'GM-I2-02': ['ACC-26', 'ACC-07', 'ACC-11'],             // Sun rays forest → spider web, dew, wet leaves
-  'GM-I2-04': ['ACC-09', 'ACC-28', 'ACC-10'],             // River mist → fog wisps, dragonfly, distant birds
+  'GM-I2-04': ['ACC-09', 'ACC-28', 'ACC-10'],             // River mist → fog, dragonfly, distant birds
   'GM-I2-05': ['ACC-10', 'ACC-12', 'ACC-09'],             // Ocean sunrise → distant birds, path, fog
   'GM-I2-06': ['ACC-10', 'ACC-09', 'ACC-07'],             // Mountain peak → distant birds, fog, dew
   'GM-I2-08': ['ACC-11', 'ACC-07', 'ACC-10'],             // Rainbow → wet leaves, dew, distant birds
   // ── Flowers & Botanicals ──
-  'GM-I3-01': ['ACC-14', 'ACC-16', 'ACC-05'],             // Marigold garland → loose petals, matchsticks, steel tray
-  'GM-I3-02': ['ACC-08', 'ACC-07', 'ACC-28'],             // Lotus → fallen petals, dew drops, dragonfly
+  'GM-I3-01': ['ACC-14', 'ACC-30', 'ACC-15'],             // Marigold garland → loose petals, incense smoke, brass bell
+  'GM-I3-02': ['ACC-08', 'ACC-07', 'ACC-28'],             // Lotus → fallen petals, dew, dragonfly
   'GM-I3-03': ['ACC-08', 'ACC-07', 'ACC-27'],             // Jasmine → fallen petals, dew, butterfly
   'GM-I3-04': ['ACC-07', 'ACC-27', 'ACC-08'],             // Hibiscus → dew, butterfly, fallen petals
   'GM-I3-05': ['ACC-27', 'ACC-07', 'ACC-10'],             // Sunflower → butterfly, dew, distant birds
-  'GM-I3-06': ['ACC-08', 'ACC-07', 'ACC-27'],             // Frangipani → fallen petals, dew, butterfly
-  'GM-I3-07': ['ACC-07', 'ACC-27', 'ACC-26'],             // Rose bud → dew, butterfly, spider web
-  'GM-I3-08': ['ACC-07', 'ACC-08', 'ACC-27'],             // Petals on water → dew, fallen petals, butterfly
+  'GM-I3-06': ['ACC-08', 'ACC-07', 'ACC-26'],             // Frangipani → fallen petals, dew, spider web
+  'GM-I3-07': ['ACC-07', 'ACC-26', 'ACC-08'],             // Rose bud → dew, spider web, fallen petals
+  'GM-I3-08': ['ACC-07', 'ACC-08', 'ACC-28'],             // Petals on water → dew, fallen petals, dragonfly
   'GM-I3-09': ['ACC-27', 'ACC-08', 'ACC-10'],             // Cherry blossom → butterfly, fallen petals, distant birds
-  // ── Spiritual & Devotional ──
-  'GM-I4-01': ['ACC-14', 'ACC-16', 'ACC-17'],             // Diya → loose petals, matchsticks, rice grains
-  'GM-I4-03': ['ACC-14', 'ACC-13', 'ACC-08'],             // Namaste → loose petals, kumkum, fallen petals
-  'GM-I4-04': ['ACC-16', 'ACC-15', 'ACC-14'],             // Agarbatti → matchsticks, small bell, loose petals
-  'GM-I4-05': ['ACC-13', 'ACC-14', 'ACC-17'],             // Tulsi → kumkum mark, loose petals, rice grains
-  'GM-I4-06': ['ACC-14', 'ACC-16', 'ACC-13'],             // Temple bell → loose petals, matchsticks, kumkum
-  'GM-I4-07': ['ACC-14', 'ACC-17', 'ACC-13'],             // Shankh → loose petals, rice grains, kumkum
-  'GM-I4-08': ['ACC-14', 'ACC-13', 'ACC-07'],             // Rangoli → loose petals, kumkum, dew
-  'GM-I4-09': ['ACC-08', 'ACC-07', 'ACC-14'],             // Peacock feather → fallen petals, dew, loose petals
+  // ── Cultural ──
+  'GM-I4-01': ['ACC-14', 'ACC-30', 'ACC-17'],             // Diya → loose petals, incense smoke, rice grains
+  'GM-I4-08': ['ACC-14', 'ACC-17', 'ACC-15'],             // Rangoli → loose petals, rice grains, brass bell
+  'GM-I4-09': ['ACC-08', 'ACC-30'],                       // Peacock feather → fallen petals, incense smoke
   // ── Lifestyle & People ──
   'GM-I5-01': ['ACC-22', 'ACC-07', 'ACC-10'],             // Surya namaskar → yoga mat edge, dew, distant birds
-  'GM-I5-02': ['ACC-22', 'ACC-07', 'ACC-09'],             // Meditating → yoga mat, dew, fog wisps
-  'GM-I5-03': ['ACC-21', 'ACC-19', 'ACC-25'],             // Open window → curtain light, small plant, wind chime
-  'GM-I5-04': ['ACC-18', 'ACC-01', 'ACC-02'],             // Book+Chai → reading glasses, biscuits, newspaper
+  'GM-I5-02': ['ACC-30', 'ACC-22', 'ACC-08'],             // Meditating → incense smoke, yoga mat, fallen petals
+  'GM-I5-03': ['ACC-19', 'ACC-25', 'ACC-29'],             // Open window → small plant, wind chime, curl of steam
+  'GM-I5-04': ['ACC-18', 'ACC-01', 'ACC-29'],             // Book+Chai → reading glasses, biscuits, curl of steam
   'GM-I5-05': ['ACC-12', 'ACC-07', 'ACC-10'],             // Morning walk → path, dew, distant birds
-  'GM-I5-06': ['ACC-24', 'ACC-19', 'ACC-21'],             // Watering plants → terracotta pot, small plant, curtain
+  'GM-I5-06': ['ACC-24', 'ACC-19', 'ACC-27'],             // Watering plants → terracotta pot, small plant, butterfly
+  'GM-I5-07': ['ACC-29', 'ACC-04', 'ACC-01'],             // Newspaper & Chai → curl of steam, sugar bowl, biscuits
   // ── Birds & Wildlife ──
-  'GM-I6-01': ['ACC-09', 'ACC-10', 'ACC-07'],             // Bird flock → fog, distant birds, dew
-  'GM-I6-02': ['ACC-08', 'ACC-07', 'ACC-27'],             // Sparrow → fallen petals, dew, butterfly
-  'GM-I6-03': ['ACC-08', 'ACC-07', 'ACC-14'],             // Peacock → fallen petals, dew, loose petals
-  'GM-I6-04': ['ACC-11', 'ACC-07', 'ACC-27'],             // Parrot → wet leaves, dew, butterfly
-  'GM-I6-05': ['ACC-09', 'ACC-07', 'ACC-28'],             // Sarus crane → fog wisps, dew, dragonfly
-  'GM-I6-06': ['ACC-08', 'ACC-07', 'ACC-11'],             // Butterflies → fallen petals, dew, wet leaves
+  'GM-I6-01': ['ACC-09', 'ACC-11', 'ACC-07'],             // Bird flock → fog, wet leaves, dew
+  'GM-I6-02': ['ACC-08', 'ACC-27', 'ACC-11'],             // Sparrow → fallen petals, butterfly, wet leaves
+  'GM-I6-03': ['ACC-08', 'ACC-07', 'ACC-10'],             // Peacock → fallen petals, dew, distant birds
+  'GM-I6-04': ['ACC-11', 'ACC-27', 'ACC-08'],             // Parrot → wet leaves, butterfly, fallen petals
+  'GM-I6-05': ['ACC-09', 'ACC-28', 'ACC-07'],             // Sarus crane → fog, dragonfly, dew
+  'GM-I6-06': ['ACC-08', 'ACC-07', 'ACC-28'],             // Butterflies → fallen petals, dew, dragonfly
 };
 
 // A2 sub-elements: accent props for illustrated scenes (same ACCENT_ITEMS, illustrated descriptions)
+// Updated 6 May: aligned with curated 37-item GM pool. 5 devotional GM-I4 items moved to
+// Devotional overlay; new GM-I5-07 (Newspaper & Chai) added; ACC-13/16/21 dropped from pool.
 const A2_SUB_ELEMENTS = {
   // ── Beverages ──
-  'GM-I1-01': ['ACC-29', 'ACC-01', 'ACC-03', 'ACC-06'],  // Chai → steam curl, biscuits, spices, napkin
-  'GM-I1-02': ['ACC-29', 'ACC-01', 'ACC-05', 'ACC-03'],  // Kulhad → steam curl, biscuits, tray, spices
-  'GM-I1-04': ['ACC-03', 'ACC-29', 'ACC-05'],             // Masala Chai → spices, steam, tray
-  'GM-I1-05': ['ACC-08', 'ACC-19', 'ACC-27'],             // OJ → petals, plant, butterfly
-  'GM-I1-07': ['ACC-29', 'ACC-01', 'ACC-06'],             // Teapot → steam, biscuits, napkin
-  'GM-I1-08': ['ACC-27', 'ACC-08', 'ACC-11'],             // Coconut → butterfly, petals, leaves
+  'GM-I1-01': ['ACC-29', 'ACC-01', 'ACC-03'],             // Chai → steam, biscuits, spice scatter
+  'GM-I1-02': ['ACC-29', 'ACC-04', 'ACC-06'],             // Kulhad → steam, sugar bowl, cloth napkin
+  'GM-I1-04': ['ACC-03', 'ACC-29', 'ACC-05'],             // Masala Chai → spice scatter, steam, steel tray
+  'GM-I1-05': ['ACC-08', 'ACC-19', 'ACC-31'],             // OJ → fallen petals, potted plant, orange halves
+  'GM-I1-07': ['ACC-29', 'ACC-01', 'ACC-06'],             // Teapot → steam, biscuits, cloth napkin
+  'GM-I1-08': ['ACC-08', 'ACC-32'],                       // Coconut → fallen petals, half coconut shell
   // ── Nature & Sky ──
-  'GM-I2-01': ['ACC-10', 'ACC-09', 'ACC-08'],             // Sunrise hills → birds, fog, petals
-  'GM-I2-02': ['ACC-27', 'ACC-07', 'ACC-10'],             // Sun rays forest → butterfly, dew, birds
-  'GM-I2-04': ['ACC-09', 'ACC-28', 'ACC-10'],             // River mist → fog, dragonfly, birds
-  'GM-I2-05': ['ACC-10', 'ACC-09', 'ACC-08'],             // Ocean sunrise → birds, fog, petals
-  'GM-I2-06': ['ACC-10', 'ACC-09', 'ACC-07'],             // Mountain peak → birds, fog, dew
-  'GM-I2-08': ['ACC-11', 'ACC-10', 'ACC-27'],             // Rainbow → leaves, birds, butterfly
+  'GM-I2-01': ['ACC-10', 'ACC-09', 'ACC-07'],             // Sunrise hills → distant birds, fog, dew
+  'GM-I2-02': ['ACC-27', 'ACC-07', 'ACC-26'],             // Sun rays forest → butterfly, dew, dewy spider web
+  'GM-I2-04': ['ACC-09', 'ACC-28', 'ACC-10'],             // River mist → fog, dragonfly, distant birds
+  'GM-I2-05': ['ACC-10', 'ACC-09', 'ACC-08'],             // Ocean sunrise → distant birds, fog, fallen petals
+  'GM-I2-06': ['ACC-10', 'ACC-09', 'ACC-11'],             // Mountain peak → distant birds, fog, wet leaves
+  'GM-I2-08': ['ACC-11', 'ACC-10', 'ACC-27'],             // Rainbow → wet leaves, distant birds, butterfly
   // ── Flowers & Botanicals ──
-  'GM-I3-01': ['ACC-14', 'ACC-30', 'ACC-15'],             // Marigold → loose petals, incense smoke, bell
+  'GM-I3-01': ['ACC-14', 'ACC-30', 'ACC-15'],             // Marigold → loose petals, incense smoke, brass bell
   'GM-I3-02': ['ACC-08', 'ACC-28', 'ACC-07'],             // Lotus → fallen petals, dragonfly, dew
-  'GM-I3-03': ['ACC-08', 'ACC-27', 'ACC-07'],             // Jasmine → petals, butterfly, dew
-  'GM-I3-04': ['ACC-27', 'ACC-08', 'ACC-07'],             // Hibiscus → butterfly, petals, dew
-  'GM-I3-05': ['ACC-27', 'ACC-10', 'ACC-07'],             // Sunflower → butterfly, birds, dew
-  'GM-I3-06': ['ACC-08', 'ACC-27', 'ACC-07'],             // Frangipani → petals, butterfly, dew
-  'GM-I3-07': ['ACC-07', 'ACC-27', 'ACC-08'],             // Rose bud → dew, butterfly, petals
-  'GM-I3-08': ['ACC-28', 'ACC-27', 'ACC-07'],             // Petals on water → dragonfly, butterfly, dew
-  'GM-I3-09': ['ACC-27', 'ACC-08', 'ACC-10'],             // Cherry blossom → butterfly, petals, birds
-  // ── Spiritual & Devotional ──
-  'GM-I4-01': ['ACC-14', 'ACC-30', 'ACC-17'],             // Diya → petals, incense smoke, rice grains
-  'GM-I4-03': ['ACC-14', 'ACC-30', 'ACC-13'],             // Namaste → petals, incense, kumkum
-  'GM-I4-04': ['ACC-30', 'ACC-14', 'ACC-15'],             // Agarbatti → smoke trail, petals, bell
-  'GM-I4-05': ['ACC-14', 'ACC-30', 'ACC-17'],             // Tulsi → petals, incense, rice
-  'GM-I4-06': ['ACC-14', 'ACC-30', 'ACC-13'],             // Temple bell → petals, incense, kumkum
-  'GM-I4-07': ['ACC-14', 'ACC-30', 'ACC-17'],             // Shankh → petals, incense, rice
-  'GM-I4-08': ['ACC-14', 'ACC-13', 'ACC-08'],             // Rangoli → petals, kumkum, fallen petals
-  'GM-I4-09': ['ACC-08', 'ACC-14', 'ACC-27'],             // Peacock feather → petals, petals, butterfly
+  'GM-I3-03': ['ACC-08', 'ACC-27', 'ACC-07'],             // Jasmine → fallen petals, butterfly, dew
+  'GM-I3-04': ['ACC-27', 'ACC-08', 'ACC-07'],             // Hibiscus → butterfly, fallen petals, dew
+  'GM-I3-05': ['ACC-27', 'ACC-10', 'ACC-07'],             // Sunflower → butterfly, distant birds, dew
+  'GM-I3-06': ['ACC-08', 'ACC-27', 'ACC-26'],             // Frangipani → fallen petals, butterfly, dewy spider web
+  'GM-I3-07': ['ACC-07', 'ACC-26', 'ACC-08'],             // Rose bud → dew, dewy spider web, fallen petals
+  'GM-I3-08': ['ACC-28', 'ACC-27', 'ACC-09'],             // Petals on water → dragonfly, butterfly, fog
+  'GM-I3-09': ['ACC-27', 'ACC-08', 'ACC-10'],             // Cherry blossom → butterfly, fallen petals, distant birds
+  // ── Cultural ──
+  'GM-I4-01': ['ACC-14', 'ACC-30', 'ACC-17'],             // Diya → loose petals, incense smoke, rice grains
+  'GM-I4-08': ['ACC-14', 'ACC-17', 'ACC-15'],             // Rangoli → loose petals, rice grains, brass bell
+  'GM-I4-09': ['ACC-08', 'ACC-30'],                       // Peacock feather → fallen petals, incense smoke
   // ── Lifestyle & People ──
-  'GM-I5-01': ['ACC-22', 'ACC-10', 'ACC-07'],             // Surya namaskar → yoga mat, birds, dew
-  'GM-I5-02': ['ACC-30', 'ACC-22', 'ACC-08'],             // Meditating → incense, yoga mat, petals
-  'GM-I5-03': ['ACC-21', 'ACC-19', 'ACC-29'],             // Open window → curtain, plant, steam
-  'GM-I5-04': ['ACC-18', 'ACC-29', 'ACC-01'],             // Book+Chai → glasses, steam, biscuits
-  'GM-I5-05': ['ACC-10', 'ACC-08', 'ACC-11'],             // Morning walk → birds, petals, leaves
-  'GM-I5-06': ['ACC-24', 'ACC-19', 'ACC-27'],             // Watering plants → terracotta, plant, butterfly
+  'GM-I5-01': ['ACC-22', 'ACC-10', 'ACC-07'],             // Surya namaskar → yoga mat, distant birds, dew
+  'GM-I5-02': ['ACC-30', 'ACC-22', 'ACC-08'],             // Meditating → incense smoke, yoga mat, fallen petals
+  'GM-I5-03': ['ACC-19', 'ACC-25', 'ACC-29'],             // Open window → potted plant, wind chime, curl of steam
+  'GM-I5-04': ['ACC-18', 'ACC-29', 'ACC-01'],             // Book+Chai → reading glasses, steam, biscuits
+  'GM-I5-05': ['ACC-10', 'ACC-08', 'ACC-11'],             // Morning walk → distant birds, fallen petals, wet leaves
+  'GM-I5-06': ['ACC-24', 'ACC-19', 'ACC-27'],             // Watering plants → terracotta, potted plant, butterfly
+  'GM-I5-07': ['ACC-29', 'ACC-04', 'ACC-01'],             // Newspaper & Chai → steam, sugar bowl, biscuits
   // ── Birds & Wildlife ──
-  'GM-I6-01': ['ACC-09', 'ACC-08', 'ACC-10'],             // Bird flock → fog, petals, more birds
-  'GM-I6-02': ['ACC-08', 'ACC-27', 'ACC-11'],             // Sparrow → petals, butterfly, leaves
-  'GM-I6-03': ['ACC-08', 'ACC-14', 'ACC-07'],             // Peacock → petals, marigold petals, dew
-  'GM-I6-04': ['ACC-11', 'ACC-27', 'ACC-08'],             // Parrot → leaves, butterfly, petals
+  'GM-I6-01': ['ACC-09', 'ACC-11', 'ACC-07'],             // Bird flock → fog, wet leaves, dew
+  'GM-I6-02': ['ACC-08', 'ACC-27', 'ACC-11'],             // Sparrow → fallen petals, butterfly, wet leaves
+  'GM-I6-03': ['ACC-08', 'ACC-07', 'ACC-10'],             // Peacock → fallen petals, dew, distant birds
+  'GM-I6-04': ['ACC-11', 'ACC-27', 'ACC-08'],             // Parrot → wet leaves, butterfly, fallen petals
   'GM-I6-05': ['ACC-09', 'ACC-28', 'ACC-07'],             // Sarus crane → fog, dragonfly, dew
-  'GM-I6-06': ['ACC-08', 'ACC-07', 'ACC-11'],             // Butterflies → petals, dew, leaves
+  'GM-I6-06': ['ACC-08', 'ACC-07', 'ACC-28'],             // Butterflies → fallen petals, dew, dragonfly
 };
 
 function renderB1SceneElements() {
