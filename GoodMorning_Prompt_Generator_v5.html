@@ -1621,6 +1621,17 @@ const SAFE_ZONE_DESC_B1 = 'the bottom 20 percent of the canvas is a personalizat
 const SAFE_ZONE_FIREFLY_AB = 'Bottom 20% is a clean personalization zone, no main subject or hero text in this band, BG and frame extend naturally.';
 const SAFE_ZONE_FIREFLY_B1 = 'Bottom 20% personalization zone, photo soft-fades, main subject above this band.';
 
+// Layout L6 (Text Centre, framed) uses a reduced 10% safe zone so a tiny corner accent
+// can sit at any of the four corners — including the bottom corners. All other layouts
+// keep the standard 20% band. Implemented as a swap inside the dispatch helpers below.
+const SAFE_ZONE_DESC_L6 = 'the bottom 10 percent of the canvas is a reduced personalization safe zone for this layout — the central text and the small corner accent illustration both stay clear of this strip, while the frame border and background may extend into it';
+const SAFE_ZONE_FIREFLY_L6 = 'Bottom 10% reduced safe zone (this corner-accent layout).';
+
+// Returns the right safe-zone descriptor for a given layout. L6 uses the reduced 10% variant
+// since its illustration is a small corner accent that can sit at any of the four corners.
+function getSafeZoneDesc(layoutId) { return layoutId === 'L6' ? SAFE_ZONE_DESC_L6 : SAFE_ZONE_DESC; }
+function getSafeZoneFireflyAB(layoutId) { return layoutId === 'L6' ? SAFE_ZONE_FIREFLY_L6 : SAFE_ZONE_FIREFLY_AB; }
+
 // B1 hero-text colour adapter.
 // Heavy overlay → white always works (dark band beneath text).
 // Light overlay → per-track default since white can vanish on bright/airy or
@@ -2259,7 +2270,12 @@ function layoutDiagram(layout) {
     return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="margin-bottom:8px;flex-shrink:0;"><rect width="${w}" height="${h}" rx="4" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/><rect x="${tX}" width="${tW}" height="${h}" fill="#BFDBFE"/><text x="${tX+tW/2}" y="${h*0.45+4}" text-anchor="middle" font-size="7" font-weight="800" fill="#1E40AF">T</text><rect x="${vX}" width="${vW}" height="${h}" fill="#FED7AA"/><text x="${vX+vW/2}" y="${h*0.45+4}" text-anchor="middle" font-size="7" font-weight="800" fill="#92400E">V</text>${sz}</svg>`;
   }
   if (L.type === 'centre-accent') {
-    return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="margin-bottom:8px;flex-shrink:0;"><rect width="${w}" height="${h}" rx="4" fill="#BFDBFE" stroke="#F59E0B" stroke-width="2.5"/><text x="${w/2}" y="${h*0.42+3}" text-anchor="middle" font-size="8" font-weight="800" fill="#1E40AF">T</text><rect x="${w-16}" y="6" width="12" height="10" rx="2" fill="#FED7AA"/><text x="${w-10}" y="14" text-anchor="middle" font-size="5" font-weight="800" fill="#92400E">V</text>${sz}</svg>`;
+    // L6 uses a REDUCED 10% safe-zone band (vs 20% on every other layout) so a tiny corner
+    // accent can sit at any of the 4 corners — including the bottom corners. Override the
+    // shared `sz` element with a thinner band, and draw a second small V chip at the bottom-
+    // right corner to show that bottom placement is now valid for this layout.
+    const sz10 = `<rect x="2" y="${h*0.9}" width="${w-4}" height="${h*0.1 - 2}" fill="rgba(248,250,252,0.85)" stroke="#94A3B8" stroke-width="0.7" stroke-dasharray="2 1.5" rx="2"/><text x="${w/2}" y="${h-1.5}" text-anchor="middle" font-size="3.2" fill="#64748B" font-style="italic">safe 10%</text>`;
+    return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="margin-bottom:8px;flex-shrink:0;"><rect width="${w}" height="${h}" rx="4" fill="#BFDBFE" stroke="#F59E0B" stroke-width="2.5"/><text x="${w/2}" y="${h*0.5+3}" text-anchor="middle" font-size="8" font-weight="800" fill="#1E40AF">T</text><rect x="${w-16}" y="3" width="12" height="9" rx="2" fill="#FED7AA"/><text x="${w-10}" y="10" text-anchor="middle" font-size="5" font-weight="800" fill="#92400E">V</text><rect x="${w-16}" y="${h*0.78}" width="12" height="9" rx="2" fill="#FED7AA" opacity="0.9"/><text x="${w-10}" y="${h*0.78+7}" text-anchor="middle" font-size="5" font-weight="800" fill="#92400E">V</text>${sz10}</svg>`;
   }
   return '';
 }
@@ -3162,8 +3178,10 @@ function gatherPromptData() {
     textZonePh = 'text overlay zone in the band between 60 and 80 percent from the top of the canvas with no decorative elements in this band, leaving the bottom 20 percent clean as a personalization safe zone';
     illusPositionPh = 'positioned in the upper 60 percent of the canvas above the text band';
   } else if (layout.id === 'L6') {
-    textZonePh = 'text occupies the central 60 percent of the canvas as the dominant element, kept above the bottom 20 percent personalization safe zone';
-    illusPositionPh = 'placed at an upper corner of the canvas not overlapping the central text and not entering the bottom 20 percent personalization safe zone';
+    // L6 uses a reduced 10% safe zone so the small corner accent can sit at any of the four
+    // corners (including the bottom corners) — see SAFE_ZONE_DESC_L6 / getSafeZoneDesc().
+    textZonePh = 'text occupies the central 60 percent of the canvas as the dominant element, kept above the bottom 10 percent reduced personalization safe zone';
+    illusPositionPh = 'placed as a small decorative accent at any of the four corners of the canvas (upper-left, upper-right, lower-left, or lower-right), tucked tight against the corner, kept clear of the central text and clear of the bottom 10 percent reduced personalization safe zone';
   }
 
   // Colour phrases
@@ -3577,8 +3595,8 @@ function buildMJPrompt(d) {
   // [Overlay] Atmosphere + mood appended after track style so they layer on top of base aesthetic
   if (d.overlayAtm) parts.push(d.overlayAtm);
   if (d.overlayMood) parts.push(d.overlayMood);
-  // Personalization safe zone (bottom 20%)
-  parts.push(SAFE_ZONE_DESC);
+  // Personalization safe zone (bottom 20% standard, 10% for L6 corner-accent layout)
+  parts.push(getSafeZoneDesc(d.layout.id));
   parts.push('9:16 portrait format');
 
   const mainPrompt = parts.filter(p => p).join(', ');
@@ -3641,8 +3659,8 @@ function buildLeonardoPrompt(d) {
     if (d.overlayMood) lines.push(`Mood: ${d.overlayMood}.`);
   }
 
-  // Personalization safe zone (bottom 20%)
-  lines.push(`Safe zone: ${SAFE_ZONE_DESC}.`);
+  // Personalization safe zone (bottom 20% standard, 10% for L6 corner-accent layout)
+  lines.push(`Safe zone: ${getSafeZoneDesc(d.layout.id)}.`);
 
   const coreNegs = buildLeonardoNegatives(d);
   if (d.overlayNegs && d.overlayNegs.length) coreNegs.push(...d.overlayNegs);
@@ -3677,6 +3695,25 @@ function stripHex(s) { return s.replace(/\s*\(#[A-Fa-f0-9]{3,8}\)/g, ''); }
 // Helper: truncate to max chars at last comma
 function trunc(s, max) { if (s.length <= max) return s; return s.substring(0, max).replace(/,\s*[^,]*$/, ''); }
 
+// Returns the Firefly-compact text-zone + illustration-zone descriptors keyed by layout ID.
+// Replaces the previous fragile `d.textZonePh.includes(...)` cascade which silently broke for L3,
+// L4, and L5 after the v2 safe-zone phrasing update — both L3 and L4 layout phrases name BOTH
+// sides ("left column ... right column anchors"), so the cascade short-circuited on `'left'` for
+// both layouts; L5's new "between 60 and 80 percent from the top" phrase contains none of the
+// upper/lower/left/right keywords so it fell through to `'centre'`. Explicit per-layout dispatch
+// keeps the compact form correct independent of any future layout-phrase rewrites.
+function compactLayoutPhFirefly(layoutId) {
+  const map = {
+    'L1': { textZone: 'upper 25%',            illusZone: 'centre band below text, above safe zone' },
+    'L2': { textZone: 'centred mid-canvas',   illusZone: 'centred behind text, above safe zone' },
+    'L3': { textZone: 'left column',          illusZone: 'right side anchor, above safe zone' },
+    'L4': { textZone: 'right column',         illusZone: 'left side anchor, above safe zone' },
+    'L5': { textZone: 'lower band 60-80%',    illusZone: 'upper 60% above text band' },
+    'L6': { textZone: 'central 60% (framed)', illusZone: 'small accent at any of the four corners, above the reduced 10% safe zone' },
+  };
+  return map[layoutId] || { textZone: 'centre', illusZone: 'opposite area' };
+}
+
 function buildFireflyWithTextPrompt(d) {
   // Firefly WITH TEXT: hard cap ≤950 chars. Includes "Good Morning" text.
   const parts = [];
@@ -3688,9 +3725,12 @@ function buildFireflyWithTextPrompt(d) {
   if (d.framePh) parts.push(`Frame: ${trunc(d.framePh, 50)}.`);
   if (d.overlayPh) parts.push(`${trunc(d.overlayPh, 40)}.`);
   if (d.densityPh) parts.push(`${trunc(d.densityPh, 40)}.`);
-  // Layout: compact
-  const zone = d.textZonePh.includes('upper') ? 'upper' : d.textZonePh.includes('lower') ? 'lower' : d.textZonePh.includes('left') ? 'left' : d.textZonePh.includes('right') ? 'right' : 'centre';
-  parts.push(`Text zone: ${zone} 25%. Illustration: ${zone === 'upper' ? 'lower' : zone === 'lower' ? 'upper' : 'opposite'} area.`);
+  // Layout: compact (per-layout dispatch — see compactLayoutPhFirefly above for why this
+  // replaced the previous string-match cascade).
+  {
+    const lay = compactLayoutPhFirefly(d.layout.id);
+    parts.push(`Text zone: ${lay.textZone}. Illustration: ${lay.illusZone}.`);
+  }
   if (d.illusItem) {
     let render = trunc(stripHex(d.renderPh), 60);
     let col = stripHex(d.illusColPh);
@@ -3703,8 +3743,8 @@ function buildFireflyWithTextPrompt(d) {
   if (d.track.id === 'A') parts.push('Sparkle particles.');
   // Overlay compact atmosphere — bounded ≤50 chars per Section 6.4 of overlay spec
   if (d.overlayFireflyAtm) parts.push(`${trunc(d.overlayFireflyAtm, 50)}.`);
-  // Bottom 20% personalization safe zone (compact)
-  parts.push(SAFE_ZONE_FIREFLY_AB);
+  // Bottom safe zone (compact, layout-aware: 20% standard, 10% for L6)
+  parts.push(getSafeZoneFireflyAB(d.layout.id));
   {
     const txt = getDisplayText();
     const guard = d.overlayFireflyNegGuard ? `, ${d.overlayFireflyNegGuard}` : '';
@@ -3728,9 +3768,11 @@ function buildFireflyNoTextPrompt(d) {
   if (d.framePh) parts.push(`Frame: ${trunc(d.framePh, 50)}.`);
   if (d.overlayPh) parts.push(`${trunc(d.overlayPh, 40)}.`);
   if (d.densityPh) parts.push(`${trunc(d.densityPh, 40)}.`);
-  // Layout: compact
-  const zone = d.textZonePh.includes('upper') ? 'upper' : d.textZonePh.includes('lower') ? 'lower' : d.textZonePh.includes('left') ? 'left' : d.textZonePh.includes('right') ? 'right' : 'centre';
-  parts.push(`Empty ${zone} area for manual text later. Illustration: ${zone === 'upper' ? 'lower' : zone === 'lower' ? 'upper' : 'opposite'} area.`);
+  // Layout: compact (per-layout dispatch — same helper as the with-text variant above).
+  {
+    const lay = compactLayoutPhFirefly(d.layout.id);
+    parts.push(`Empty ${lay.textZone} for manual text later. Illustration: ${lay.illusZone}.`);
+  }
   if (d.illusItem) {
     let render = trunc(stripHex(d.renderPh), 60);
     let col = stripHex(d.illusColPh);
@@ -3743,8 +3785,8 @@ function buildFireflyNoTextPrompt(d) {
   if (d.track.id === 'A') parts.push('Sparkle particles.');
   // Overlay compact atmosphere
   if (d.overlayFireflyAtm) parts.push(`${trunc(d.overlayFireflyAtm, 50)}.`);
-  // Bottom 20% personalization safe zone (compact)
-  parts.push(SAFE_ZONE_FIREFLY_AB);
+  // Bottom safe zone (compact, layout-aware: 20% standard, 10% for L6)
+  parts.push(getSafeZoneFireflyAB(d.layout.id));
   const guard2 = d.overlayFireflyNegGuard ? ` Do not include ${d.overlayFireflyNegGuard}.` : '';
   parts.push(`Purely visual, no text, no letters, no typography.${guard2}`);
   let result = parts.join(' ');
@@ -3808,8 +3850,8 @@ function buildGeminiPrompt(d) {
     lines.push(`\nOverlay flavour (${d.overlay.name}): The poster carries an additional ${d.overlay.name.toLowerCase()} atmosphere — ${d.overlayAtm}. The mood is ${d.overlayMood}.`);
   }
 
-  // Personalization safe zone (bottom 20%)
-  lines.push(`\nPersonalization Safe Zone: ${SAFE_ZONE_DESC}.`);
+  // Personalization safe zone (bottom 20% standard, 10% for L6 corner-accent layout)
+  lines.push(`\nPersonalization Safe Zone: ${getSafeZoneDesc(d.layout.id)}.`);
 
   // Do not include
   const negs = buildNegatives();
