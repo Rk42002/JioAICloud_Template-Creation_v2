@@ -2426,11 +2426,20 @@ function renderStep1() {
     { id: 'birthday',     icon: '🎂', name: 'Happy Birthday', desc: 'Celebration-first greeting. Cake, balloons, mithai, sparklers — joyful and festive.' },
     ...Object.values(CATEGORY_PACKS).map(p => ({ id: p.id, icon: p.icon, name: p.name, desc: p.desc })),
   ];
+  // Categories pending re-curation — visually disabled with "Coming soon" badge until ready.
+  // Temporary; remove this set when these pools are curated and unparked.
+  const PARKED_CATEGORIES = new Set(['fathers_day', 'vat_savitri', 'shivji', 'ganeshji', 'jesus', 'islamic']);
   let html = `<div class="step-header"><div class="step-eyebrow">Step 1 · Template Selection</div><div class="step-title">Choose Category & Template</div><div class="step-desc">Pick the content category first, then choose a template style.</div></div>`;
 
   // Sub-section 1: Category
   html += `<div class="sub-section"><div class="sub-section-header"><div class="sub-section-num">1</div><div class="sub-section-title">Category</div></div>`;
-  html += `<div class="options-grid cols-3">${categories.map(c => `<div class="opt-card ${STATE.category === c.id ? 'selected' : ''}" onclick="select('category','${c.id}')"><div class="opt-icon">${c.icon}</div><div class="opt-name">${c.name}</div><div class="opt-desc">${c.desc}</div></div>`).join('')}</div></div>`;
+  html += `<div class="options-grid cols-3">${categories.map(c => {
+    const isParked = PARKED_CATEGORIES.has(c.id);
+    if (isParked) {
+      return `<div class="opt-card" style="position:relative;opacity:0.4;cursor:not-allowed;pointer-events:none;"><div style="position:absolute;top:8px;right:8px;background:#F59E0B;color:#fff;font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;letter-spacing:0.3px;text-transform:uppercase;">Coming soon</div><div class="opt-icon">${c.icon}</div><div class="opt-name">${c.name}</div><div class="opt-desc">${c.desc}</div></div>`;
+    }
+    return `<div class="opt-card ${STATE.category === c.id ? 'selected' : ''}" onclick="select('category','${c.id}')"><div class="opt-icon">${c.icon}</div><div class="opt-name">${c.name}</div><div class="opt-desc">${c.desc}</div></div>`;
+  }).join('')}</div></div>`;
 
   // Sub-section 2: Overlay Pack (only shown after category picked)
   if (STATE.category) {
