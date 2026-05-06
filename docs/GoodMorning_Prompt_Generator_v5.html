@@ -1374,7 +1374,7 @@ const ILLUS_SIZE_OPTS = [
 // Thin content modifier layered on top of a Base Category.
 // 4 packs: Devotional, Summer, Rain/Monsoon, Cricket/IPL.
 // Each pack defines: track filter, illustration adds + restrictions,
-// motif swaps + adds per track, frame restrictions / F6 unlock,
+// motif swaps + adds per track, frame restrictions / unlocks,
 // and prompt injection strings (atmosphere / mood / negatives / B1 scene).
 // ═══════════════════════════════════════════════════════════════
 const OVERLAYS = [
@@ -1429,7 +1429,7 @@ const OVERLAYS = [
       E: [{ id: 'OV-DEV-MTA-E1', name: 'Incense Haze (Soft)', promptPhrase: 'gentle warm-toned haze wash along frame base, very subtle 20-30% opacity, devotional atmosphere layer' }],
     },
     frameRestrict: [],
-    frameUnlock: [{ id: 'F6', name: 'Temple Arch', desc: 'Curved temple gopuram / mandir arch silhouette overhead. Bottom edge straight. Devotional only.', diagramType: 'frame-arch' }],
+    frameUnlock: [],
     prompt: {
       atmosphere: 'spiritual, sacred, devotional warmth, temple morning atmosphere, divine glow, sacred golden light',
       mood: 'reverent, peaceful, prayerful, blessed, meditative, serene, devout',
@@ -2159,7 +2159,7 @@ function select(key, value) {
   }
   if (key === 'overlay') {
     // Overlay change can invalidate previously-picked track (blockedTracks), illustration (restricted),
-    // motif (swapped/blocked), and frame (F5 restricted by Cricket; F6 only available with Devotional).
+    // motif (swapped/blocked), and frame (F5 restricted by Cricket).
     STATE.step2 = null; STATE.layout = null;
     STATE.track = null; STATE.palette = null; STATE.font = null; STATE.finish = null;
     STATE.illusRender = null; STATE.motifSet = null; STATE.customPreset = null;
@@ -2446,7 +2446,7 @@ function renderStep2() {
   return `<div class="step-header"><div class="step-eyebrow">Step 2 · ${arch.codeName}</div><div class="step-title">${arch.step2Label}</div><div class="step-desc">This choice is specific to ${arch.name}. It determines the primary structural element.</div></div>${banner}<div class="options-grid cols-${cols}">${options.map(o => `<div class="opt-card ${STATE.step2 === o.id ? 'selected' : ''}" onclick="select('step2','${o.id}')"><div style="margin-bottom:10px;">${step2Diagram(o.diagramType)}</div><div class="opt-name">${o.name}</div><div class="opt-desc">${o.desc}</div></div>`).join('')}</div>`;
 }
 
-// Overlay-aware step 2 options. A1 frames: applies frameRestrict (hides) and frameUnlock (adds e.g. F6 Temple Arch for Devotional).
+// Overlay-aware step 2 options. A1 frames: applies frameRestrict (hides) and frameUnlock (adds overlay-specific frames if any).
 // A2/B1: pass-through (overlays don't touch density or B1 overlay treatments).
 function getStep2Options() {
   const arch = getArchetype();
@@ -2630,18 +2630,26 @@ function renderStep8() {
   }
 
   if (STATE.illusItem && STATE.illusItem !== 'NONE') {
-    // A2 Sub-illustrations: curated accent items (rendered in same illustration style)
-    if (STATE.archetype === 'A2') {
-      const a2SubIds = getA2SubElements(STATE.illusItem);
-      const subItems = a2SubIds.map(subId => { const acc = ACCENT_ITEMS[subId]; return acc ? { id: subId, ...acc } : null; }).filter(Boolean);
+    // Sub-illustrations: curated accent items rendered in same illustration style.
+    // A2 (no frame): density auto-adjusts (Light / Medium / Dense) based on count.
+    // A1 (with frame): same accent picker, but density is governed by frame decoration —
+    //   accents are pure scene-supporting props, no density label.
+    if (STATE.archetype === 'A1' || STATE.archetype === 'A2') {
+      const subIds = getA2SubElements(STATE.illusItem);
+      const subItems = subIds.map(subId => { const acc = ACCENT_ITEMS[subId]; return acc ? { id: subId, ...acc } : null; }).filter(Boolean);
       if (subItems.length > 0) {
-        const a2SubEls = STATE.a2SubElements || [];
-        const densityLabel = a2SubEls.length === 0 ? 'Light (main only)' : a2SubEls.length === 1 ? 'Medium' : 'Dense';
-        html += `<div class="sub-section"><div class="sub-section-header"><div class="sub-section-num">${n++}</div><div class="sub-section-title">Scene Accents <span style="font-weight:400;color:var(--muted);">(optional, up to 2)</span></div><div class="sub-section-tag">${a2SubEls.length}/2 · ${densityLabel}</div></div>`;
-        html += `<div style="font-size:12px;color:var(--muted);margin-bottom:10px;">Small decorative elements rendered in the same illustration style. Density auto-adjusts: ${densityLabel}.</div>`;
+        const subEls = STATE.a2SubElements || [];
+        const isA2 = STATE.archetype === 'A2';
+        const densityLabel = subEls.length === 0 ? 'Light (main only)' : subEls.length === 1 ? 'Medium' : 'Dense';
+        const tag = isA2 ? `${subEls.length}/2 · ${densityLabel}` : `${subEls.length}/2`;
+        const helper = isA2
+          ? `Small decorative elements rendered in the same illustration style. Density auto-adjusts: ${densityLabel}.`
+          : `Small supporting scene elements rendered in the same illustration style as the main subject. Sit alongside the main illustration, kept clear of the border frame.`;
+        html += `<div class="sub-section"><div class="sub-section-header"><div class="sub-section-num">${n++}</div><div class="sub-section-title">Scene Accents <span style="font-weight:400;color:var(--muted);">(optional, up to 2)</span></div><div class="sub-section-tag">${tag}</div></div>`;
+        html += `<div style="font-size:12px;color:var(--muted);margin-bottom:10px;">${helper}</div>`;
         html += `<div class="options-grid cols-4">${subItems.map(i => {
-          const isSel = a2SubEls.includes(i.id);
-          const isMaxed = a2SubEls.length >= 2 && !isSel;
+          const isSel = subEls.includes(i.id);
+          const isMaxed = subEls.length >= 2 && !isSel;
           return `<div class="opt-card ${isSel ? 'selected' : ''}" onclick="${isMaxed ? '' : `toggleA2SubElement('${i.id}')`}" style="${isMaxed ? 'cursor:not-allowed;opacity:0.4;' : ''}"><div class="opt-name">${i.name}</div><div class="opt-desc">${i.illusDesc}</div></div>`;
         }).join('')}</div></div>`;
       }
@@ -3080,7 +3088,7 @@ function buildNegatives() {
 
 function getStep2Option() {
   if (!STATE.step2) return null;
-  // Use overlay-aware list so unlocked frames (e.g. F6 Temple Arch) resolve correctly.
+  // Use overlay-aware list so any overlay-unlocked frames resolve correctly.
   const opts = getStep2Options();
   return opts.find(o => o.id === STATE.step2);
 }
@@ -3123,7 +3131,6 @@ function gatherPromptData() {
     else if (step2Opt.id === 'F3') frameShape = 'single decorative band at the bottom edge';
     else if (step2Opt.id === 'F4') frameShape = 'ornamental corner accents at all four corners';
     else if (step2Opt.id === 'F5') frameShape = 'curved arch canopy frame at top with side patches';
-    else if (step2Opt.id === 'F6') frameShape = 'curved temple gopuram mandir arch silhouette overhead with straight bottom edge, devotional architectural arch as top frame element';
     else frameShape = 'decorative border frame';
 
     let decoPh = 'with subtle motifs at corners';
@@ -3140,7 +3147,9 @@ function gatherPromptData() {
     overlayPh = step2Opt.desc.toLowerCase();
   }
 
-  // Density phrase (A2) — auto-determined from sub-element count
+  // Density phrase (A2 only) — auto-determined from sub-element count.
+  // A1 also exposes the accent picker but density there is governed by frame decoration,
+  // so densityPh stays empty for A1.
   let densityPh = '';
   let a2AccentPh = '';
   if (arch.id === 'A2') {
@@ -3148,7 +3157,9 @@ function gatherPromptData() {
     if (subCount === 0) densityPh = '1–2 key illustration elements, lots of breathing space, clean airy composition';
     else if (subCount === 1) densityPh = '3–4 illustration elements, balanced and warm composition';
     else densityPh = '5–6 elements, rich festive vibrant scene';
-    // Build accent description phrases
+  }
+  // Accent description phrases — built for both A1 and A2 (B1 uses its own sceneElements path).
+  if (arch.id === 'A1' || arch.id === 'A2') {
     const accPhrases = (STATE.a2SubElements || []).map(id => {
       const acc = ACCENT_ITEMS[id];
       return acc ? acc.illusDesc : '';
@@ -4167,6 +4178,7 @@ function buildGeminiEvalPrompt() {
     const presetOpt = STATE.customPreset ? getCustomPresets().find(p => p.id === STATE.customPreset) : null;
     const illusSizeLabels = { Small: 'Small Accent (<15% canvas)', Medium: 'Medium (30–40% canvas)', Large: 'Large / Hero (50%+ canvas)' };
 
+    const a1AccentDisplay = (STATE.a2SubElements || []).length === 0 ? 'None' : STATE.a2SubElements.join(', ');
     selectionsText = `• Archetype: A1 — Text + Frame (decorative border is the defining visual)
 • Frame Type: ${step2Opt ? step2Opt.id + ' ' + step2Opt.name : '—'} — ${step2Opt ? step2Opt.desc : ''}
 • Layout: ${STATE.layout || '—'} — ${layoutDesc[STATE.layout] || ''}
@@ -4175,6 +4187,7 @@ function buildGeminiEvalPrompt() {
 • Background Finish: ${finishOpt ? finishOpt.name : '—'}
 • Illustration: ${illusName}
 • Illustration Size: ${illusSizeLabels[STATE.illusSize] || STATE.illusSize || '—'}
+• Accent Sub-Elements: ${a1AccentDisplay}
 • Frame Decoration: ${STATE.frameDecoration || '—'}
 • Render Style: ${renderOpt ? renderOpt.name : '—'}
 • Motif: ${motifOpt ? motifOpt.name : (STATE.frameDecoration === 'Plain' ? 'None (Plain frame)' : '—')}

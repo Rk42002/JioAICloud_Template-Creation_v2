@@ -3958,4 +3958,149 @@ Live in branch `V2--->-Expansion-to-7-more-categories`, commits `41f18b3` (7 cat
 
 ---
 
+## 6 May 2026 — Edits Pending Merge into Main PRD
+
+This section captures fixes and design tweaks landed on the `Edits-6-May` branch (commit `b1da4e0`). It will be folded into the relevant Part 7 sections in the next PRD revision.
+
+### 54. Step-3 Layout Prompt Fixes (L3 / L4 / L5)
+
+**Problem.** Step 3 (Text & Visual arrangement) was emitting wrong or duplicate prompts for three layouts in the compact Firefly form (with-text and no-text builders for A1/A2). Other platforms (Midjourney, Leonardo, Gemini) were unaffected — they emit `d.textZonePh` / `d.illusPositionPh` verbatim and were already correct.
+
+**Bug 1 — L3 ≡ L4 (identical prompts).**
+- L3 (Text Left, Visual Right) and L4 (Text Right, Visual Left) produced byte-identical Firefly compact lines.
+- Root cause: the Firefly compact builders re-derived a `zone` token from `d.textZonePh` via a string-match cascade. Both L3 and L4 layout phrases naturally name *both* sides ("left column reserved … right column anchors" and the mirror), so the cascade short-circuited on `'left'` for both layouts and emitted `Text zone: left 25%. Illustration: opposite area.`
+
+**Bug 2 — L5 broken.**
+- L5 (Text Bottom / Visual Up) emitted `Text zone: centre 25%. Illustration: opposite area.` — wrong on both sides.
+- Root cause: the v2 safe-zone reword removed the words `upper` / `lower` from L5's `textZonePh` ("between 60 and 80 percent from the top"), so the cascade fell through to `'centre'`.
+
+**Fix — explicit per-layout dispatch.**
+- New helper `compactLayoutPhFirefly(layoutId)` returns explicit `{ textZone, illusZone }` strings keyed by layout ID.
+- Replaces the brittle string-match cascade in both `buildFireflyWithTextPrompt` and `buildFireflyNoTextPrompt`.
+- Same dispatch protects future `gatherPromptData` rewrites from silently breaking the compact form.
+
+```js
+function compactLayoutPhFirefly(layoutId) {
+  const map = {
+    'L1': { textZone: 'upper 25%',            illusZone: 'centre band below text, above safe zone' },
+    'L2': { textZone: 'centred mid-canvas',   illusZone: 'centred behind text, above safe zone' },
+    'L3': { textZone: 'left column',          illusZone: 'right side anchor, above safe zone' },
+    'L4': { textZone: 'right column',         illusZone: 'left side anchor, above safe zone' },
+    'L5': { textZone: 'lower band 60-80%',    illusZone: 'upper 60% above text band' },
+    'L6': { textZone: 'central 60% (framed)', illusZone: 'small accent at any of the four corners, above the reduced 10% safe zone' },
+  };
+  return map[layoutId] || { textZone: 'centre', illusZone: 'opposite area' };
+}
+```
+
+**Verification.**
+- L3 compact contains `right side anchor`; L4 compact contains `left side anchor`. The two prompts are no longer identical.
+- L5 compact contains `lower band 60-80%` and `upper 60% above text band`. No `centre 25%` or `opposite area` anywhere.
+- All other platforms (MJ, Leonardo, Gemini) unaffected — they already used the correct verbatim phrases.
+
+### 55. Layout L6 — Reduced 10% Safe Zone (Corner-Accent Layout Only)
+
+**Decision.** L6 (Text Centre, framed) is the only layout where the small accent illustration can sit at top *or* bottom corners. The standard 20% bottom safe zone (Section 43) removed bottom-corner availability. **Decision: L6 specifically uses a reduced 10% safe zone so a tiny corner accent can sit at any of the four corners. All other layouts keep the standard 20% band.**
+
+**Rationale.** Considered alternatives:
+- (a) Keep 20% band, force L6 accent to upper-corners only — loses the "any corner" framework intent.
+- (b) Reduce band globally to 10% — weakens personalization headroom for the other 5 layouts.
+- (c) **Reduce to 10% only for L6** ← chosen. Surgical, preserves intent on both sides.
+
+**Implementation.**
+- New constants `SAFE_ZONE_DESC_L6` and `SAFE_ZONE_FIREFLY_L6` capture the reduced-band wording.
+- New helpers `getSafeZoneDesc(layoutId)` and `getSafeZoneFireflyAB(layoutId)` return the L6 variant when `layoutId === 'L6'`, otherwise the standard 20% strings.
+- 5 builder sites switched from direct `SAFE_ZONE_*` references to helper calls: MJ, Leonardo, Firefly with-text, Firefly no-text, Gemini (all A1/A2).
+- B1 builders untouched — B1 doesn't use L6 corner accents and keeps the 20% band globally.
+- `gatherPromptData` L6 branch now mentions the reduced 10% band and lists all four corners as valid placements:
+  - `textZonePh`: "text occupies the central 60 percent of the canvas as the dominant element, kept above the bottom 10 percent reduced personalization safe zone"
+  - `illusPositionPh`: "placed as a small decorative accent at any of the four corners of the canvas (upper-left, upper-right, lower-left, or lower-right), tucked tight against the corner, kept clear of the central text and clear of the bottom 10 percent reduced personalization safe zone"
+
+**Layout diagram update.** The `centre-accent` branch in `layoutDiagram()` now draws:
+- A thinner 10% dashed safe-zone band (vs 20% on other layouts), labelled `safe 10%`.
+- Two V chips: one at top-right (existing) plus a second smaller V chip at bottom-right above the reduced band — communicating that bottom-corner placement is now valid for L6.
+
+**Verification.**
+- L1–L5 across MJ / Leonardo / Firefly / Gemini retain the 20% safe-zone language (`bottom 20 percent personalization safe zone`).
+- L6 across all 5 platforms emits the reduced 10% language (`bottom 10 percent reduced personalization`).
+- Worst-case Firefly with-text across 10 categories × { L3, L4, L5, L6 } = 860 chars (within the 950 cap). L6's reduced band slightly shortens the prompt vs L1–L5.
+
+### 56. 6-May Implementation Status
+
+| Change | Status |
+|---|---|
+| L3 / L4 / L5 compact-Firefly fix via `compactLayoutPhFirefly()` | ✅ Implemented (b1da4e0) |
+| L6 reduced 10% safe zone (constants, helpers, builders, diagram) | ✅ Implemented (b1da4e0) |
+| 24/24 runtime smoke tests pass | ✅ Verified |
+| Synced to `docs/` GitHub Pages files | ✅ Done |
+| Folded into main PRD body | ⏳ Pending (this section is the staging area) |
+
+### 57. F6 Temple Arch Frame — Removed (Superseded by MT-8 Motif)
+
+**Decision.** F6 Temple Arch — previously unlocked as an A1 frame option only when the Devotional overlay was active — has been removed. A temple-arch architectural element is conceptually the same primitive as a canopy/torana, and the existing **MT-8 Temple Arch motif** (Track A motif set, "best with F5 Arch / Canopy frame") already covers the use case as a layered decorative element.
+
+**Why.**
+- The "frame" abstraction implied a full canvas enclosure; what users actually want is a top-arch decorative element. MT-8 already does this and layers cleanly onto any base frame (F1–F5) without coupling to overlay state.
+- Removes overlay-conditional frame branching, which simplifies the Step-2 picker logic for A1.
+- Avoids a naming collision with MT-8 (both were named "Temple Arch").
+
+**Implementation.**
+- `OV-DEV.frameUnlock` set to `[]` (was the F6 entry).
+- `gatherPromptData` `framePh` builder no longer has an F6 branch.
+- Comments referencing the F6 unlock cleaned up in 4 sites.
+- `frame-arch` SVG diagram retained — it's still used by F5 Arch / Canopy.
+- Audit panel `frameStructureDesc` already only lists F1–F5 (no change needed).
+
+**No PRD section deletion yet.** The F6 spec block in Section 6 (and the F6 row in Appendix A) will be removed when this 6-May section is folded into the main PRD body. Until then, treat F6 as deprecated.
+
+### 58. A1 Scene Accents — Reuse A2 Sub-Element Pattern
+
+**Decision.** A1 (Text + Frame) now exposes the same "Scene Accents" picker as A2: when a user selects a hero illustration, an optional set of 2–4 curated accent props appears, and the user can pick up to 2. Selected accents are described in prompts as small supporting elements rendered in the same illustration style as the main subject.
+
+**Rationale.** The data, UI affordance, and prompt phrasing already existed for A2. The user observed that A1 is essentially A2 plus a frame — so reusing the same accent pattern (with the frame layered on top) is the natural extension.
+
+**What's shared with A2.**
+- Data tables: `A2_SUB_ELEMENTS`, `SV_A2_SUB_ELEMENTS`, `BD_A2_SUB_ELEMENTS` (and `getA2SubElements()` lookup).
+- State key: `STATE.a2SubElements` (kept the existing name to minimise churn — could be renamed to `subElements` in a future cleanup).
+- Reset behaviour: cleared on category / overlay / archetype / feeling / illusItem change.
+- Toggle handler: `toggleA2SubElement(itemId)` (max 2).
+- All 5 platform builders' accent injection (MJ, Leonardo, Firefly with-text, Firefly no-text, Gemini) — they only check `if (d.a2AccentPh)` with no archetype gate, so they pick up A1 selections automatically.
+
+**What differs between A1 and A2.**
+| Concern | A2 (no frame) | A1 (with frame) |
+|---|---|---|
+| Density semantics | Auto-derived from accent count: 0 → Light (1–2 elements), 1 → Medium (3–4), 2 → Dense (5–6). Emitted as `densityPh`. | Density is governed by **Frame Decoration** (Plain / Simple / Detailed). Accents are pure scene props and do **not** drive a `densityPh`. |
+| UI sub-section tag | `${count}/2 · ${densityLabel}` | `${count}/2` only |
+| UI helper text | "Density auto-adjusts: …" | "Small supporting scene elements rendered in the same illustration style as the main subject. Sit alongside the main illustration, kept clear of the border frame." |
+| Prompt density clause | `densityPh` injected | No `densityPh` injected |
+
+**Implementation.**
+- UI gate at the visual step expanded: `if (STATE.archetype === 'A1' || STATE.archetype === 'A2')`.
+- Helper text and sub-section tag branch on `isA2` flag.
+- `gatherPromptData` split: density logic stays A2-only; accent phrase build runs for both A1 and A2.
+- Audit panel A1 branch now lists "Accent Sub-Elements" alongside Frame Decoration.
+
+**Verification.**
+- 16/16 runtime assertions pass (F6 removal + A1 sub-elements + A2 regression).
+- All 5 platforms inject the accent phrase for A1.
+- A1 with no accents selected emits no accent clause (regression check).
+- A2 still emits `densityPh`; A1 does not.
+- Worst-case Firefly with-text under A1 + 2 accents across 10 categories × 6 layouts = **946 chars** (within the 950 cap; Jesus / L2).
+
+### 59. 6-May (Part 2) Implementation Status
+
+| Change | Status |
+|---|---|
+| F6 Temple Arch frame removed from `OV-DEV.frameUnlock` | ✅ Implemented |
+| F6 frameShape branch removed from `gatherPromptData` | ✅ Implemented |
+| Stale F6 unlock comments cleaned up (4 sites) | ✅ Implemented |
+| A1 sub-elements UI gated to `A1 || A2` at visual step | ✅ Implemented |
+| `a2AccentPh` built for both A1 and A2 in `gatherPromptData` | ✅ Implemented |
+| A1 audit panel shows Accent Sub-Elements | ✅ Implemented |
+| Synced to `docs/` GitHub Pages files | ✅ Done |
+| 16/16 runtime smoke tests pass | ✅ Verified |
+| F6 spec removed from main PRD body | ⏳ Pending (fold during next merge) |
+
+---
+
 *End of PRD v1.1.*
